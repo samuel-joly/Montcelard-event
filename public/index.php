@@ -9,10 +9,16 @@
     <body>
         <form>
             <div id="organisateur">
-                <span>
-                    <input type="text" name="nom-organisateur-1" required>
-                    <input type="text" name="tel-organisateur-1" required>
-                </span>
+                <div>
+                    <span>
+                        <p>Nom organisateur</p>
+                        <input type="text" name="nom-organisateur-1" required>
+                    </span>
+                    <span>
+                        <p>Nom contact 2</p>
+                        <input type="text" name="tel-organisateur-1" required>
+                    </span>
+                </div>
                 <span>
                     <input type="text" name="nom-organisateur-2">
                     <input type="text" name="tel-organisateur-2">
