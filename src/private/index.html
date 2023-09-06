@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <title>Fich-o-matic</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/tailwind.css">
+    </head>
+    <body class="font-ledger bg-primary h-screen flex justify-center items-center text-2xl">
+        <div class="grid grid-cols-7 gap-0 h-[60vh] w-[80vw]">
+
+            <div class="p-2 bg-secondary [border-radius:5px_0_0_5px] flex flex-col justify-between col-span-2">
+                <h3 class="text-4xl text-white text-center mt-2 self-center">Montcelard</h3>
+                <ul id="resa-steps m-auto">
+                    <li class="text-white" selected>Référence et contact</li>
+                    <li class="text-inactif" >Dates et nombre</li>
+                    <li class="text-inactif" >Configuration et matériel</li>
+                    <li class="text-inactif" >Restauration</li>
+                    <li class="text-inactif" >Récapitulatif</li>
+                </ul>
+                <img src="../../assets/logo_montcelard.png" alt="Logo montcelard" width="75" height="75" class="self-center">
+            </div>
+
+            <form class="bg-ternary [border-radius:0_5px_5px_0] p-2 text-secondary grid grid-cols-2 grid-rows-6 gap-x-4 gap-y-0 col-span-5">
+                <h3 class="text-4xl text-center text-secondary col-span-2">Référence et contact</h3>
+                <div class="flex flex-col col-span-1">
+                    <label for="nom-evenement">Nom évènement</label>
+                    <input type="text" name="nom-evenement" class="" required>
+                </div>
+                <div class="col-span-1"></div>
+
+                <div class="flex flex-col col-span-1">
+                    <label for="nom-orga-1" class="">Contact administratif</label>
+                    <input type="text" name="nom-orga-1" required>
+                </div>
+
+                <div class="flex flex-col col-span-1">
+                    <label for="tel-orga-1" class="">Téléphone contact administratif</label>
+                    <input type="text" name="tel-orga-1" required>
+                </div>
+
+                <div class="flex flex-col col-span-1">
+                    <label for="anim-1" class="">Animateur</label>
+                    <input type="text" name="anim-1" required>
+                </div>
+                <div class="flex flex-col col-span-1">
+                    <label for="add-anim" class="">Ajouter un animateur</label>
+                    <button id="add-anim" name="add-anim"
+                            class="max-w-9 w-9  bg-neutral border-light border-2 text-center ease-in-out duration-100 hover:bg-secondary hover:border-neutral hover:text-primary">
+                        +</button>
+                </div>
+
+                <div>
+                    <label>Forfait
+                        <select name="forfait" required>
+                            <option default>Ébène</option>
+                            <option>Acajou</option>
+                            <option>Frêne</option>
+                            <option>Secquoia</option>
+                        </select>
+                    </label>
+
+                    <label>Salle
+                        <select name="salle" required>
+                            <option default>Chine</option>
+                            <option>Cambodge</option>
+                            <option>Laos</option>
+                            <option>Mali</option>
+                            <option>Haiti</option>
+                            <option>Myanmar</option>
+                            <option>Bresil</option>
+                            <option>Madagascar</option>
+                        </select>
+                    </label>
+                </div>
+                <div>
+                    <label>Date début
+                        <input type="date" name="date-debut"/>
+                    </label>
+                    <label>Date fin
+                        <input type="date" name="date-fin"/>
+                    </label>
+                </div>
+
+            </form>
+        </div>
+        <footer>
+        </footer>
+
+
+        <script type="text/javascript">
+         document.addEventListener("DOMContentLoaded", (e) => {
+             let current_contact = 1;
+             document.querySelector("#add-anim").addEventListener("click", (e) => {
+                 e.preventDefault()
+                 current_contact += 1;
+
+                 let delete_contact = document.createElement("button");
+                 delete_contact.id = "orga-"+current_contact;
+                 delete_contact.classList = ["delete-contact-btn"];
+                 delete_contact.innerHTML = "X";
+
+                 let contact = document.createElement("div");
+                 contact.id = "orga-"+current_contact;
+
+                 let name_label= document.createElement("label");
+                 name_label.innerHTML = "Nom organisateur "+current_contact;
+                 let name_input = document.createElement("input");
+                 name_input.attributes = [type="text", name="nom-orga-"+current_contact]
+
+                 let tel_label= document.createElement("label");
+                 tel_label.innerHTML = "Téléphone organisateur"+current_contact;
+                 let tel_input = document.createElement("input");
+                 tel_input.attributes = [type="text", name="tel-orga-"+current_contact]
+
+                 name_label.appendChild(name_input);
+                 tel_label.appendChild(tel_input);
+                 contact.appendChild(delete_contact);
+                 contact.appendChild(name_label);
+                 contact.appendChild(tel_label);
+                 document.querySelector("#contact").appendChild(contact)
+
+                 delete_contact.addEventListener("click", (e) => {
+                     e.preventDefault();
+                     document.querySelector("div #"+delete_contact.getAttribute("id")).remove();
+                     current_contact -= 1;
+
+                 });
+             });
+         });
+        </script>
+    </body>
+</html>

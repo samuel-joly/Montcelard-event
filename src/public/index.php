@@ -11,11 +11,11 @@
             <div id="organisateur">
                 <div>
                     <span>
-                        <p>Nom organisateur</p>
+                        <p for="nom-organisateur-1">Nom organisateur</p>
                         <input type="text" name="nom-organisateur-1" required>
                     </span>
                     <span>
-                        <p>Nom contact 2</p>
+                        <p for="tel-organisateur">Nom organisateur</p>
                         <input type="text" name="tel-organisateur-1" required>
                     </span>
                 </div>
