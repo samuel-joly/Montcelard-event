@@ -1,4 +1,4 @@
-ROOT='/home/azefortwo/Code/web/Montcelard-generation-fiche-technique'
+ROOT='/home/montcelard/generation-fiche'
 
 help() {
     echo -e  "clean\t rm apache2 container & image";
