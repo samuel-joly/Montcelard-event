@@ -1,4 +1,4 @@
-ROOT='/home/montcelard/generation-fiche'
+ROOT='/home/montcelard/generation-fiche/montcelard'
 
 help() {
     echo -e  "clean\t rm apache2 container & image";
