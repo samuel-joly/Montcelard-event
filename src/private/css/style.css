@@ -1,0 +1,11 @@
+form div input {
+    height: 3rem;
+}
+body {
+    background-image: url("../bg.png");
+    background-size: cover;
+}
+#next-btn {
+    background-image: url("../long.jpg");
+    background-size: cover;
+}
