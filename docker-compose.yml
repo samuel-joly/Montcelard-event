@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  apache2:
+    image: httpd:2.4
+    build:
+      context: ./
+      dockerfile: docker/apache/Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./public:/usr/local/apache2/htdocs/public
+
+  # mysql:
+  #   image: mysql:latest
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root

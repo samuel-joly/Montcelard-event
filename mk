@@ -1,4 +1,4 @@
-ROOT='/home/montcelard/generation-fiche/montcelard'
+ROOT='/home/azefortwo/Code/web/Montcelard-generation-fiche-technique/'
 
 help() {
     echo -e  "clean\t rm apache2 container & image";
@@ -39,8 +39,8 @@ case $1 in
         ;;
     "css")
         $ROOT/bin/tailwindcss -c $ROOT/tailwind.config.js -o $ROOT/tailwind.css;
-        cp $ROOT/tailwind.css $ROOT/src/public/css/;
-        cp $ROOT/tailwind.css $ROOT/src/private/css/;
+        cp $ROOT/tailwind.css $ROOT/public/public/css/;
+        cp $ROOT/tailwind.css $ROOT/public/private/css/;
         ;;
     *)
         echo -e "\033[31mCommand \"$1\" not found\033[m";
