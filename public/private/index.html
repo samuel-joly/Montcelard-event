@@ -15,29 +15,29 @@
                 <h3 class="text-4xl text-white text-center mt-2 self-center">Montcelard</h3>
                 <div id="resa-steps" class="grid grid-cols-6">
                     <div class=" w-[1em] h-[1em] row-span-1 bg-focus rounded-full justify-self-center ">
-                        <div id="selected-resa-step" class="w-[0.5em] h-[0.5em] bg-secondary rounded-full justify-self-center m-[0.25em]"></div>
+                        <div id="selected-resa-step-1" class="w-[0.5em] h-[0.5em] bg-secondary rounded-full justify-self-center m-[0.25em]"></div>
                         <div class="h-[1em] w-[0.1em] bg-focus m-auto"></div>
                     </div>
-                    <p class="text-white col-span-5 justify-start" >Référence et contact</p>
+                    <p id="resa-step-1" class="text-white col-span-5 justify-start" >Référence et contact</p>
                     <div class=" w-[1em] h-[1em] row-span-1 bg-focus rounded-full justify-self-center ">
-                        <div class="w-[0.5em] h-[0.5em] bg-ternary rounded-full justify-self-center m-[0.25em]"></div>
+                        <div id="selected-resa-step-2" class="w-[0.5em] h-[0.5em] bg-ternary rounded-full justify-self-center m-[0.25em]"></div>
                         <div class="h-[1em] w-[0.1em] bg-focus m-auto"></div>
                     </div>
-                    <p class="text-inactif col-span-5" >Dates et nombre</p>
+                    <p  id="resa-step-2" class="text-inactif col-span-5" >Dates et nombre</p>
                     <div class=" w-[1em] h-[1em] row-span-1 bg-focus rounded-full justify-self-center">
-                        <div class="w-[0.5em] h-[0.5em] bg-ternary rounded-full justify-self-center m-[0.25em]"></div>
+                        <div id="selected-resa-step-3" class="w-[0.5em] h-[0.5em] bg-ternary rounded-full justify-self-center m-[0.25em]"></div>
                         <div class="h-[1em] w-[0.1em] bg-focus m-auto"></div>
                     </div>
-                    <p class="text-inactif col-span-5" >Configuration et matériel</p>
+                    <p id="resa-step-3" class="text-inactif col-span-5" >Configuration et matériel</p>
                     <div class=" w-[1em] h-[1em] row-span-1 bg-focus rounded-full justify-self-center">
-                        <div class="w-[0.5em] h-[0.5em] bg-ternary rounded-full justify-self-center m-[0.25em]"></div>
+                        <div id="selected-resa-step-4" class="w-[0.5em] h-[0.5em] bg-ternary rounded-full justify-self-center m-[0.25em]"></div>
                         <div class="h-[1em] w-[0.1em] bg-focus m-auto"></div>
                     </div>
-                    <p class="text-inactif col-span-5" >Restauration</p>
+                    <p id="resa-step-4" class="text-inactif col-span-5" >Restauration</p>
                     <div class=" w-[1em] h-[1em] row-span-1 bg-focus rounded-full justify-self-center">
-                        <div class="w-[0.5em] h-[0.5em] bg-ternary rounded-full justify-self-center m-[0.25em]"></div>
+                        <div id="selected-resa-step-5" class="w-[0.5em] h-[0.5em] bg-ternary rounded-full justify-self-center m-[0.25em]"></div>
                     </div>
-                    <p class="text-inactif col-span-5" >Récapitulatif</p>
+                    <p id="resa-step-5" class="text-inactif col-span-5" >Récapitulatif</p>
                 </div>
                 <img src="logo_montcelard-no-circle.png" alt="Logo montcelard" width="75" height="75" class="self-center">
             </div>
@@ -70,12 +70,13 @@
                     <div class="grid grid-cols-2 col-span-1 gap-0 ">
                         <div class="col-span-2 flex flex-row justify-between items-start">
                             <label for="anim-1" class="">Animateur</label>
-                            <button id="add-animateur" class="bg-primary rounded-md text-white w-[1.2em] h-[1.2em] duration-150 hover:bg-secondary">+</button>
                         </div>
-                        <div class="overflow-scroll max-h-[10.2rem] col-span-2 gri grid-cols-3">
-                            <input type="text" id="anim-1" name="anim-1" class="mb-1 mr-1 rounded-md border-[1px] border-light col-span-2" required>
-                            <div class=""></div>
-                            <button id="del-btn" class="hidden rounded-md text-center text-white bg-primary duration-150 hover:bg-secondary w-[1.75rem] h-[1.75rem]">X</button>
+                        <div class="overflow-scroll max-h-[10.2rem] col-span-2 flex flex-col">
+                            <div class="flex flex-row grow m-[0_0.5rem_0_0]">
+                                <input type="text" id="anim-1" name="anim-1" class="mb-1 mr-1 rounded-md border-[1px] border-light grow" required>
+                                <button id="add-animateur" class="bg-primary rounded-md text-white w-[3rem] h-[3rem] duration-150 hover:bg-secondary">+</button>
+                                <button id="del-btn" class="hidden rounded-md text-center text-white bg-primary duration-150 hover:bg-secondary w-[3rem] h-[3rem] p-1">-</button>
+                            </div>
                         </div>
                     </div>
                 </div>

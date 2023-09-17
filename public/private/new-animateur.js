@@ -4,16 +4,19 @@ document.addEventListener("DOMContentLoaded", (event) => {
         e.preventDefault();
         first_anim = document.querySelectorAll("#anim-1")[0];  
         anim = first_anim.cloneNode(false);
+        anim.value = "";
         anim.name = "anim-"+anim_cnt;
         anim.id = "anim-"+anim_cnt;
         anim.val = "";
         del_anim = document.querySelector("#del-btn").cloneNode(false);
-        del_anim.className = "rounded-md text-center text-white bg-primary duration-150 hover:bg-secondary min-w-[1.75rem] h-[1.75rem] col-span-1 anim-";
+        del_anim.className = "rounded-md text-center text-white bg-primary duration-150 hover:bg-secondary w-[3rem] h-[3rem] p-1";
         del_anim.attributes["anim"] = anim_cnt;
         del_anim.id = "del-anim-"+anim_cnt;
-        del_anim.innerHTML="X";
-        first_anim.parentNode.append(anim);
-        first_anim.parentNode.append(del_anim);
+        del_anim.innerHTML="-";
+        let divNode = first_anim.parentNode.cloneNode(false);
+        divNode.append(anim);
+        divNode.append(del_anim);
+        first_anim.parentNode.parentNode.append(divNode);
 
         del_anim.addEventListener("click", (e) => {
             e.preventDefault();
