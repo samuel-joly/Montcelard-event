@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body class="font-ledger bg-primary h-screen flex justify-center items-center text-2xl">
-        <script src="new-event.js"></script>
+        <script src="form-events.js"></script>
         <script src="new-animateur.js"></script>
         <div class="grid grid-cols-7 gap-0 h-[70vh] w-[80vw]">
             <div class="p-2 bg-secondary [border-radius:5px_0_0_5px] flex flex-col justify-between col-span-2">
@@ -42,8 +42,8 @@
                 <img src="logo_montcelard-no-circle.png" alt="Logo montcelard" width="75" height="75" class="self-center">
             </div>
 
-            <form class="[border-radius:0_5px_5px_0] text-secondary text-[1em] col-span-5 flex flex-col ">
-                <div id="form-step-1" class="[border-radius:0_5px_0px_0] bg-ternary grid grid-cols-2 gap-x-4 gap-y-5 p-2 grow content-baseline">
+            <form class="[border-radius:0_5px_5px_0] text-secondary text-[1em] col-span-5 flex flex-col">
+                <div id="form-step-1" class="[border-radius:0_5px_0px_0] bg-ternary grid grid-cols-2 gap-x-4 gap-y-5 p-10 grow content-baseline ">
                     <h3 class="text-4xl text-center text-secondary col-span-2">Référence et contact</h3>
                     <div class="flex flex-col col-span-1">
                         <label for="nom-evenement">Nom formation</label>
@@ -71,19 +71,167 @@
                         <div class="col-span-2 flex flex-row justify-between items-start">
                             <label for="anim-1" class="">Animateur</label>
                         </div>
-                        <div class="overflow-scroll max-h-[10.2rem] col-span-2 flex flex-col">
+                        <div class="overflow-scroll max-h-[6.5rem] col-span-2 flex flex-col">
                             <div class="flex flex-row grow m-[0_0.5rem_0_0]">
                                 <input type="text" id="anim-1" name="anim-1" class="mb-1 mr-1 rounded-md border-[1px] border-light grow" required>
-                                <button id="add-animateur" class="bg-primary rounded-md text-white w-[3rem] h-[3rem] duration-150 hover:bg-secondary">+</button>
-                                <button id="del-btn" class="hidden rounded-md text-center text-white bg-primary duration-150 hover:bg-secondary w-[3rem] h-[3rem] p-1">-</button>
+                                <button id="add-animateur" class="bg-primary rounded-md pt-1 text-white m-[0.15em_0.25em_0.25em_0.25em] w-[2.5rem] h-[2.5rem] duration-150 hover:bg-secondary">+</button>
+                                <button id="del-btn" class="hidden">-</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="form-step-2" class="hidden [border-radius:0_5px_0px_0] bg-ternary grid grid-cols-2 gap-x-4 gap-y-5 p-2 grow content-baseline"></div>
-                <div id="form-step-3" class="hidden [border-radius:0_5px_0px_0] bg-ternary grid grid-cols-2 gap-x-4 gap-y-5 p-2 grow content-baseline"></div>
-                <div id="form-step-4" class="hidden [border-radius:0_5px_0px_0] bg-ternary grid grid-cols-2 gap-x-4 gap-y-5 p-2 grow content-baseline"></div>
-                <div id="form-step-5" class=" hidden [border-radius:0_5px_0px_0] bg-ternary grid grid-cols-2 gap-x-4 gap-y-5 p-2 grow content-baseline"></div>
+                <div id="form-step-2" class="hidden [border-radius:0_5px_0px_0] bg-ternary grid grid-cols-2 gap-x-4 gap-y-5 p-10 grow content-baseline">
+                    <h3 class="text-4xl text-center text-secondary col-span-2">Dates et nombres</h3>
+                    <div class="flex flex-col col-span-1" >
+                        <label for="start-date" class="">Date de début</label>
+                        <input type="date" name="start-date" class="rounded-md border-[1px] border-light" required>
+                    </div>
+
+                    <div class="flex flex-col col-span-1" >
+                        <label for="end-date" class="">Date de fin</label>
+                        <input type="date" name="end-date" class="rounded-md border-[1px] border-light" required>
+                    </div>
+
+                    <div class="flex flex-col col-span-1" >
+                        <label for="start-hour" class="">Heure d'arrivée</label>
+                        <input type="time" name="start-hour" class="rounded-md border-[1px] border-light" require>
+                    </div>
+
+                    <div class="flex flex-col col-span-1" >
+                        <label for="end-hour" class="">Heure de départ</label>
+                        <input type="time" name="end-hour" class="rounded-md border-[1px] border-light" require>
+                    </div>
+
+                    <div class="flex flex-col justify-between align-center" >
+                        <div class="grid grid-cols-2 align-center items-center justify-start">
+                            <label for="full-day" >Journée complète</label>
+                            <input type="radio" name="day-duration" id="full-day" class="max-w-[1em] max-h-[1em] "/>
+                        </div>
+                        <div class="grid grid-cols-2 align-center items-center justify-start">
+                            <label for="half-day">Demie journée</label>
+                            <input type="radio" name="day-duration" id="half-day" class="max-w-[1em] max-h-[1em] "/>
+                        </div>
+                        <div></div>
+                    </div>
+                    <div class="flex flex-col" >
+                        <label for="participant" class="">Nombre de participants</label>
+                        <input min="0" type="number" name="participant" class="rounded-md border-[1px] border-light" require>
+                    </div>
+
+                    <table class="hidden col-span-2" id="time-table">
+                        <thead>
+                            <tr>
+                                <td id="day-0" class="border-[1px] border-light hidden">Jour 1</td>
+                                <td id="day-1" class="border-[1px] border-light hidden">Jour 2</td>
+                                <td id="day-2" class="border-[1px] border-light hidden">Jour 3</td>
+                                <td id="day-3" class="border-[1px] border-light hidden">Jour 4</td>
+                                <td id="day-4" class="border-[1px] border-light hidden">Jour 5</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="time-table-start-time">
+                                <td id="day-0-start-time" class="text-sm border-[1px] border-b-[0px] border-light hidden">
+                                    <div class="flex flex-row justify-between items-center">
+                                        <label for="day-0-start-time">Arrivée à</label>
+                                        <input type="time" name="day-0-start-time" class="rounded-md border-[1px] border-light h-[2.0rem]" required/>
+                                    </div>
+                                </td>
+                                <td id="day-1-start-time" class="text-sm border-[1px] border-b-[0px] border-light hidden">
+                                    <div class="flex flex-row justify-between items-center">
+                                        <label for="day-1-start-time">Arrivée à</label>
+                                        <input type="time" name="day-1-start-time" class="rounded-md border-[1px] border-light h-[2.0rem]" required/>
+                                    </div>
+                                </td>
+                                <td id="day-2-start-time" class="text-sm border-[1px] border-b-[0px] border-light hidden">
+                                    <div class="flex flex-row justify-between items-center">
+                                        <label for="day-2-start-time">Arrivée à</label>
+                                        <input type="time" name="day-2-start-time" class="rounded-md border-[1px] border-light h-[2.0rem]" required/>
+                                    </div>
+                                </td>
+                                <td id="day-3-start-time" class="text-sm border-[1px] border-b-[0px] border-light hidden">
+                                    <div class="flex flex-row justify-between items-center">
+                                        <label for="day-3-start-time">Arrivée à</label>
+                                        <input type="time" name="day-3-start-time" class="rounded-md border-[1px] border-light h-[2.0rem]" required/>
+                                    </div>
+                                </td>
+                                <td id="day-4-start-time" class="text-sm border-[1px] border-b-[0px] border-light hidden">
+                                    <div class="flex flex-row justify-between items-center">
+                                        <label for="day-4-start-time">Arrivée à</label>
+                                        <input type="time" name="day-4-start-time" class="rounded-md border-[1px] border-light h-[2.0rem]" required/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="time-table-end-time">
+                                <td id="day-0-end-time" class="text-sm border-[1px] border-t-[0px] border-b-[0px] border-light hidden ">
+                                    <div class="flex flex-row justify-between items-center">
+                                        <label for="day-0-end-time">Départ à</label>
+                                        <input type="time" name="day-0-end-time" class="rounded-md border-[1px] border-light h-[2.0rem]" required/>
+                                    </div>
+                                </td>
+                                <td id="day-1-end-time" class="text-sm border-[1px] border-t-[0px] border-b-[0px] border-light hidden ">
+                                    <div class="flex flex-row justify-between items-center">
+                                        <label for="day-1-end-time">Départ à</label>
+                                        <input type="time" name="day-1-end-time" class="rounded-md border-[1px] border-light h-[2.0rem]" required/>
+                                    </div>
+                                </td>
+                                <td id="day-2-end-time" class="text-sm border-[1px] border-t-[0px] border-b-[0px] border-light hidden ">
+                                    <div class="flex flex-row justify-between items-center">
+                                        <label for="day-2-end-time">Départ à</label>
+                                        <input type="time" name="day-2-end-time" class="rounded-md border-[1px] border-light h-[2.0rem]" required/>
+                                    </div>
+                                </td>
+                                <td id="day-3-end-time" class="text-sm border-[1px] border-t-[0px] border-b-[0px] border-light hidden ">
+                                    <div class="flex flex-row justify-between items-center">
+                                        <label for="day-3-end-time">Départ à</label>
+                                        <input type="time" name="day-3-end-time" class="rounded-md border-[1px] border-light h-[2.0rem]" required/>
+                                    </div>
+                                </td>
+                                <td id="day-4-end-time" class="text-sm border-[1px] border-t-[0px] border-b-[0px] border-light hidden ">
+                                    <div class="flex flex-row justify-between items-center">
+                                        <label for="day-4-end-time">Départ à</label>
+                                        <input type="time" name="day-4-end-time" class="rounded-md border-[1px] border-light h-[2.0rem]" required/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="time_table_no_event">
+                                <td  id="day-0-no-event" class="text-sm border-[1px] border-t-[0px] border-light text-center hidden ">
+                                    <div class="h-[1em] flex flex-row justify-between items-center mt-1 mb-1">
+                                        <label for="day-0-no-event">Jour sans formation</label>
+                                        <input type="checkbox" id="day-0-no-event" name="day-0-no-event" class="m-[0.5em] w-[1.25rem]" />
+                                    </div>
+                                </td>
+                                <td  id="day-1-no-event" class="text-sm border-[1px] border-t-[0px] border-light text-center hidden ">
+                                    <div class="h-[1em] flex flex-row justify-between items-center mt-1 mb-1">
+                                        <label for="day-1-no-event">Jour sans formation</label>
+                                        <input type="checkbox" id="day-1-no-event" name="day-1-no-event" class="m-[0.5em] w-[1.25rem]" />
+                                    </div>
+                                </td>
+                                <td  id="day-2-no-event" class="text-sm border-[1px] border-t-[0px] border-light text-center hidden ">
+                                    <div class="h-[1em] flex flex-row justify-between items-center mt-1 mb-1">
+                                        <label for="day-2-no-event">Jour sans formation</label>
+                                        <input type="checkbox" id="day-2-no-event" name="day-2-no-event" class="m-[0.5em] w-[1.25rem]" />
+                                    </div>
+                                </td>
+                                <td  id="day-3-no-event" class="text-sm border-[1px] border-t-[0px] border-light text-center hidden ">
+                                    <div class="h-[1em] flex flex-row justify-between items-center mt-1 mb-1">
+                                        <label for="day-3-no-event">Jour sans formation</label>
+                                        <input type="checkbox" id="day-3-no-event" name="day-3-no-event" class="m-[0.5em] w-[1.25rem]" />
+                                    </div>
+                                </td>
+                                <td  id="day-4-no-event" class="text-sm border-[1px] border-t-[0px] border-light text-center hidden ">
+                                    <div class="h-[1em] flex flex-row justify-between items-center mt-1 mb-1">
+                                        <label for="day-4-no-event">Jour sans formation</label>
+                                        <input type="checkbox" id="day-4-no-event" name="day-4-no-event" class="m-[0.5em] w-[1.25rem]" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div id="form-step-3" class="hidden [border-radius:0_5px_0px_0] bg-ternary grid grid-cols-2 gap-x-4 gap-y-5 p-10 grow content-baseline"></div>
+                <div id="form-step-4" class="hidden [border-radius:0_5px_0px_0] bg-ternary grid grid-cols-2 gap-x-4 gap-y-5 p-10 grow content-baseline"></div>
+                <div id="form-step-5" class="hidden [border-radius:0_5px_0px_0] bg-ternary grid grid-cols-2 gap-x-4 gap-y-5 p-10 grow content-baseline"></div>
 
                 <div id="form-btn" class="bg-white [border-radius:0_0_5px_0] flex justify-between align-center" id="next-btn">
                     <button id="continue-form" current="1" class="p-[0.40em] m-3 rounded-full bg-primary text-center text-white duration-150 hover:bg-secondary  border-[2px] border-ternary ">Continuer</button>
