@@ -20,8 +20,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         del_anim.addEventListener("click", (e) => {
             e.preventDefault();
-            document.querySelector("#anim-"+e.target.attributes["anim"]).parentNode.removeChild(document.querySelector("#anim-"+e.target.attributes["anim"]));
-            document.querySelector("#del-anim-"+e.target.attributes["anim"]).parentNode.removeChild(document.querySelector("#del-anim-"+e.target.attributes["anim"]));
+            document.querySelector("#anim-"+e.target.attributes["anim"]).parentNode.remove();
         });
     anim_cnt += 1;
     });
