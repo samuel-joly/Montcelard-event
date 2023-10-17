@@ -1,5 +1,3 @@
-ROOT='/home/azefortwo/Code/web/Montcelard-generation-fiche-technique/'
-
 help() {
     echo -e  "clean\t rm apache2 container & image";
     echo -e  "build\t build apache2";
@@ -38,9 +36,24 @@ case $1 in
         ./mk build;
         ;;
     "css")
-        $ROOT/bin/tailwindcss -c $ROOT/tailwind.config.js -o $ROOT/tailwind.css;
-        cp $ROOT/tailwind.css $ROOT/public/public/css/;
-        cp $ROOT/tailwind.css $ROOT/public/private/css/;
+        bin/tailwindcss -c tailwind.config.js -o tailwind.css;
+        cp tailwind.css public/public/css/;
+        cp tailwind.css public/private/css/;
+        ;;
+    "zip-deploy")
+	rm pull-build/build.zip;
+        zip pull-build/build.zip -r \
+            bin\
+            fonts \
+            public/private/*.html \
+            public/private/css/style.css \
+            public/private/*.png \
+            public/private/*.js \
+            public/public \
+            tailwind.config.js ;
+    	# You need to be authentified to host to do this
+        scp pull-build/build.zip azefortwo@best-show:Downloads/build.zip;
+	ssh azefortwo@best-show
         ;;
     *)
         echo -e "\033[31mCommand \"$1\" not found\033[m";
