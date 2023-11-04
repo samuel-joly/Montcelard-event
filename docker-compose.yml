@@ -9,7 +9,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./public:/usr/local/apache2/htdocs/public
+      - ./src:/usr/local/apache2/htdocs/src
 
   # mysql:
   #   image: mysql:latest
