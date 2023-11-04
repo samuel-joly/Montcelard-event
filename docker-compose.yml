@@ -1,15 +1,28 @@
 version: '3.1'
 
+networks:
+  web-network:
+
 services:
-  apache2:
+  docker-apache2:
     image: httpd:2.4
     build:
-      context: ./
-      dockerfile: docker/apache/Dockerfile
+      dockerfile: ./docker/apache/Dockerfile
     ports:
       - "80:80"
     volumes:
       - ./src:/usr/local/apache2/htdocs/src
+    networks:
+      - web-network
+
+  docker-php-fpm:
+    image: php:8.2-fpm
+    build:
+      dockerfile: ./docker/php-fpm/Dockerfile
+    volumes:
+      - ./src:/usr/local/apache2/htdocs/src
+    networks:
+      - web-network
 
   # mysql:
   #   image: mysql:latest
