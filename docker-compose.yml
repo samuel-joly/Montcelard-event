@@ -27,6 +27,7 @@ services:
     build:
       dockerfile: ./docker/php-fpm/Dockerfile
     environment:
+      MYSQL_DB: "${DB_URL}"
       MYSQL_USER: "${DB_USER}"
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_DATABASE: "${DB_NAME}"
@@ -37,7 +38,7 @@ services:
 
   docker-db:
     image: mysql
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=caching_sha2_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
