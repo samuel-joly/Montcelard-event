@@ -4,7 +4,7 @@ networks:
   web-network:
 
 services:
-  docker-apache2:
+  apache:
     image: httpd:2.4
     build:
       dockerfile: ./docker/apache/Dockerfile
@@ -15,17 +15,36 @@ services:
     networks:
       - web-network
 
-  docker-php-fpm:
-    image: php:8.2-fpm
-    build:
-      dockerfile: ./docker/php-fpm/Dockerfile
+  php-cli:
+    image: php:8.2-cli
+    tty: true # Make it survive longer than 0s
     volumes:
       - ./src:/usr/local/apache2/htdocs/src
     networks:
       - web-network
 
-  # mysql:
-  #   image: mysql:latest
-  #   restart: always
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: root
+  docker-php-fpm:
+    build:
+      dockerfile: ./docker/php-fpm/Dockerfile
+    environment:
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_DATABASE: "${DB_NAME}"
+    volumes:
+      - ./src:/usr/local/apache2/htdocs/src
+    networks:
+      - web-network
+
+  docker-db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_DATABASE: "${DB_NAME}"
+    volumes:
+      - ./docker/db/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - web-network

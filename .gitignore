@@ -1,2 +1,4 @@
 tailwind.css
 pullbuild
+.php-cs-fixer.cache
+sess.nvim
