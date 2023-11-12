@@ -1,6 +1,7 @@
 #!/bin/bash
 set -a
-source ./env.dev.sh;
+env_type="dev"
+source ./env.$env_type.sh;
 
 help() {
     echo -e "\e[1;37mList of commands:\e[m";
@@ -17,7 +18,7 @@ help() {
     echo -e "docker \e[32mrmall\e[m\t\t Remove all volumes, images and container";
     echo -e "docker \e[32mreload\e[m\t\t ./mk rmall and ./mk up";
     echo "";
-    echo -e "\e[1;37mEnv vars:\e[m";
+    echo -e "\e[1;37mEnv vars from \e[m\e[1;32menv.$env_type.sh\e[m";
     for env in ${env_list[@]}; do
         varname="$env";
         echo -e "\e[33m$env\e[m=${!varname}";
