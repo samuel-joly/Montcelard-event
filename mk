@@ -16,7 +16,7 @@ help() {
     echo -e "docker \e[32mup\e[m\t\t docker compose up with env loading";
     echo -e "docker \e[32mdown\e[m\t\t docker compose down";
     echo -e "docker \e[32mrmall\e[m\t\t Remove all volumes, images and container";
-    echo -e "docker \e[32mreload\e[m\t\t ./mk rmall and ./mk up";
+    echo -e "docker \e[32mreload\e[m\t\t ./mk rmall and ./mk up --force-recreate --build";
     echo "";
     echo -e "\e[1;37mEnv vars from \e[m\e[1;32menv.$env_type.sh\e[m";
     for env in ${env_list[@]}; do
@@ -54,7 +54,7 @@ case $1 in
             "reload")
                 shift 2
                 ./mk docker rmall;
-                ./mk docker up $@;
+                ./mk docker up --force-recreate --build $@;
                 ;;
 
             *)
