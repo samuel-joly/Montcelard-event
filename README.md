@@ -2,7 +2,7 @@
 
 ## Building project
 ```sh
-./mk up -d
+./mk docker up -d
 ```
 ## The `mk` command
 All the project action are done throught the `mk` script.
