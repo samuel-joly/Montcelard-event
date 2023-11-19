@@ -11,7 +11,8 @@ services:
     volumes:
       - ./src:/usr/local/apache2/htdocs/src
       - ./api:/usr/local/apache2/htdocs/api
-      - ./docker/apache/:/usr/local/apache2/conf/
+      - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./docker/apache/extra/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
     networks:
       - web-network
 
