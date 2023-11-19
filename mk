@@ -16,7 +16,9 @@ help() {
     echo -e "docker \e[32mup\e[m\t\t docker compose up with env loading";
     echo -e "docker \e[32mdown\e[m\t\t docker compose down";
     echo -e "docker \e[32mrmall\e[m\t\t Remove all volumes, images and container";
-    echo -e "docker \e[32mreload\e[m\t\t ./mk rmall and ./mk up --force-recreate --build";
+    echo -e "docker \e[32mremade\e[m\t\t ./mk rmall and ./mk up --force-recreate --build";
+    echo -e "docker \e[32mrestart\e[m\t\t restart a specific container (\e[31mfzf required\e[m)";
+    echo -e "docker \e[32mlog\e[m\t\t tail -f on the selected container (\e[31mfzf required\e[m)";
     echo "";
     echo -e "\e[1;37mEnv vars from \e[m\e[1;32menv.$env_type.sh\e[m";
     for env in ${env_list[@]}; do
@@ -29,7 +31,6 @@ case $1 in
     "css")
         bin/tailwindcss -c tailwind.config.js -o tailwind.css;
         cp tailwind.css src/public/css/;
-        cp tailwind.css src/private/css/;
         ;;
 
     "docker")
@@ -51,13 +52,23 @@ case $1 in
                 docker volume rm $(docker volume ls -q);
                 ;;
 
-            "reload")
+            "remake")
                 shift 2
                 ./mk docker rmall;
                 ./mk docker up --force-recreate --build $@;
                 ;;
+            
+            "restart")
+                docker container ls --format="{{.Names}}" | fzf --preview="docker inspect {1}" --bind "enter:become(docker container restart {1})"
+                ;;
+
+            "log")
+                docker container ls --format="{{.ID}} {{.Names}}" | fzf --preview="docker container logs {1}" --bind "enter:become(docker container logs {1}|tail -f)"
+                ;;
+                
 
             *)
+                help;
                 ;;
         esac
         ;;
@@ -91,6 +102,7 @@ case $1 in
                     echo $file;
                     ;;
                 *)
+                    help
                     ;;
             esac
         fi;
