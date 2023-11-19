@@ -6,12 +6,12 @@ networks:
 services:
   apache:
     image: httpd:2.4
-    build:
-      dockerfile: ./docker/apache/Dockerfile
     ports:
       - "80:80"
     volumes:
       - ./src:/usr/local/apache2/htdocs/src
+      - ./api:/usr/local/apache2/htdocs/api
+      - ./docker/apache/:/usr/local/apache2/conf/
     networks:
       - web-network
 
@@ -20,6 +20,7 @@ services:
     tty: true # Make it survive longer than 0s
     volumes:
       - ./src:/usr/local/apache2/htdocs/src
+      - ./api:/usr/local/apache2/htdocs/api
     networks:
       - web-network
 
@@ -33,6 +34,7 @@ services:
       MYSQL_DATABASE: "${DB_NAME}"
     volumes:
       - ./src:/usr/local/apache2/htdocs/src
+      - ./api:/usr/local/apache2/htdocs/api
     networks:
       - web-network
 
