@@ -16,7 +16,7 @@ help() {
     echo -e "docker \e[32mup\e[m\t\t docker compose up with env loading";
     echo -e "docker \e[32mdown\e[m\t\t docker compose down";
     echo -e "docker \e[32mrmall\e[m\t\t Remove all volumes, images and container";
-    echo -e "docker \e[32mremade\e[m\t\t ./mk rmall and ./mk up --force-recreate --build";
+    echo -e "docker \e[32mremake\e[m\t\t ./mk rmall and ./mk up --force-recreate --build";
     echo -e "docker \e[32mrestart\e[m\t\t restart a specific container (\e[31mfzf required\e[m)";
     echo -e "docker \e[32mlog\e[m\t\t tail -f on the selected container (\e[31mfzf required\e[m)";
     echo "";
