@@ -29,7 +29,7 @@ services:
     build:
       dockerfile: ./docker/php-fpm/Dockerfile
     environment:
-      MYSQL_DB: "${DB_URL}"
+      MYSQL_URL: "${DB_URL}"
       MYSQL_USER: "${DB_USER}"
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_DATABASE: "${DB_NAME}"
