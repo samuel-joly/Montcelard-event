@@ -17,7 +17,7 @@ services:
       - web-network
 
   php-cli:
-    image: php:8.2-cli
+    image: php:8.1-cli
     tty: true # Make it survive longer than 0s
     volumes:
       - ./src:/usr/local/apache2/htdocs/src
