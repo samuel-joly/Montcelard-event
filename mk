@@ -6,6 +6,7 @@ source ./env.$env_type.sh;
 help() {
     echo -e "\e[1;37mList of commands:\e[m";
     echo -e "css\t\t\t bin/tailwind -c tailwind.config.js -o tailwind.css";
+    echo -e "test\t\t\t Run apitest files from \e[33mapi/test/*.jsona\e[m";
     echo -e "db \e[32mmigrate\e[m\t\t Execute migrations file in the \e[33mMYSQL_DATABASE\e[m ";
     echo -e "db \e[32mmigration\e[m <string>\t Create a new migration at \e[33mDB_MIGRATION\e[m/<string>_timestamp.sql";
     echo -e "db \e[32mquery\e[m <string>\t Execute query as \e[33mMYSQL_USER\e[m to \e[33mMYSQL_DATABASE\e[m defined in the mysql container";
@@ -114,6 +115,11 @@ case $1 in
         mv pull-build/build.zip pull-build/last-build.zip;
         zip pull-build/build.zip -r bin fonts src/private/*.html src/private/css/style.css src/private/*.png src/private/*.js src/public tailwind.config.js;
         scp -P 52367 pull-build/build.zip azefortwo@azefortwo:montcelard-build/build.zip;
+        ;;
+
+    "test")
+        shift 1;
+        bin/apitest api/test/*.jsona $@
         ;;
 
     *)
