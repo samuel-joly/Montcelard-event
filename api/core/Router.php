@@ -13,7 +13,11 @@ class Router
 
     public function add(string $route, CrudEntity $entity_class): void
     {
-        $this->routes += [$route => $entity_class];
+        if (!array_key_exists($route, $this->routes)) {
+            $this->routes[$route] = $entity_class;
+        } else {
+            throw new Exception("Route \"$route\" is already defined",500);
+        }
     }
 
     public function route(Request $req): Response

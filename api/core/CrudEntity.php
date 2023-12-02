@@ -6,7 +6,10 @@ include "mysql.php";
 abstract class CrudEntity implements CrudEntityInterface
 {
     abstract function get_table_name(): string;
-    abstract function check(): bool;
+    /**
+     ** @param array<string,mixed> $data
+     */
+    abstract function check(array $data): bool;
 
     public function get(int $id = null): Response
     {

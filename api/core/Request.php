@@ -67,7 +67,7 @@ class Request
             if ($req_body !== null) {
                 $this->body = $req_body;
             } else {
-                throw new Exception("POST request was made without a body", 400);
+                throw new Exception($this->method." request was made with a badly formatted json body", 400);
             }
         }
     }

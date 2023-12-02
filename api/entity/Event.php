@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 enum RoomConfiguration
@@ -12,8 +13,8 @@ enum RoomConfiguration
 
 class Event extends CrudEntity implements CrudEntityInterface
 {
-    public string $start_date;
-    public string $end_date;
+    public ?DateTimeImmutable $start_date = null;
+    public ?DateTimeImmutable $end_date = null;
     public string $start_hour;
     public string $end_hour;
     public int $pause_date;
@@ -33,7 +34,25 @@ class Event extends CrudEntity implements CrudEntityInterface
         return "event";
     }
 
-    public function check(): bool {
+    public function check(array $data): bool
+    {
+        if(!isset($data["start_date"]) || !isset($data["end_date"])) {
+            return false;
+        }
+
+        try {
+            $start_date = DateTimeImmutable::createFromFormat("Y/m/d", $data["start_date"]);
+            $end_date = DateTimeImmutable::createFromFormat("Y/m/d", $data["end_date"]);
+        } catch (Exception $e) {
+            throw new Exception(
+                "Could not create DateTime from start_date or end_date, verify that you format the dates string as \"year/month/day\"",
+                500,
+                $e
+            );
+        }
+
+        $this->start_date = $start_date;
+        $this->end_date = $end_date;
         return true;
     }
 }
