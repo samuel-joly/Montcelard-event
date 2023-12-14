@@ -6,6 +6,7 @@ source ./env.$env_type.sh;
 help() {
     echo -e "\e[1;37mList of commands:\e[m";
     echo -e "css\t\t\t bin/tailwind -c tailwind.config.js -o tailwind.css";
+    echo -e "test\t\t\t Run apitest files from \e[33mapi/test/*.jsona\e[m";
     echo -e "db \e[32mmigrate\e[m\t\t Execute migrations file in the \e[33mMYSQL_DATABASE\e[m ";
     echo -e "db \e[32mmigration\e[m <string>\t Create a new migration at \e[33mDB_MIGRATION\e[m/<string>_timestamp.sql";
     echo -e "db \e[32mquery\e[m <string>\t Execute query as \e[33mMYSQL_USER\e[m to \e[33mMYSQL_DATABASE\e[m defined in the mysql container";
@@ -16,7 +17,7 @@ help() {
     echo -e "docker \e[32mup\e[m\t\t docker compose up with env loading";
     echo -e "docker \e[32mdown\e[m\t\t docker compose down";
     echo -e "docker \e[32mrmall\e[m\t\t Remove all volumes, images and container";
-    echo -e "docker \e[32mremade\e[m\t\t ./mk rmall and ./mk up --force-recreate --build";
+    echo -e "docker \e[32mremake\e[m\t\t ./mk rmall and ./mk up --force-recreate --build";
     echo -e "docker \e[32mrestart\e[m\t\t restart a specific container (\e[31mfzf required\e[m)";
     echo -e "docker \e[32mlog\e[m\t\t tail -f on the selected container (\e[31mfzf required\e[m)";
     echo "";
@@ -90,15 +91,14 @@ case $1 in
                     fi;
                     ;;
                 "migrate")
-                    for file in ./docker/mysql/migrations/*.sql; do
+                    for file in ./docker/db/migrations/*.sql; do
                         echo -e "\e[1;34m${file}\e[m";
-                        docker exec $container sh -c "mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < $file"
+                        docker exec $container sh -c "mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < /docker-entrypoint-initdb.d/$(basename $file)"
                     done;
                     ;;
 
                 "migration")
-                    let file="./docker/mysql/migrations/$2_$(date +%s).sql"
-                    touch $file;
+                    touch ./docker/db/migrations/$2_$(date +%s).sql;
                     echo $file;
                     ;;
                 *)
@@ -114,6 +114,11 @@ case $1 in
         mv pull-build/build.zip pull-build/last-build.zip;
         zip pull-build/build.zip -r bin fonts src/private/*.html src/private/css/style.css src/private/*.png src/private/*.js src/public tailwind.config.js;
         scp -P 52367 pull-build/build.zip azefortwo@azefortwo:montcelard-build/build.zip;
+        ;;
+
+    "test")
+        shift 1;
+        bin/apitest ./api/test/main.jsona $@ 2>&1
         ;;
 
     *)
