@@ -91,15 +91,14 @@ case $1 in
                     fi;
                     ;;
                 "migrate")
-                    for file in ./docker/mysql/migrations/*.sql; do
+                    for file in ./docker/db/migrations/*.sql; do
                         echo -e "\e[1;34m${file}\e[m";
-                        docker exec $container sh -c "mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < $file"
+                        docker exec $container sh -c "mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < /docker-entrypoint-initdb.d/$(basename $file)"
                     done;
                     ;;
 
                 "migration")
-                    let file="./docker/mysql/migrations/$2_$(date +%s).sql"
-                    touch $file;
+                    touch ./docker/db/migrations/$2_$(date +%s).sql;
                     echo $file;
                     ;;
                 *)
@@ -119,7 +118,7 @@ case $1 in
 
     "test")
         shift 1;
-        bin/apitest api/test/*.jsona $@
+        bin/apitest ./api/test/main.jsona $@ 2>&1
         ;;
 
     *)
