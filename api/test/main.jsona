@@ -1,0 +1,4 @@
+{
+@module("event_post")
+@module("event_get")
+}

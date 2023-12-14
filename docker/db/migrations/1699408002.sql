@@ -1,11 +1,14 @@
 CREATE TABLE event (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(400) NOT NULL,
+
     orga_name VARCHAR(150) NOT NULL,
     orga_mail VARCHAR(200) NOT NULL,
     orga_tel VARCHAR(10) NOT NULL,
-    talkers VARCHAR(500) NOT NULL,
-    listener INT NOT NULL CHECK (listener>0),
+
+    host_name VARCHAR(500) NOT NULL,
+    guests INT NOT NULL CHECK (guests>0),
+
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
 
@@ -15,20 +18,24 @@ CREATE TABLE event (
     # - first pause is 1 day after the start_date
     # - second pause is 3 days after the start_date
 
-    modified_start_hour VARCHAR(34) NOT NULL,
-    modified_end_hour VARCHAR(34) NOT NULL,
+    start_hour VARCHAR(5) NOT NULL,
+    end_hour VARCHAR(5) NOT NULL,
+    start_hour_offset VARCHAR(34) NOT NULL,
+    end_hour_offset VARCHAR(34) NOT NULL,
     # Format "1+3.25;2-2.5;3-1;5+0.5" means there is 3 date with
     # modified start/end hour:
-    # - "1+3.25" means the first date start with 3.25 hours more
-    #   than start_hour 
-    # - "2-2" means the second date start with 2 hours less 
-    # - "3-1" means the third date start with 1 hour less 
+    # - "1+3.25" means the first date end with 3.25 hours more
+    #   than end_hour 
+    # - "2-2" means the second date end with 2 hours less 
+    # - "3-1" means the third date end with 1 hour less 
 
+    room_configuration VARCHAR(30) NOT NULL,
+    room_configuration_precision VARCHAR(400),
+
+    host_table BOOLEAN NOT NULL DEFAULT TRUE,
     paperboard INT NOT NULL DEFAULT 0,
     chair_sup INT NOT NULL DEFAULT 0 CHECK (chair_sup<=6),
     table_sup INT NOT NULL DEFAULT 0 CHECK (table_sup<=4),
-    configuration VARCHAR(30) NOT NULL,
-    configuration_precision VARCHAR(400),
     pen BOOLEAN NOT NULL DEFAULT FALSE,
     paper BOOLEAN NOT NULL DEFAULT FALSE,
     scissors BOOLEAN NOT NULL DEFAULT FALSE,
@@ -38,6 +45,7 @@ CREATE TABLE event (
     bloc_note BOOLEAN NOT NULL DEFAULT FALSE,
     gomette BOOLEAN NOT NULL DEFAULT FALSE,
     post_it BOOLEAN NOT NULL DEFAULT FALSE,
+
     coffee_groom INT NOT NULL DEFAULT 0,
     meal INT NOT NULL DEFAULT 0,
     meal_precision VARCHAR(400),
