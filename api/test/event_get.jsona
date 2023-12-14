@@ -5,6 +5,7 @@
       method: 'get',
       headers: {
         'content-type':'application/json',
+        'Bearer':'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtb250Y2VsYXJkX3VzZXIiLCJleHAiOjE3MDMxNjQxMzB9.7e8eec7824b324086357755af4bc12b8e23287a03046f7f78e1a4fd915ff6a57',
       },
       body: {
       },

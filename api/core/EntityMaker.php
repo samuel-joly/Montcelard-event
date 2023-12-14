@@ -41,8 +41,10 @@ abstract class EntityMaker
         $entity_properties = get_class_vars($entity_name);
         foreach($entity_properties as $e_property => $default_value) {
             if (!array_key_exists($e_property, $data)) {
-                if($default_value == null) {
+                if($default_value === null) {
                     throw new Exception("Attribute \"$e_property\" in \"".$entity_name."\" is required and have no default values" , 500);
+                } else {
+                    $data[$e_property] = $default_value;
                 }
             } 
 
@@ -58,7 +60,7 @@ abstract class EntityMaker
                     );
                 }
             }
-            $entity->$e_property = $data[$e_property]??$default_value;
+            $entity->$e_property = $data[$e_property];
         }
         $entity->check($data);
     }

@@ -21,12 +21,17 @@ class Request
         string $body,
         array $query_params,
     ) {
-        $this->setMethod($method);
-        $this->setBody($body);
         if ($query_params["entity"] === "") {
             throw new Exception("Request is made without an entity", 400);
         }
+        if($query_params["entity"] != "user") {
+            if(!User::validate_JWT(getallheaders()["Bearer"])) {
+                throw new Exception("Request must have a valid JWT",500);
+            }
+        }
 
+        $this->setMethod($method);
+        $this->setBody($body);
         $this->options = $query_params;
         return $this;
     }
