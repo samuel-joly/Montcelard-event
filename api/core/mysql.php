@@ -40,7 +40,7 @@ class Mysql
     {
         $statement = $this->conn->prepare($sql_query);
         $statement->execute();
-        $data = $statement->fetchAll(PDO::FETCH_BOTH);
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
         if ($data === false) {
             throw new Exception("PDO query \"$sql_query\" failed", 500);
         }
