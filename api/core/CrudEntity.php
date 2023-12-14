@@ -5,11 +5,11 @@ include "mysql.php";
 
 abstract class CrudEntity implements CrudEntityInterface
 {
-    abstract function get_table_name(): string;
+    abstract public function get_table_name(): string;
     /**
      ** @param array<string,mixed> $data
      */
-    abstract function check(array $data): bool;
+    abstract public function check(array $data): bool;
 
     public function get(int $id = null): Response
     {
@@ -24,13 +24,28 @@ abstract class CrudEntity implements CrudEntityInterface
 
     public function post(array $data): Response
     {
-        EntityValidator::validate($data,$this);
-        return new Response([], "POST event", 200);
+        EntityMaker::fill_all_properties($data, $this);
+        $mysql = new Mysql();
+        $base_sql = (new SqlQueryBuilder)->insert($this, $data);
+        $data = $mysql->query($base_sql);
+        if(gettype($data) == "boolean") {
+            throw new Exception("SQL Error: ",500);
+        } else {
+            return new Response($data, "POST event", 200);
+        }
     }
 
     public function put(array $data, int $id): Response
     {
-        return new Response([], "PUT event", 200);
+        EntityMaker::fill_with_properties($data, $this);
+        $mysql = new Mysql();
+        $base_sql = (new SqlQueryBuilder)->insert($this, $data);
+        $data = $mysql->query($base_sql);
+        if(gettype($data) == "boolean") {
+            throw new Exception("SQL Error: ",500);
+        } else {
+            return new Response($data, "POST event", 200);
+        }
     }
 
     public function delete(int $id): Response
