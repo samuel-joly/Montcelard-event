@@ -1,0 +1,5 @@
+CREATE TABLE user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(400) NOT NULL,
+    passsword VARCHAR(100) NOT NULL,
+)

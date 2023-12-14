@@ -22,16 +22,16 @@ class Event extends CrudEntity implements CrudEntityInterface
 
     public string $start_hour;
     public string $end_hour;
-    public ?int $pause_date=null;
-    public ?string $start_hour_offset=null;
-    public ?string $end_hour_offset=null;
+    public ?int $pause_date;
+    public ?string $start_hour_offset;
+    public ?string $end_hour_offset;
 
     public string $orga_mail;
     public string $orga_tel;
     public string $orga_name;
 
     public string $room_configuration;
-    public ?string $room_configuration_precision=null;
+    public ?string $room_configuration_precision;
 
     public bool $host_table=true;
     public int $paperboard=0;
