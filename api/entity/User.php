@@ -36,7 +36,7 @@ class User extends CrudEntity implements CrudEntityInterface
     private function gen_JWT(): array
     {
         $header = '{"typ":"JWT","alg":"HS256"}';
-        $payload = '{"iss":"'.$this->name.'","exp":'.strtotime("+7 day", (new DateTime())->format("U")).'}';
+        $payload = '{"iss":"'.$this->name.'","exp":'.strtotime("+1 day", (new DateTime())->format("U")).'}';
         $encoded_header =  base64_encode($header);
         $encoded_payload = base64_encode($payload);
         return ["header" => $encoded_header,
@@ -62,6 +62,11 @@ class User extends CrudEntity implements CrudEntityInterface
             $split_token[0].$split_token[1],
             getenv("JWT_SECRET")
         );
+        $expiration_timestamp = (int)json_decode(base64_decode($split_token[1]), true)['exp'];
+        $current_timestamp =  (int)(new DateTime())->format('U');
+        if ($expiration_timestamp - $current_timestamp <= 0) { 
+            throw new Exception("Token is expired, please renew it at /api/login", 500);
+        } 
         if (hash_equals($test_encrypt, $split_token[2])) {
             return true;
         }
