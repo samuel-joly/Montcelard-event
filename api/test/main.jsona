@@ -1,4 +1,3 @@
 {
-@module("event_post")
-@module("event_get")
+@module("event_crud")
 }

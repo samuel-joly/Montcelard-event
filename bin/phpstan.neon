@@ -1,0 +1,8 @@
+parameters:
+    phpVersion: 80200
+    treatPhpDocTypesAsCertain: false
+    level: 5
+    bootstrapFiles:
+        - ../api/autoload.php
+    paths:
+        - ../api

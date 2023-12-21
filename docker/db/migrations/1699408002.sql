@@ -7,12 +7,12 @@ CREATE TABLE event (
     orga_tel VARCHAR(10) NOT NULL,
 
     host_name VARCHAR(500) NOT NULL,
-    guests INT NOT NULL CHECK (guests>0),
+    guests INT NOT NULL ,
 
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
 
-    pause_date INT default 0 CHECK (pause_date<124),
+    pause_date INT default 0 ,
     # Contains how many day are between start_date and each pause_date.
     # Format "13" means: there is 2 pauses:
     # - first pause is 1 day after the start_date
@@ -34,8 +34,8 @@ CREATE TABLE event (
 
     host_table BOOLEAN NOT NULL DEFAULT TRUE,
     paperboard INT NOT NULL DEFAULT 0,
-    chair_sup INT NOT NULL DEFAULT 0 CHECK (chair_sup<=6),
-    table_sup INT NOT NULL DEFAULT 0 CHECK (table_sup<=4),
+    chair_sup INT NOT NULL DEFAULT 0 ,
+    table_sup INT NOT NULL DEFAULT 0 ,
     pen BOOLEAN NOT NULL DEFAULT FALSE,
     paper BOOLEAN NOT NULL DEFAULT FALSE,
     scissors BOOLEAN NOT NULL DEFAULT FALSE,
@@ -55,5 +55,9 @@ CREATE TABLE event (
     vegetarian INT NOT NULL DEFAULT 0,
     gluten_free INT NOT NULL DEFAULT 0,
 
-    CHECK (start_date < end_date)
+    CONSTRAINT date_in_order CHECK (start_date < end_date),
+    CONSTRAINT guest_not_zero CHECK (guests>0),
+    CONSTRAINT pause_date_limit CHECK (pause_date<124),
+    CONSTRAINT chair_sup_limit CHECK (chair_sup<=6),
+    CONSTRAINT table_sup_limit CHECK (table_sup<=4)
 )

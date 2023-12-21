@@ -33,6 +33,7 @@ services:
       MYSQL_USER: "${DB_USER}"
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_DATABASE: "${DB_NAME}"
+      JWT_SECRET: "${JWT_SECRET}"
     volumes:
       - ./src:/usr/local/apache2/htdocs/src
       - ./api:/usr/local/apache2/htdocs/api
@@ -49,6 +50,6 @@ services:
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_DATABASE: "${DB_NAME}"
     volumes:
-      - ./docker/db/migrations:/docker-entrypoint-initdb.d
+      - ./docker/db:/docker-entrypoint-initdb.d
     networks:
       - web-network

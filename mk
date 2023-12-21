@@ -8,7 +8,7 @@ help() {
     echo -e "css\t\t\t bin/tailwind -c tailwind.config.js -o tailwind.css";
     echo -e "test\t\t\t Run apitest files from \e[33mapi/test/*.jsona\e[m";
     echo -e "db \e[32mmigrate\e[m\t\t Execute migrations file in the \e[33mMYSQL_DATABASE\e[m ";
-    echo -e "db \e[32mmigration\e[m <string>\t Create a new migration at \e[33mDB_MIGRATION\e[m/<string>_timestamp.sql";
+    echo -e "db \e[32mpopulate\e[m\t\t Execute sql query from \e[33mdocker/db/data/*.sql\e[m in \e[33mMYSQL_DATABASE\e[m ";
     echo -e "db \e[32mquery\e[m <string>\t Execute query as \e[33mMYSQL_USER\e[m to \e[33mMYSQL_DATABASE\e[m defined in the mysql container";
     echo -e "db \e[32mquery\e[m root <string>\t Same as above but as root mysql user";
     echo "";
@@ -56,7 +56,7 @@ case $1 in
             "remake")
                 shift 2
                 ./mk docker rmall;
-                ./mk docker up --force-recreate --build $@;
+                ./mk docker up --force-recreate --build -d;
                 ;;
             
             "restart")
@@ -90,23 +90,33 @@ case $1 in
                         docker exec $container sh -c "mysql -u$DB_USER -p$DB_PASSWORD -D $DB_NAME -e \"$2\"";
                     fi;
                     ;;
+
                 "migrate")
                     for file in ./docker/db/migrations/*.sql; do
                         echo -e "\e[1;34m${file}\e[m";
-                        docker exec $container sh -c "mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < /docker-entrypoint-initdb.d/$(basename $file)"
+                        docker exec $container sh -c "mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < /docker-entrypoint-initdb.d/migrations/$(basename $file)"
                     done;
                     ;;
 
-                "migration")
-                    touch ./docker/db/migrations/$2_$(date +%s).sql;
-                    echo $file;
+                "populate")
+                    for file in ./docker/db/data/*.sql; do
+                        echo -e "\e[1;34m${file}\e[m";
+                        docker exec $container sh -c "mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < /docker-entrypoint-initdb.d/data/$(basename $file)"
+                    done;
                     ;;
+
+                "migpop")
+                    ./mk db migrate;
+                    ./mk db populate;
+                    ;;
+
                 *)
                     help
                     ;;
             esac
         fi;
         ;;
+
 
     "deploy")
         rm pull-build/2nd-last-build.zip;
@@ -118,6 +128,7 @@ case $1 in
 
     "test")
         shift 1;
+        bin/phpstan.phar analyse -c bin/phpstan.neon api
         bin/apitest ./api/test/main.jsona $@ 2>&1
         ;;
 
