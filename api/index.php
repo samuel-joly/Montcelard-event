@@ -5,7 +5,7 @@ include("autoload.php");
 enum Entity: string
 {
     case event = "event";
-    case user = "user";
+    case login = "login";
 }
 
 try {
@@ -14,12 +14,12 @@ try {
         file_get_contents("php://input"),
         $_GET
     );
+
     $router = new Router();
     $router->add(Entity::event->value, new Event());
-    $router->add(Entity::user->value, new User());
+    $router->add(Entity::login->value, new Login());
 
-    header("Content-Type: application/json");
-    echo $router->route($req)->send();
-} catch (Exception $e) {
+    $router->route($req)->send();
+} catch (PDOException|Exception $e) {
     (new Response([$e->getPrevious()], $e->getMessage(), (int)$e->getCode()))->send();
 }

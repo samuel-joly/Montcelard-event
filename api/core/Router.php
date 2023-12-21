@@ -1,14 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
 class Router
 {
     public array $routes;
+    public EntityBuilder $eb;
 
     public function __construct()
     {
         $this->routes = [];
+        $this->eb = new EntityBuilder();
     }
 
     public function add(string $route, CrudEntity $entity_class): void
@@ -16,44 +16,51 @@ class Router
         if (!array_key_exists($route, $this->routes)) {
             $this->routes[$route] = $entity_class;
         } else {
-            throw new Exception("Route \"$route\" is already defined",500);
+            throw new Exception("Route \"$route\" is already defined", 500);
         }
     }
 
     public function route(Request $req): Response
     {
-        if (!array_key_exists($req->getOptions()["entity"], $this->routes)) {
-            throw new Exception("No entity named \"".$req->getOptions()["entity"]."\"", 400);
+        $entity_name = $req->getOptions()["entity"];
+        if (!array_key_exists($entity_name, $this->routes)) {
+            throw new Exception("No crud on entity named \"".$entity_name."\"", 400);
         }
-
-        $entity = $this->routes[$req->getOptions()["entity"]];
+        $this->eb->set_instance($this->routes[$entity_name]);
+        $entity = $this->eb->instance;
+        $user_data = $req->getBody();
+        $res = "";
         switch($req->getMethod()) {
-
             case RequestMethod::GET:
-                return $entity->get((int)$req->getOptions()["id"] ?: null);
+                if (array_key_exists("id", $req->getOptions())) {
+                    $res = $entity->get($req->getOptions()["id"]);
+                } else {
+                    $res = $entity->get();
+                }
                 break;
 
             case RequestMethod::POST:
-                return $entity->post($req->getBody());
+                $user_data = $this->eb->instanciate_all($user_data);
+                $res = $entity->post($user_data);
                 break;
 
             case RequestMethod::PUT:
-                if(array_key_exists("id", $req->getOptions())) {
-                    $id = $req->getOptions()["id"];
-                    return $entity->put($req->getBody(), $id);
+                if (array_key_exists("id", $req->getOptions())) {
+                    $user_data = $this->eb->instanciate_with($user_data);
+                    $res = $entity->put($user_data, (int)$req->getOptions()["id"]);
                 } else {
-                    throw new Exception("PUT request must give an id", 500);
+                    throw new Exception("PUT request need an id to operate", 500);
                 }
                 break;
 
             case RequestMethod::DELETE:
-                if(array_key_exists("id", $req->getOptions())) {
-                    $id = $req->getOptions()["id"];
-                    return $entity->delete($id);
+                if (array_key_exists("id", $req->getOptions())) {
+                    $res = $entity->delete((int)$req->getOptions()["id"]);
                 } else {
-                    throw new Exception("DELETE request must give an id", 500);
+                    throw new Exception("DELETE request need an id to operate", 500);
                 }
                 break;
         }
+        return $res;
     }
 }

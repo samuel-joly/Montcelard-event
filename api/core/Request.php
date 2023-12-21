@@ -1,10 +1,10 @@
 <?php
-enum RequestMethod
+enum RequestMethod: string
 {
-    case GET;
-    case POST;
-    case PUT;
-    case DELETE;
+    case GET="GET";
+    case POST="POST";
+    case PUT="PUT";
+    case DELETE="DELETE";
 }
 
 class Request
@@ -24,8 +24,12 @@ class Request
         if ($query_params["entity"] === "") {
             throw new Exception("Request is made without an entity", 400);
         }
-        if($query_params["entity"] != "user") {
-            if(!User::validate_JWT(getallheaders()["Bearer"])) {
+        if($query_params["entity"] != "login") {
+            if (!array_key_exists("Bearer", getallheaders())) {
+                    throw new Exception("Request must have a JWT",500);
+            } 
+            $bearer = getallheaders()["Bearer"];
+            if(!Login::validate_JWT($bearer)) {
                 throw new Exception("Request must have a valid JWT",500);
             }
         }
@@ -33,7 +37,6 @@ class Request
         $this->setMethod($method);
         $this->setBody($body);
         $this->options = $query_params;
-        return $this;
     }
 
     public function getMethod(): RequestMethod
@@ -66,15 +69,12 @@ class Request
 
     private function setBody(string $body): void
     {
-        if ($this->method === RequestMethod::POST ||
-            $this->method === RequestMethod::PUT) {
             $req_body = json_decode($body, true);
-            if ($req_body !== null) {
+            if ($req_body != NULL) {
                 $this->body = $req_body;
             } else {
-                throw new Exception($this->method." request was made with a badly formatted json body", 400);
+                $this->body = [];
             }
-        }
     }
 
     public function getOptions(): array

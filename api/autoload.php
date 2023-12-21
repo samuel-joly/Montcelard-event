@@ -1,6 +1,6 @@
 <?php
 
-function autoload_entity($className)
+function autoload_entity($className): void
 {
     $filename = "entity/".$className.".php";
     if (is_readable($filename)) {
@@ -8,7 +8,7 @@ function autoload_entity($className)
     }
 }
 
-function autoload_core($className)
+function autoload_core($className): void
 {
     $filename = "core/".$className.".php";
     if (is_readable($filename)) {
