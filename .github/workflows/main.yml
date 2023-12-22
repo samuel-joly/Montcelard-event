@@ -1,0 +1,17 @@
+on: [push]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    name: Setup docker
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: docker up
+        run: ./mk docker up -d
+      - name: db migrate
+        run: ./mk db migrate
+      - name: db populate
+        run: ./mk db populate
+      - name: test
+        run: ./mk test
