@@ -9,6 +9,8 @@ jobs:
         uses: actions/checkout@v4
       - name: docker up
         run: ./mk docker up -d
+      - name: wait till db setup
+        run: sleep 30s
       - name: db migrate
         run: ./mk db migrate
       - name: db populate
