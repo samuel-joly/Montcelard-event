@@ -15,6 +15,7 @@ class EntityBuilder
 
     /**
      * @param array<string,mixed> $data
+     * @return array<string,mixed>
      */
     public function instanciate_all(array $data): array
     {

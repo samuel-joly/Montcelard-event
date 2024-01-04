@@ -1,8 +1,8 @@
-PROJECT="montcelard"
+PROJECT="Montcelard"
 DB_MIGRATION="./docker/mysql/migrations"
 DB_USER="${PROJECT}_user"
 DB_PASSWORD="${PROJECT}_password"
-DB_NAME="$PROJECT"
+DB_NAME="${PROJECT}"
 DB_URL="docker-db"
 
 JWT_SECRET="supersecretjwtpassword"

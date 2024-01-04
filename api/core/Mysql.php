@@ -13,10 +13,10 @@ class Mysql
 
     public function __construct()
     {
-        $this->servername = $_ENV["MYSQL_URL"];
-        $this->username = $_ENV["MYSQL_USER"];
-        $this->password = $_ENV["MYSQL_PASSWORD"];
-        $this->dbname = $_ENV["MYSQL_DATABASE"];
+        $this->servername = getenv("MYSQL_URL");
+        $this->username = getenv("MYSQL_USER");
+        $this->password = getenv("MYSQL_PASSWORD");
+        $this->dbname = getenv("MYSQL_DATABASE");
 
         try {
             $this->connect();

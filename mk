@@ -18,8 +18,6 @@ help() {
     echo -e "docker \e[32mdown\e[m\t\t docker compose down";
     echo -e "docker \e[32mrmall\e[m\t\t Remove all volumes, images and container";
     echo -e "docker \e[32mremake\e[m\t\t ./mk rmall and ./mk up --force-recreate --build";
-    echo -e "docker \e[32mrestart\e[m\t\t restart a specific container (\e[31mfzf required\e[m)";
-    echo -e "docker \e[32mlog\e[m\t\t tail -f on the selected container (\e[31mfzf required\e[m)";
     echo "";
     echo -e "\e[1;37mEnv vars from \e[m\e[1;32menv.$env_type.sh\e[m";
     for env in ${env_list[@]}; do
@@ -58,15 +56,6 @@ case $1 in
                 ./mk docker rmall;
                 ./mk docker up --force-recreate --build -d;
                 ;;
-            
-            "restart")
-                docker container ls --format="{{.Names}}" | fzf --preview="docker inspect {1}" --bind "enter:become(docker container restart {1})"
-                ;;
-
-            "log")
-                docker container ls --format="{{.ID}} {{.Names}}" | fzf --preview="docker container logs {1}" --bind "enter:become(docker container logs {1}|tail -f)"
-                ;;
-                
 
             *)
                 help;
@@ -127,6 +116,9 @@ case $1 in
         ;;
 
     "test")
+        # If you want to make the online_crud tests
+        # You need to add to your env MONTCELARD_TEST_LOGIN_[NAME|PASSWORD]
+        # Ask repo admin for credentials
         shift 1;
         bin/phpstan.phar analyse -c bin/phpstan.neon api
         bin/apitest ./api/test/main.jsona $@ 2>&1
