@@ -120,7 +120,7 @@ case $1 in
         # You need to add to your env MONTCELARD_TEST_LOGIN_[NAME|PASSWORD]
         # Ask repo admin for credentials
         shift 1;
-        bin/phpstan.phar analyse -c bin/phpstan.neon api
+        bin/phpstan analyse -c bin/phpstan.neon api
         bin/apitest ./api/test/main.jsona $@ 2>&1
         ;;
 
