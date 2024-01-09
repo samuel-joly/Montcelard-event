@@ -1,14 +1,14 @@
 {
   login: {
     req: {
-      url: "https://montcelard.azefortwo.com/api/login",
+      url: "https://staging.azefortwo.com/api/login",
       method: "post",
       headers: {
         'content-type':'application/json',
       },
       body: {
-          name: "env.MONTCELARD_TEST_LOGIN_NAME", @eval
-          password: "env.MONTCELARD_TEST_LOGIN_PASSWORD", @eval
+          name: "env.LOGIN", @eval
+          password: "env.STAGING_PASSWORD", @eval
       },
     },
     res: {
@@ -25,7 +25,7 @@
 
   post: {
     req: {
-      url: "https://montcelard.azefortwo.com/api/event",
+      url: "https://staging.azefortwo.com/api/event",
       method: "post",
       headers: {
         'content-type':'application/json',
@@ -76,7 +76,7 @@
 
   get: {
     req: {
-      url: `"https://montcelard.azefortwo.com/api/event/"+post.res.body.data.id`, @eval
+      url: `"https://staging.azefortwo.com/api/event/"+post.res.body.data.id`, @eval
       method: 'get',
       headers: {
         'content-type':'application/json',
@@ -137,7 +137,7 @@
 
   put: {
     req: {
-      url: `"https://montcelard.azefortwo.com/api/event/"+ post.res.body.data.id`, @eval
+      url: `"https://staging.azefortwo.com/api/event/"+ post.res.body.data.id`, @eval
       method: "put",
       headers: {
         'content-type':'application/json',
@@ -162,7 +162,7 @@
 
   get_after_put: {
     req: {
-      url: `"https://montcelard.azefortwo.com/api/event/"+ post.res.body.data.id`, @eval
+      url: `"https://staging.azefortwo.com/api/event/"+ post.res.body.data.id`, @eval
       method: 'get',
       headers: {
         'content-type':'application/json',
@@ -221,7 +221,7 @@
 
   delete: {
     req: {
-      url: `"https://montcelard.azefortwo.com/api/event/"+ post.res.body.data.id`, @eval
+      url: `"https://staging.azefortwo.com/api/event/"+ post.res.body.data.id`, @eval
       method: "delete",
       headers: {
         'content-type':'application/json',

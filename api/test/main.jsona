@@ -1,4 +1,5 @@
 {
 @module("event_crud")
-//@module("online_crud")
+//@module("prod")
+//@module("staging")
 }
