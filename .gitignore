@@ -3,3 +3,5 @@ tailwind.css
 sess.nvim
 api/test/curl_debug.html
 env.dev.sh
+note
+session.nvim
