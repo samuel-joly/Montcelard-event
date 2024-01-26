@@ -26,11 +26,11 @@ class Request
         }
         if($query_params["entity"] != "login") {
             if (!array_key_exists("Bearer", getallheaders())) {
-                    throw new Exception("Request must have a JWT",500);
+                    throw new Exception("Request must have a JWT",403);
             } 
             $bearer = getallheaders()["Bearer"];
             if(!Login::validate_JWT($bearer)) {
-                throw new Exception("Request must have a valid JWT",500);
+                throw new Exception("Request must have a valid JWT",403);
             }
         }
 
