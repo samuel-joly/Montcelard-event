@@ -11,6 +11,7 @@ services:
     volumes:
       - ./src:/usr/local/apache2/htdocs/src
       - ./api:/usr/local/apache2/htdocs/api
+      - ./front/dist:/usr/local/apache2/htdocs/front
       - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
       - ./docker/apache/extra/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
     networks:
@@ -51,5 +52,16 @@ services:
       MYSQL_DATABASE: "${DB_NAME}"
     volumes:
       - ./docker/db:/docker-entrypoint-initdb.d
+    networks:
+      - web-network
+
+  docker-node:
+    user: "node"
+    build:
+      dockerfile: ./front/Dockerfile
+    environment:
+      NODE_ENV: production
+    volumes:
+      - ./front:/home/node/app
     networks:
       - web-network

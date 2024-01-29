@@ -15,9 +15,9 @@ help() {
     echo -e "deploy\e[m\t\t\t Zip required files and directory to be uploaded on remove server";
     echo "";
     echo -e "docker \e[32mup\e[m\t\t docker compose up with env loading";
+    echo -e "docker \e[32mbuild\e[m <string> \t build the given service in compose";
     echo -e "docker \e[32mdown\e[m\t\t docker compose down";
     echo -e "docker \e[32mrmall\e[m\t\t Remove all volumes, images and container";
-    echo -e "docker \e[32mremake\e[m\t\t ./mk rmall and ./mk up --force-recreate --build";
     echo "";
     echo -e "\e[1;37mEnv vars from \e[m\e[1;32menv.$env_type.sh\e[m";
     for env in ${env_list[@]}; do
@@ -34,6 +34,10 @@ case $1 in
 
     "docker")
         case $2 in
+            "build")
+                shift 2
+                docker compose build $@
+                ;;
             "up")
                 shift 2
                 docker compose up $@
@@ -51,10 +55,16 @@ case $1 in
                 docker volume rm $(docker volume ls -q);
                 ;;
 
-            "remake")
+            "rm")
                 shift 2
-                ./mk docker rmall;
-                ./mk docker up --force-recreate --build -d;
+                if [[ -z $1 ]]; then
+                    docker ps -a --format "{{.Names}} {{.Image}}" | \
+                        fzf \
+                        --preview="docker inspect {1}"\
+                        --bind="enter:execute(docker container stop {1}; docker image rm -f {2};)+refresh-preview";
+                else 
+                    ./mk docker up --force-recreate --build -d;
+                fi;
                 ;;
 
             *)
