@@ -30,7 +30,7 @@ export const useLogin = defineStore('loginStore',() => {
             })
             .then((response) => {
                 if (response.status != 200) {
-                    ApiErrorHandle(response.code)
+                    ApiErrorHandle(response.status)
                     throw new Error("Login failed")
                 } else {
                     return response.json()
