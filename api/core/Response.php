@@ -19,11 +19,10 @@ class Response
 
     public function send(): void
     {
-        header("Content-Type: application/json");
+        header("Content-Type: application/json",true, $this->code);
         $response = json_encode([
             "data" => $this->data,
             "message" => $this->message,
-            "code" => $this->code
         ]);
         echo $response;
     }
