@@ -16,8 +16,8 @@ export interface UserInterface {
 export const useLogin = defineStore('loginStore',() => {
     const userName = ref(localStorage.getItem('name') ?? '')
     const jwt = ref(localStorage.getItem('jwt') ?? '')
-    async function logIn(name: string, password: string) {
-        await fetch('http://localhost/api/login', {
+    function logIn(name: string, password: string) {
+        fetch('http://localhost/api/login', {
             method: 'POST',
             body: JSON.stringify({
                 'name': name,
