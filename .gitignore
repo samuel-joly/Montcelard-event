@@ -4,3 +4,4 @@ sess.nvim
 api/test/curl_debug.html
 env.dev.sh
 *.sess
+front/front.sess

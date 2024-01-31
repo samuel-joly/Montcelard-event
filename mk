@@ -104,9 +104,17 @@ case $1 in
                     done;
                     ;;
 
+                "masspop")
+                    i=0;
+                    while (($i < 10)); do 
+                        ((i++));
+                        ./mk db populate;
+                    done;
+                    ;;
+
                 "migpop")
                     ./mk db migrate;
-                    ./mk db populate;
+                    ./mk db masspop;
                     ;;
 
                 *)
