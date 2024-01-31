@@ -28,16 +28,19 @@ export const useLogin = defineStore('loginStore',() => {
                 'Content-Type': 'application/json',
             },
             })
-            .then((response) => response.json())
             .then((response) => {
-                if (response.code === 200) {
+                if (response.status != 200) {
+                    ApiErrorHandle(response.code)
+                    throw new Error("Login failed")
+                } else {
+                    return response.json()
+                }
+            })
+            .then((response) => {
                     jwt.value = response.data.jwt
                     userName.value = name;
                     localStorage.setItem('jwt', jwt.value);
                     localStorage.setItem('name', userName.value);
-                } else {
-                    ApiErrorHandle(response.code)
-                }
             })
     }   
     
