@@ -18,7 +18,6 @@
                 "jwt": "", @type
             },
         message: "login successfull"
-        code: 200
       }
     }
   },
@@ -69,7 +68,6 @@
                 "id": 0, @type
             },
         message: "POST event"
-        code: 200
       }
     }
   },
@@ -130,7 +128,6 @@
           }
         ],
         message: "GET events",
-        code: 200
       }
   }
   },
@@ -155,7 +152,6 @@
       body: {
         data: [],
         message: "PUT event"
-        code: 200
       }
     }
   },
@@ -214,7 +210,6 @@
           }
         ],
         message: "GET events",
-        code: 200
       }
   }
 },
@@ -233,7 +228,6 @@
       body: {
         data: [],
         message: "DELETE event"
-        code: 200
       }
     }
   }
