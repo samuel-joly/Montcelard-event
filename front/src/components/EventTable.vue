@@ -1,4 +1,5 @@
 <script setup lang="ts">
+    import {Suspense} from 'vue'
     import EventTableBody from '@/components/EventTableBody.vue'
 </script>
 
@@ -14,7 +15,12 @@
                 <th>ID</th>
                 <th style="background-color:white"></th>
             </tr>
-            <EventTableBody/>
+            <Suspense>
+                <EventTableBody/>
+                <template #fallback>
+                    Loading...
+                </template>
+            </Suspense>
         </table>
     </div>
 </template>
