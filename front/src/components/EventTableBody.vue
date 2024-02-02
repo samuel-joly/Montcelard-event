@@ -1,11 +1,9 @@
 <script setup lang="ts">
     import type {EventInterface} from '../types/Event'
     import {ref,defineProps} from 'vue'
-    import {useLogin} from '@/stores/login'
     import ValidationModal from '@/components/ValidationModal.vue'
     import {Client} from '@/helpers/client'
 
-    const loginStore = useLogin()
     const client = new Client();
     const events = ref<EventInterface[]>([]);
     const getEvent = await client.get('event');
