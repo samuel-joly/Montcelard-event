@@ -2,11 +2,15 @@
     import type {EventInterface} from '../types/Event'
     import {ref,defineProps} from 'vue'
     import {useLogin} from '@/stores/login'
-    import {ApiErrorHandle} from '@/helpers/ApiErrorHandle'
     import ValidationModal from '@/components/ValidationModal.vue'
+    import {Client} from '@/helpers/client'
 
     const loginStore = useLogin()
+    const client = new Client();
     const events = ref<EventInterface[]>([]);
+    const getEvent = await client.get('event');
+    getEvent.data.map((e: EventInterface) => events.value.push(e));
+
     const props = defineProps({
         limit: {
             type: Number,
@@ -14,45 +18,9 @@
         },
     }) 
 
-    fetch("http://localhost/api/event", {
-        method: 'GET',
-        headers: {
-            'Content-type': 'application/json',
-            accept: 'application/json',
-            Bearer: loginStore.jwt
-        },
-    })
-    .then((res) => {
-        if (res.status != 200) {
-            ApiErrorHandle(res.status)
-            throw new Error("failed to get events");
-        } else {
-            return res.json()
-        }
-    }).then((res) => {
-        res.data.map((e: EventInterface) => {
-            events.value.push(e)
-        })
-    })
-
-    function deleteEvent(id:number) :void {
-        fetch("http://localhost/api/event/"+id, {
-            method: 'DELETE',
-            headers: {
-                'Content-type': 'application/json',
-                accept: 'application/json',
-                Bearer: loginStore.jwt
-            },
-        })
-        .then((res) => {
-            if (res.status != 200) {
-                throw new Error("res.status");
-            }
-        }).then(() => {
-             events.value = events.value.filter((e:EventInterface) => e.id != id)
-        }).catch((e) => {
-            ApiErrorHandle(e)
-        });
+    async function deleteEvent(id:number) {
+         await client.delete('event', id);
+         events.value = events.value.filter((e:EventInterface) => e.id != id)
     }
 
 </script>

@@ -8,13 +8,63 @@ export class Client {
         this.loginStore = useLogin();
     }
 
-    request(entity: String,  method: string, body: any, id?: number) {
+    async get(entity: String,  id?: number) {
         let req_uri = this.baseUrl+entity;
+        let data;
         if (id != null) {
             req_uri = this.baseUrl+entity+"/"+id
         } 
-        fetch(req_uri, {
-            method: method,
+        let res = await fetch(req_uri, {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                'Content-Type' :  'application/json',
+                Bearer: this.loginStore.jwt
+            },
+        });
+        if (res.status != 200) {
+            throw new Error("request failed with status "+ res.status);
+            this.handleStatus(res.status);
+            data = []
+        } else {
+            data = await res.json()
+        }   
+        return data;
+    }
+
+    async delete(entity: String,  id?: number) {
+        let req_uri = this.baseUrl+entity;
+        let data;
+        if (id != null) {
+            req_uri = this.baseUrl+entity+"/"+id
+        } 
+        const res = await fetch(req_uri, {
+            method: 'DELETE',
+            headers: {
+                accept: 'application/json',
+                'Content-Type' :  'application/json',
+                Bearer: this.loginStore.jwt
+            },
+        })
+
+        if (!res.ok) {
+            throw new Error("request failed with status "+ res.status);
+            this.handleStatus(res.status);
+            data = [];
+        } else {
+            data = await res.json();
+        }
+        return data;
+    }
+
+    async post(entity: String,  body: any, id?: number) {
+        let req_uri = this.baseUrl+entity;
+        let data;
+        if (id != null) {
+            req_uri = this.baseUrl+entity+"/"+id
+        } 
+        const res = await fetch(req_uri, {
+            method: 'POST',
             headers: {
                 accept: 'application/json',
                 'Content-Type' :  'application/json',
@@ -22,20 +72,15 @@ export class Client {
             },
             body: body,
         })
-        .then((res) => {
-            if (res.status != 200) {
-                throw new Error("request failed with status "+ res.status);
-                this.handleStatus(res.status);
-            } else {
-                return res.json();
-            }
-        })
-        .then((res) => {
-            return res;
-        })
-        .catch((error: Error) => {
-            console.error(error);
-        })
+
+        if (!res.ok) {
+            throw new Error("request failed with status "+ res.status);
+            this.handleStatus(res.status);
+            data = []
+        } else {
+            data = await res.json();
+        }
+        return data
     }
 
     handleStatus(status: number) {
