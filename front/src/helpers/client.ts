@@ -8,7 +8,7 @@ export class Client {
         this.loginStore = useLogin();
     }
 
-    async get(entity: String,  id?: number) {
+    async get(entity: String,  id?: number): Promise<{data:any[]|null, message: string}> {
         let req_uri = this.baseUrl+entity;
         let data;
         if (id != null) {
@@ -23,16 +23,15 @@ export class Client {
             },
         });
         if (res.status != 200) {
-            throw new Error("request failed with status "+ res.status);
             this.handleStatus(res.status);
-            data = []
+            throw new Error("request failed with status "+ res.status);
         } else {
             data = await res.json()
         }   
         return data;
     }
 
-    async delete(entity: String,  id?: number) {
+    async delete(entity: String,  id?: number): Promise<{data:any[]|null, message: string}> {
         let req_uri = this.baseUrl+entity;
         let data;
         if (id != null) {
@@ -48,16 +47,15 @@ export class Client {
         })
 
         if (!res.ok) {
-            throw new Error("request failed with status "+ res.status);
             this.handleStatus(res.status);
-            data = [];
+            throw new Error("request failed with status "+ res.status);
         } else {
             data = await res.json();
         }
         return data;
     }
 
-    async post(entity: String,  body: any, id?: number) {
+    async post(entity: String,  body: any, id?: number): Promise<{data:any[]|null, message: string}> {
         let req_uri = this.baseUrl+entity;
         let data;
         if (id != null) {
@@ -74,9 +72,8 @@ export class Client {
         })
 
         if (!res.ok) {
-            throw new Error("request failed with status "+ res.status);
             this.handleStatus(res.status);
-            data = []
+            throw new Error("request failed with status "+ res.status);
         } else {
             data = await res.json();
         }
