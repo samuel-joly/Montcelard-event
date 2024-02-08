@@ -1,4 +1,4 @@
-import type { EntityInterface, EntitySchema } from "@/types/EntityInterface"
+import type { EntityInterface, EntitySchema } from '@/types/EntityInterface'
 
 export default class EntityBuilder {
   static build_entity<EntityType extends EntityInterface>(
@@ -16,7 +16,9 @@ export default class EntityBuilder {
         }
         entity.setValue(attr_name, data[attr_name])
       } else {
-        throw new Error('Attribute "' + attr_name + '" is not present in "'+entity.getEntityName()+'" entity')
+        throw new Error(
+          'Attribute "' + attr_name + '" is not present in "' + entity.getEntityName() + '" entity'
+        )
       }
     })
     return entity
@@ -29,7 +31,11 @@ export default class EntityBuilder {
           data = data == 1 ? true : false
         } else {
           throw new Error(
-            'Can only cast number to boolean. Create the cast "' + typeof data + '" to "'+to+'" if necessary'
+            'Can only cast number to boolean. Create the cast "' +
+              typeof data +
+              '" to "' +
+              to +
+              '" if necessary'
           )
         }
         break

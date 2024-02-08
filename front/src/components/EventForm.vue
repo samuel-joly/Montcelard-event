@@ -16,9 +16,9 @@ export default defineComponent({
           if (result.data.length > 0) {
             event.value = result.data[0]
           } else {
-            throw new Error("No data found with id "+router.params.id)
-            }
-        } 
+            throw new Error('No data found with id ' + router.params.id)
+          }
+        }
       } catch (error) {
         console.error('EventForm client call:', error)
       }
@@ -28,7 +28,6 @@ export default defineComponent({
     }
   }
 })
-
 </script>
 
 <template>

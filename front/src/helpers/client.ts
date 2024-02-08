@@ -1,5 +1,5 @@
 import { useLogin } from '@/stores/login'
-import EntityBuilder  from '@/helpers/EntityBuilder'
+import EntityBuilder from '@/helpers/EntityBuilder'
 import type { EntityInterface, EntitySchema } from '@/types/EntityInterface'
 
 export class Client {
@@ -34,7 +34,7 @@ export class Client {
     const resp: { data: any; message: string } = await res.json()
     const entity_schema: EntitySchema = resp.data.pop()
     resp.data.map((resp_obj: any) => {
-        EntityBuilder.build_entity<EntityType>(entity, resp_obj, entity_schema)
+      EntityBuilder.build_entity<EntityType>(entity, resp_obj, entity_schema)
     })
     return resp
   }

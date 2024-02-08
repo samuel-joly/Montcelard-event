@@ -1,9 +1,9 @@
-import type EntityInterface from '@/types/EntityInterface'
+import type {EntityInterface} from '@/types/EntityInterface'
 import type { EventInterface } from '@/types/Event'
 
 export class Event implements EventInterface, EntityInterface {
   // Haha
-  [name:string] : number | string | boolean | Date | ((x:any, y:any)=>void|any)
+  [name: string]: number | string | boolean | Date | ((x: any, y: any) => void | any)
   id: number
   name: string
   guests: number

@@ -6,6 +6,6 @@ export interface EntityInterface {
 }
 
 export class EntitySchema {
-    // HAHAHAHAHAHAHAHAH
+  // HAHAHAHAHAHAHAHAH
   [name: string]: string
 }
