@@ -52,8 +52,26 @@ export default defineComponent({
       </tr>
 
       <tr v-for="event in events.slice(0, props.limit)" :key="event.id">
-        <td>{{ event.start_date }}</td>
-        <td>{{ event.end_date }}</td>
+        <td>
+          {{
+            event.start_date.toLocaleDateString('fr-FR', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })
+          }}
+        </td>
+        <td>
+          {{
+            event.end_date.toLocaleDateString('fr-FR', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })
+          }}
+        </td>
         <td>{{ event.name }}</td>
         <td>{{ event.orga_name }}</td>
         <td>{{ event.guests }}</td>

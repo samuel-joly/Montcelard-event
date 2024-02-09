@@ -1,7 +1,7 @@
 <script lang="ts">
 import { useRoute } from 'vue-router'
 import { Client } from '@/helpers/client'
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
 import { Event } from '@/classes/Event'
 
 export default defineComponent({
@@ -39,11 +39,21 @@ export default defineComponent({
         <div class="dateInput">
           <span>
             <label for="start_date">du</label>
-            <input name="start_date" type="date" v-model="event.start_date" />
+            <input
+              name="start_date"
+              type="date"
+              @input="event.start_date"
+              :value="event.start_date.toISOString().split('T')[0]"
+            />
           </span>
           <span>
             <label for="end_date">au</label>
-            <input name="end_date" type="date" v-model="event.end_date" />
+            <input
+              name="end_date"
+              type="date"
+              @input="event.end_date"
+              :value="event.end_date.toISOString().split('T')[0]"
+            />
           </span>
         </div>
         <div class="dateInput">

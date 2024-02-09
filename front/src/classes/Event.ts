@@ -1,4 +1,4 @@
-import type {EntityInterface} from '@/types/EntityInterface'
+import type { EntityInterface } from '@/types/EntityInterface'
 import type { EventInterface } from '@/types/Event'
 
 export class Event implements EventInterface, EntityInterface {
