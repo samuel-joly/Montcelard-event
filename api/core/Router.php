@@ -37,6 +37,14 @@ class Router
                 } else {
                     $res = $entity->get();
                 }
+                if (array_key_exists("schema", $req->getOptions())) {
+                    $entity_type = $this->eb->reflection->getProperties(ReflectionProperty::IS_PUBLIC);
+                    $formated_type = [];
+                    foreach ($entity_type as $property_type) {
+                        $formated_type[$property_type->name] = $this->eb->rename_type($property_type->name);
+                    }
+                    array_push($res->data , $formated_type);
+                }
                 break;
 
             case RequestMethod::POST:

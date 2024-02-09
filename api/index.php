@@ -20,6 +20,6 @@ try {
     $router->add(Entity::login->value, new Login());
 
     $router->route($req)->send();
-} catch (PDOException|Exception $e) {
+} catch (Exception $e) {
     (new Response([$e->getPrevious()], $e->getMessage(), (int)$e->getCode()))->send();
 }

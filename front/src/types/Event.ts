@@ -1,39 +1,39 @@
 export interface EventInterface {
-    id: number;
-    name: string;
-    guests: number;
-    host_name: string;
-    start_date: Date;
-    end_date: Date;
-    start_hour: string;
-    orga_mail: string;
-    orga_tel: string;
-    orga_name: string;
-    room_configuration: string;
-    end_hour: string;
-    room_configuration_precision : string;
-    pause_date : number;
-    start_hour_offset : string;
-    end_hour_offset : string;
-    host_table: boolean;
-    paperboard : number;
-    chair_sup : number;
-    table_sup : number;
-    pen : boolean;
-    paper : boolean;
-    scissors : boolean;
-    scotch : boolean;
-    post_it_xl : boolean;
-    paper_a1 : boolean;
-    bloc_note : boolean;
-    gomette : boolean;
-    post_it : boolean;
-    coffee_groom : number;
-    meal : number;
-    morning_coffee : number;
-    afternoon_coffee : number;
-    coktail : number;
-    vegetarian : number;
-    gluten_free : number;
-    meal_precision : string;
+  id: number
+  name: string
+  guests: number
+  host_name: string
+  start_date: Date
+  end_date: Date
+  start_hour: string
+  orga_mail: string
+  orga_tel: string
+  orga_name: string
+  room_configuration: string
+  end_hour: string
+  room_configuration_precision: string
+  pause_date: number
+  start_hour_offset: string
+  end_hour_offset: string
+  host_table: boolean
+  paperboard: number
+  chair_sup: number
+  table_sup: number
+  pen: boolean
+  paper: boolean
+  scissors: boolean
+  scotch: boolean
+  post_it_xl: boolean
+  paper_a1: boolean
+  bloc_note: boolean
+  gomette: boolean
+  post_it: boolean
+  coffee_groom: number
+  meal: number
+  morning_coffee: number
+  afternoon_coffee: number
+  coktail: number
+  vegetarian: number
+  gluten_free: number
+  meal_precision: string
 }
