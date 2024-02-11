@@ -27,6 +27,8 @@ class Event extends CrudEntity implements CrudEntityInterface
     public string $orga_name;
 
     public string $room_configuration;
+    public int $configuration_size=0;
+    public int $configuration_quantity=0;
     public string $end_hour;
 
     public string $room_configuration_precision = "";

@@ -2,8 +2,6 @@ import type { EntityInterface } from '@/types/EntityInterface'
 import type { EventInterface } from '@/types/Event'
 
 export class Event implements EventInterface, EntityInterface {
-  // Haha
-  [name: string]: number | string | boolean | Date | ((x: any, y: any) => void | any)
   id: number
   name: string
   guests: number
@@ -17,6 +15,8 @@ export class Event implements EventInterface, EntityInterface {
   room_configuration: string
   end_hour: string
   room_configuration_precision: string
+  configuration_size: number
+  configuration_quantity: number
   pause_date: number
   start_hour_offset: string
   end_hour_offset: string
@@ -56,6 +56,8 @@ export class Event implements EventInterface, EntityInterface {
     this.room_configuration = ''
     this.end_hour = ''
     this.room_configuration_precision = ''
+    this.configuration_size = 0
+    this.configuration_quantity = 0
     this.pause_date = 0
     this.start_hour_offset = ''
     this.end_hour_offset = ''
@@ -84,9 +86,6 @@ export class Event implements EventInterface, EntityInterface {
 
   setId(id: number): void {
     this.id = id
-  }
-  setValue(attribute: string, value: any): void {
-    this[attribute] = value
   }
   getEntityName(): string {
     return 'event'
