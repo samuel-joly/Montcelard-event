@@ -9,7 +9,7 @@
 div {
   display: flex;
   flex-direction: column;
-  background-color: #333333;
+  background-color: #313956;
   color: #ffffff;
   font-size: 17px;
   height: 100vh;

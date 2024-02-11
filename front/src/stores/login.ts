@@ -1,25 +1,15 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
-
-export enum RoleEnum {
-  SuperUser = 'su',
-  User = 'u'
-}
-
-export interface UserInterface {
-  name: string
-  email: string
-  role: RoleEnum
-}
+import type Login from '@/classes/Login'
 
 export const useLogin = defineStore('loginStore', () => {
   const userName = ref(localStorage.getItem('name') ?? '')
   const jwt = ref(localStorage.getItem('jwt') ?? '')
-  function logIn(name: string, password: string) {
+  function logIn(login: Login, password: string) {
     fetch('http://localhost/api/login', {
       method: 'POST',
       body: JSON.stringify({
-        name: name,
+        name: login.name,
         password: password
       }),
       headers: {
@@ -28,17 +18,26 @@ export const useLogin = defineStore('loginStore', () => {
       }
     })
       .then((response) => {
-        if (response.status != 200) {
-          throw new Error('Login failed')
-        } else {
-          return response.json()
+        switch (response.status) {
+          case 200:
+            return response.json()
+          case 500:
+            throw new Error('API crashed with code :' + response.status)
+          case 401: {
+            throw new Error('Wrong email or password')
+          }
+          default:
+            throw new Error('' + response.status)
         }
       })
       .then((response) => {
         jwt.value = response.data.jwt
-        userName.value = name
+        userName.value = login.name
         localStorage.setItem('jwt', jwt.value)
         localStorage.setItem('name', userName.value)
+      })
+      .catch((e: Error) => {
+        console.error('Login failed:', e)
       })
   }
 

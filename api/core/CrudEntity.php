@@ -34,9 +34,9 @@ abstract class CrudEntity implements CrudEntityInterface
         $this->db->query($base_sql);
         $last_insert_id = $this->db->query("Select max(id) as id from ".$this->get_name(), true)[0]["id"];
         $this->set_id($last_insert_id);
-        $res = [];
-        $res = ["id" => $last_insert_id];
-        return new Response($res, "POST ".$this->get_name(), 200);
+        $data = [];
+        $data = ["id" => $last_insert_id];
+        return new Response($data, "POST ".$this->get_name(), 200);
     }
 
     public function put(array $data, int $id): Response

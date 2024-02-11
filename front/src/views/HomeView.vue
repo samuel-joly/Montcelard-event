@@ -2,9 +2,11 @@
 import { useLogin } from '@/stores/login'
 import PanelNav from '@/components/PanelNav.vue'
 import { ref } from 'vue'
+import Login from '@/classes/Login'
 
 const loginStore = useLogin()
-const password = ref('')
+const password = ref('Montcelard_password')
+const login: Login = new Login('Montcelard_user', 'Montcelard_user@gmail.com')
 </script>
 
 <template>
@@ -13,9 +15,9 @@ const password = ref('')
     <RouterView />
   </div>
   <div v-else="loginStore.jwt.length == 0">
-    <input v-model="loginStore.userName" />
+    <input v-model="login.name" />
     <input v-model="password" />
-    <button @click="loginStore.logIn(loginStore.userName, password)">Login</button>
+    <button @click="loginStore.logIn(login, password)">Login</button>
   </div>
 </template>
 

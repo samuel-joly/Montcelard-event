@@ -19,11 +19,11 @@ class Login extends CrudEntity implements CrudEntityInterface
     {
         $db_call = (new Mysql())->query("Select password from login where name = '".$this->name."';");
         if (sizeof($db_call) == 0) {
-            return new Response([], "Wrong login or password", 500);
+            return new Response([], "Wrong login or password", 401);
         }
         $db_password = $db_call[0]["password"];
         if (!password_verify($this->password,$db_password)) {
-            return new Response([], "Wrong login or password", 500);
+            return new Response([], "Wrong login or password", 401);
         }
         $jwt = $this->gen_JWT();
         return new Response(["jwt" => $jwt["header"].".".$jwt["payload"].".".$jwt["signature"] ], "login successfull", 200);

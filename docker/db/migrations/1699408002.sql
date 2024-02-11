@@ -30,6 +30,8 @@ CREATE TABLE event (
     # - "3-1" means the third date end with 1 hour less 
 
     room_configuration VARCHAR(30) NOT NULL,
+    configuration_size INT DEFAULT 12,
+    configuration_quantity INT default 3,
     room_configuration_precision VARCHAR(400),
 
     host_table BOOLEAN NOT NULL DEFAULT TRUE,

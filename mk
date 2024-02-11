@@ -43,6 +43,14 @@ case $1 in
                 docker compose up $@
                 ;;
 
+            "start")
+                shift 2
+                docker compose start $@
+                ;;
+            "stop")
+                shift 2
+                docker compose stop $@
+                ;;
             "down")
                 shift 2
                 docker compose down $@
