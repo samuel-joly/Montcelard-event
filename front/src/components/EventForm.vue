@@ -93,7 +93,7 @@ export default defineComponent({
             <small></small>
           </div>
           <div class="roomConfigurationValue">
-            <input type="text" placeholder="2x3 ou 2 par 3" v-model="event.configuration_arg" />
+            <input type="text" placeholder="2x3 ou 2 par 3" v-model="event.configuration_size" />
           </div>
         </span>
         <span v-if="event.room_configuration == 'U'">
@@ -101,7 +101,7 @@ export default defineComponent({
             <small></small>
           </div>
           <div id="roomConfigurationValue">
-            <select v-model="event.configuration_arg">
+            <select v-model="event.configuration_quantity">
               <option value="8">8</option>
               <option value="10">10</option>
               <option value="12" selected>12</option>

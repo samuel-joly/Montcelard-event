@@ -57,7 +57,7 @@ export class Event implements EventInterface, EntityInterface {
     this.end_hour = ''
     this.room_configuration_precision = ''
     this.configuration_size = 0
-    this.configuration_quantity = 0
+    this.configuration_quantity = 12
     this.pause_date = 0
     this.start_hour_offset = ''
     this.end_hour_offset = ''
