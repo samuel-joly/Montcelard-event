@@ -19,11 +19,22 @@ class Response
 
     public function send(): void
     {
-        header("Content-Type: application/json",true, $this->code);
+        $this->makeHeader();
         $response = json_encode([
             "data" => $this->data,
             "message" => $this->message,
         ]);
         echo $response;
+    }
+
+    private function makeHeader():void {
+        $header_string = "Content-Type: application/json";
+        $append_string = "";
+        switch($this->code) {
+            case 401:
+                $append_string = ";WWW-Authenticate: Bearer";
+                break;
+        }
+        header($header_string.$append_string, true, $this->code);
     }
 }

@@ -1,6 +1,6 @@
 import { useLogin } from '@/stores/login'
 import EntityBuilder from '@/helpers/EntityBuilder'
-import type { EntityInterface, EntitySchema } from '@/types/EntityInterface'
+import type { EntityInterface } from '@/types/EntityInterface'
 
 export class Client {
   baseUrl: string = 'http://localhost/api/'
@@ -13,7 +13,7 @@ export class Client {
   async get<EntityType extends EntityInterface>(
     entity: EntityType,
     id?: number
-  ): Promise<{ data: Array<EntityType>; message: string }> {
+  ): Promise<{ data: EntityType[]; message: string }> {
     let req_uri = this.baseUrl + entity.getEntityName()
     if (id != null) {
       req_uri += '/' + id
@@ -32,9 +32,12 @@ export class Client {
     }
 
     const resp: { data: any; message: string } = await res.json()
-    const entity_schema: EntitySchema = resp.data.pop()
+    const data_schema: { [name: string]: string } = resp.data.pop()
+    if (resp.data.length == 0) {
+      throw new Error('Request GET "' + entity.getEntityName() + '" return empty array')
+    }
     resp.data.map((resp_obj: any) => {
-      EntityBuilder.build_entity<EntityType>(entity, resp_obj, entity_schema)
+      EntityBuilder.build<EntityType>(entity, resp_obj, data_schema)
     })
     return resp
   }

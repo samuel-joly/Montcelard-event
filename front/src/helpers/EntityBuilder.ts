@@ -1,26 +1,50 @@
-import type { EntityInterface, EntitySchema } from '@/types/EntityInterface'
+import type { EntityInterface } from '@/types/EntityInterface'
 
 export default class EntityBuilder {
-  static build_entity<EntityType extends EntityInterface>(
+  static build<EntityType extends EntityInterface>(
     entity: EntityType,
     data: any,
-    entitySchema: EntitySchema
+    entitySchema: { [name: string]: string }
   ): EntityType {
-    entity.setId(data['id'])
-    Object.keys(entitySchema).map((attr_name: string) => {
-      const attr_type: string = this.renameType(entitySchema[attr_name])
-
-      if (Object.prototype.hasOwnProperty.call(entity, attr_name)) {
-        if (typeof data[attr_name] != attr_type) {
-          data[attr_name] = this.cast(data[attr_name], attr_type)
+    let a = Object.keys(entity)
+    let b = Object.keys(data)
+    const a_diff_b = a.filter((e: string) => !b.includes(e))
+    const b_diff_a = b.filter((e: string) => !a.includes(e))
+    if (a_diff_b.length > 0) {
+      throw new Error(
+        "Attribute(s) '" +
+          [...a_diff_b] +
+          "'is not present in data for entity '" +
+          entity.getEntityName() +
+          "'"
+      )
+    } else if (b_diff_a.length > 0) {
+      throw new Error(
+        "Attribute(s) '" +
+          [...b_diff_a] +
+          "'is not present in data for entity '" +
+          entity.getEntityName() +
+          "'"
+      )
+    }
+    Object.keys(entitySchema).map((schema_name: string) => {
+      const schema_type: string = this.renameType(entitySchema[schema_name])
+      if (Object.prototype.hasOwnProperty.call(entity, schema_name)) {
+        if (typeof data[schema_name] != schema_type) {
+          data[schema_name] = this.cast(data[schema_name], schema_type)
         }
-        entity.setValue(attr_name, data[attr_name])
       } else {
         throw new Error(
-          'Attribute "' + attr_name + '" is not present in "' + entity.getEntityName() + '" entity'
+          'Attribute "' +
+            schema_name +
+            '" is not present in "' +
+            entity.getEntityName() +
+            '" entity'
         )
       }
     })
+    Object.assign(entity, data)
+    entity.setId(data['id'])
     return entity
   }
 
@@ -33,9 +57,7 @@ export default class EntityBuilder {
           throw new Error(
             'Can only cast number to boolean. Create the cast "' +
               typeof data +
-              '" to "' +
-              to +
-              '" if necessary'
+              '" to boolean if necessary'
           )
         }
         break
@@ -44,7 +66,9 @@ export default class EntityBuilder {
           data = new Date(data)
         } else {
           throw new Error(
-            'Can only cast string to Date. Create the cast ' + typeof data + ' if necessary'
+            'Can only cast string to Date. Create the cast "' +
+              typeof data +
+              '" to "Date" if necessary'
           )
         }
         break
