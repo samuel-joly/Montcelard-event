@@ -1,5 +1,6 @@
 CREATE TABLE event (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    room VARCHAR(11) default NULL,
     name VARCHAR(400) NOT NULL,
 
     orga_name VARCHAR(150) NOT NULL,
