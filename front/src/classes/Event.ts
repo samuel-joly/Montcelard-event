@@ -1,8 +1,21 @@
 import type { EntityInterface } from '@/types/EntityInterface'
 import type { EventInterface } from '@/types/Event'
+export enum Room {
+  Chine,
+  Cambodge,
+  Laos,
+  Mali,
+  Myanmar,
+  Haiti,
+  Madagascar,
+  Tadjikistan,
+  Bresil,
+  Liban
+}
 
 export class Event implements EventInterface, EntityInterface {
   id: number
+  room: Room | null
   name: string
   guests: number
   host_name: string
@@ -44,6 +57,7 @@ export class Event implements EventInterface, EntityInterface {
 
   constructor() {
     this.id = 0
+    this.room = Room.Chine
     this.name = ''
     this.guests = 0
     this.host_name = ''
@@ -57,7 +71,7 @@ export class Event implements EventInterface, EntityInterface {
     this.end_hour = ''
     this.room_configuration_precision = ''
     this.configuration_size = 0
-    this.configuration_quantity = 12
+    this.configuration_quantity = 0
     this.pause_date = 0
     this.start_hour_offset = ''
     this.end_hour_offset = ''

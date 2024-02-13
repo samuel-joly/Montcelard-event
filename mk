@@ -5,19 +5,23 @@ source ./env.$env_type.sh;
 
 help() {
     echo -e "\e[1;37mList of commands:\e[m";
-    echo -e "css\t\t\t bin/tailwind -c tailwind.config.js -o tailwind.css";
-    echo -e "test\t\t\t Run apitest files from \e[33mapi/test/*.jsona\e[m";
-    echo -e "db \e[32mmigrate\e[m\t\t Execute migrations file in the \e[33mMYSQL_DATABASE\e[m ";
+    echo -e "db \e[32mmigrate\e[m\t\t Execute database migrations schema at \e[33mMYSQL_DATABASE\e[m ";
     echo -e "db \e[32mpopulate\e[m\t\t Execute sql query from \e[33mdocker/db/data/*.sql\e[m in \e[33mMYSQL_DATABASE\e[m ";
+    echo -e "db \e[32mmigpop\e[m\t\t Migrate database schema then populate them";
+    echo -e "db \e[32mrefresh\e[m \t\t Drop all table and migrate + masspopulate them";
+    echo -e "db \e[32mmasspop\e[m <int> \t Execute <int> times mk db populate (default 10)";
     echo -e "db \e[32mquery\e[m <string>\t Execute query as \e[33mMYSQL_USER\e[m to \e[33mMYSQL_DATABASE\e[m defined in the mysql container";
     echo -e "db \e[32mquery\e[m root <string>\t Same as above but as root mysql user";
     echo "";
-    echo -e "deploy\e[m\t\t\t Zip required files and directory to be uploaded on remove server";
-    echo "";
     echo -e "docker \e[32mup\e[m\t\t docker compose up with env loading";
-    echo -e "docker \e[32mbuild\e[m <string> \t build the given service in compose";
     echo -e "docker \e[32mdown\e[m\t\t docker compose down";
+    echo -e "docker \e[32mstart\e[m\t\t Start already build containers";
+    echo -e "docker \e[32mstop\e[m\t\t Stop already started containers";
     echo -e "docker \e[32mrmall\e[m\t\t Remove all volumes, images and container";
+    echo "";
+    echo -e "deploy\e[m\t\t\t Zip required files and directory to be uploaded on remove server";
+    echo -e "css\t\t\t bin/tailwind -c tailwind.config.js -o tailwind.css";
+    echo -e "test\t\t\t Run apitest files from \e[33mapi/test/*.jsona\e[m";
     echo "";
     echo -e "\e[1;37mEnv vars from \e[m\e[1;32menv.$env_type.sh\e[m";
     for env in ${env_list[@]}; do
@@ -34,15 +38,10 @@ case $1 in
 
     "docker")
         case $2 in
-            "build")
-                shift 2
-                docker compose build $@
-                ;;
             "up")
                 shift 2
                 docker compose up $@
                 ;;
-
             "start")
                 shift 2
                 docker compose start $@
@@ -55,7 +54,6 @@ case $1 in
                 shift 2
                 docker compose down $@
                 ;;
-
             "rmall")
                 ./mk docker down;
                 docker container rm $(docker container ls -qa);
@@ -83,14 +81,14 @@ case $1 in
 
     "db")
         container=$(docker ps --format="{{.Names}}" | grep db);
-        shift 
 
         if [[ "$container" == "" ]]; then
             echo -e "\033[31mNo container found containing \"db\" in their name\033[m";
             exit 0;
         else
-            case $1 in
+            case $2 in
                 "query")
+                    shift
                     if [[ $2 == "root" ]]; then
                         docker exec $container sh -c "mysql -uroot -p$DB_PASSWORD -D $DB_NAME -e \"$3\"";
                     else
@@ -113,8 +111,13 @@ case $1 in
                     ;;
 
                 "masspop")
-                    i=0;
-                    while (($i < 10)); do 
+                    shift 2
+                    i=0
+                    limit=10
+                    if [[ -z $2 ]];then
+                        limit=$1;
+                    fi
+                    while [[ $i -le $limit ]]; do 
                         ((i++));
                         ./mk db populate;
                     done;
@@ -123,6 +126,10 @@ case $1 in
                 "migpop")
                     ./mk db migrate;
                     ./mk db masspop;
+                    ;;
+                "refresh")
+                    ./mk db query root "drop table event; drop table login;";
+                    ./mk db migpop;
                     ;;
 
                 *)

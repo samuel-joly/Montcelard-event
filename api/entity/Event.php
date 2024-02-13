@@ -11,8 +11,22 @@ enum RoomConfiguration
     case School;
 }
 
+enum Room:string{
+    case Chine="Chine";
+    case Cambodge="Cambodge";
+    case Laos="Laos";
+    case Mali="Mali";
+    case Myanmar="Myanmar";
+    case Haiti="Haiti";
+    case Madagascar="Madagascar";
+    case Tadjikistan="Tadjikistan";
+    case Bresil="Bresil";
+    case Liban="Liban";
+}
+
 class Event extends CrudEntity implements CrudEntityInterface
 {
+    public ?Room $room;
     public string $name;
     public int $guests;
     public string $host_name;
@@ -27,8 +41,8 @@ class Event extends CrudEntity implements CrudEntityInterface
     public string $orga_name;
 
     public string $room_configuration;
-    public int $configuration_size=0;
-    public int $configuration_quantity=0;
+    public int $configuration_size;
+    public int $configuration_quantity;
     public string $end_hour;
 
     public string $room_configuration_precision = "";

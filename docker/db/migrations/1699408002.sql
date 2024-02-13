@@ -1,5 +1,6 @@
 CREATE TABLE event (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    room VARCHAR(11) default NULL,
     name VARCHAR(400) NOT NULL,
 
     orga_name VARCHAR(150) NOT NULL,
@@ -30,8 +31,8 @@ CREATE TABLE event (
     # - "3-1" means the third date end with 1 hour less 
 
     room_configuration VARCHAR(30) NOT NULL,
-    configuration_size INT DEFAULT 12,
-    configuration_quantity INT default 3,
+    configuration_size INT,
+    configuration_quantity INT,
     room_configuration_precision VARCHAR(400),
 
     host_table BOOLEAN NOT NULL DEFAULT TRUE,
