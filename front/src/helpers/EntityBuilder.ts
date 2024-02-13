@@ -1,4 +1,5 @@
 import type { EntityInterface } from '@/types/EntityInterface'
+import { Room } from '@/classes/Event'
 
 export default class EntityBuilder {
   static build<EntityType extends EntityInterface>(
@@ -22,21 +23,33 @@ export default class EntityBuilder {
       throw new Error(
         "Attribute(s) '" +
           [...b_diff_a] +
-          "'is not present in data for entity '" +
+          "'is not present in entity for for data '" +
           entity.getEntityName() +
           "'"
       )
     }
-    Object.keys(entitySchema).map((schema_name: string) => {
-      const schema_type: string = this.renameType(entitySchema[schema_name])
-      if (Object.prototype.hasOwnProperty.call(entity, schema_name)) {
-        if (typeof data[schema_name] != schema_type) {
-          data[schema_name] = this.cast(data[schema_name], schema_type)
+    Object.keys(entitySchema).map((schema_attr_name: string) => {
+      const schema_type: string = this.renameType(entitySchema[schema_attr_name])
+      if (Object.prototype.hasOwnProperty.call(entity, schema_attr_name)) {
+        try {
+          if (typeof data[schema_attr_name] != schema_type) {
+            data[schema_attr_name] = this.cast(data[schema_attr_name], schema_type)
+          }
+        } catch (error) {
+          console.error(
+            'During mapping of ' +
+              entity.getEntityName() +
+              ' on ' +
+              schema_attr_name +
+              ' with type: ' +
+              schema_type,
+            error
+          )
         }
       } else {
         throw new Error(
           'Attribute "' +
-            schema_name +
+            schema_attr_name +
             '" is not present in "' +
             entity.getEntityName() +
             '" entity'
@@ -72,8 +85,48 @@ export default class EntityBuilder {
           )
         }
         break
-      default:
-        throw new Error('No cast set for "' + typeof data + '" to "' + to + '"')
+      case 'Room':
+        if (data == null) {
+        } else if (typeof data != 'string') {
+          throw new Error('Can only cast string to Room, type="' + typeof data + '" given')
+        } else {
+          switch (data) {
+            case 'Chine':
+              data = Room[Room.Chine]
+              break
+            case 'Bresil':
+              data = Room[Room.Bresil]
+              break
+            case 'Tadjikistan':
+              data = Room[Room.Tadjikistan]
+              break
+            case 'Madagascar':
+              data = Room[Room.Madagascar]
+              break
+            case 'Liban':
+              data = Room[Room.Chine]
+              break
+            case 'Haiti':
+              data = Room[Room.Haiti]
+              break
+            case 'Myanmar':
+              data = Room[Room.Myanmar]
+              break
+            case 'Mali':
+              data = Room[Room.Mali]
+              break
+            case 'Laos':
+              data = Room[Room.Laos]
+              break
+            case 'Cambodge':
+              data = Room[Room.Cambodge]
+              break
+            default:
+              throw new Error(
+                'String to Room works only if string value is in RoomEnum. "' + data + '" given'
+              )
+          }
+        }
         break
     }
     return data
