@@ -11,7 +11,7 @@ enum RoomConfiguration
     case School;
 }
 
-enum Room:string {
+enum Room:string{
     case Chine="Chine";
     case Cambodge="Cambodge";
     case Laos="Laos";

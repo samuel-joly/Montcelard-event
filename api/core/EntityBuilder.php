@@ -114,6 +114,40 @@ class EntityBuilder
             case "string":
                 $casted = htmlspecialchars($data);
                 break;
+            case "Room":
+                switch($data) {
+                case Room::Chine->value:
+                    $casted=Room::Chine;
+                    break;
+                case Room::Cambodge->value:
+                    $casted=Room::Cambodge;
+                    break;
+                case Room::Laos->value:
+                    $casted=Room::Laos;
+                    break;
+                case Room::Mali->value:
+                    $casted=Room::Mali;
+                    break;
+                case Room::Myanmar->value:
+                    $casted=Room::Myanmar;
+                    break;
+                case Room::Haiti->value:
+                    $casted=Room::Haiti;
+                    break;
+                case Room::Madagascar->value:
+                    $casted=Room::Madagascar;
+                    break;
+                case Room::Tadjikistan->value:
+                    $casted=Room::Tadjikistan;
+                    break;
+                case Room::Bresil->value:
+                    $casted=Room::Bresil;
+                    break;
+                case Room::Liban->value:
+                    $casted=Room::Liban;
+                    break;
+                }
+                break;
             default:
                 ;
         }

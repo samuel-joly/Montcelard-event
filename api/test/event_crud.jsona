@@ -31,6 +31,7 @@
         'Bearer': `login.res.body.data.jwt`, @eval
       },
       body: {
+        room: "Chine",
         start_date: "2023/12/24",
         end_date: "2023/12/28",
         start_hour: "08:00",
@@ -41,6 +42,8 @@
         guests: 8,
         host_name: "Jean Formation",
         name: "Formation test",
+        configuration_size: 0,
+        configuration_quantity: 0,
         room_configuration: "U",
         room_configuration_precision: "Some option for the room config",
         orga_name: "Super organisateur",
@@ -90,6 +93,7 @@
           {
             id: `post.res.body.data.id`, @eval
             name: "Formation test",
+            room: "Chine",
             orga_name: "Super organisateur",
             orga_mail: "Orga-mail@mail.com",
             orga_tel: "0622222222",
@@ -173,6 +177,7 @@
         data: [
           {
             id: `post.res.body.data.id`, @eval
+            room: "Chine",
             name: "Formation test",
             orga_name: "Super organisateur",
             orga_mail: "Orga-mail@mail.com",

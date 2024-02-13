@@ -22,8 +22,8 @@ class SqlQueryBuilder
             $value_list_start .= $d;
         }
         $base_sql = $insert_statement
-                    ." " .$property_list_start . $property_list_end
-                    ." " .$value_list_start . $value_list_end;
+            ." " .$property_list_start . $property_list_end
+            ." " .$value_list_start . $value_list_end;
         return $base_sql;
     }
     /**
@@ -50,31 +50,35 @@ class SqlQueryBuilder
     }
 
 
-    public function cast_to_SQL_string(mixed $to_cast): mixed
+    public function cast_to_SQL_string(mixed $to_cast): string
     {
         $sqlString = $to_cast;
         switch (gettype($to_cast)) {
-            case "object":
-                switch(get_class($to_cast)) {
-                    case "DateTimeImmutable":
-                        $format = date_format($to_cast, DateTimeInterface::ATOM);
-                        if ($format == false) { throw new Exception("Wrong date format when casting", 500);}
-                        $sqlString = "'".explode("+", str_replace("T", " ", $format))[0]."'";
-                        break;
-                }
+        case "boolean":
+            if($to_cast) {
+                $sqlString = "true";
+            } else {
+                $sqlString = "false";
+            }
+            break;
+
+        case "string":
+            $sqlString = "'".htmlspecialchars($sqlString)."'";
+            break;
+
+        case "object":
+            switch(get_class($to_cast)) {
+            case "DateTimeImmutable":
+                $format = date_format($to_cast, DateTimeInterface::ATOM);
+                if ($format == false) { throw new Exception("Wrong date format when casting", 500);}
+                $sqlString = "'".explode("+", str_replace("T", " ", $format))[0]."'";
                 break;
 
-            case "boolean":
-                if($to_cast) {
-                    $sqlString = "true";
-                } else {
-                    $sqlString = "false";
-                }
+            case "Room":
+                $sqlString = "'".$to_cast->value."'";
                 break;
-
-            case "string":
-                $sqlString = "'".htmlspecialchars($sqlString)."'";
-                break;
+            }
+            break;
 
         }
         return $sqlString;
