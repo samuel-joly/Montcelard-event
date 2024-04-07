@@ -2,7 +2,7 @@
 
 abstract class CrudEntity implements CrudEntityInterface
 {
-    private Mysql $db;
+    protected Mysql $db;
     private ?int $id = 0;
 
     public function __construct()
@@ -15,45 +15,48 @@ abstract class CrudEntity implements CrudEntityInterface
     /**
      ** @param array<string,mixed> $data
      */
-    abstract public function check(array $data): bool;
+    abstract public function check(): bool;
 
-
-    public function get(int $id = null): Response
+    public function get(array $query_params): Response
     {
-        if ($id !== null) {
-            $data = $this->db->query("Select * from ".$this->get_name()." where id=$id");
-        } else {
-            $data = $this->db->query("Select * from ".$this->get_name());
+        $query = SqlQueryBuilder::get($this, $query_params);
+        $query_values = [];
+        foreach($query_params as $attr => $query_opts) {
+            $cast = EntityBuilder::cast($query_opts["value"], $query_opts["type"]);
+            $query_values[$attr] = SqlQueryBuilder::toSqlString($cast);
         }
+        $data = $this->db->queryPrepare($query,$query_values);
         return new Response($data, "GET events", 200);
     }
 
     public function post(array $data): Response
     {
-        $base_sql = (new SqlQueryBuilder())->insert($this, $data);
-        $this->db->query($base_sql);
+        $ins_stmt = SqlQueryBuilder::insert($this, $data);
+        $fmt_data = [];
+        foreach($data as $key => $value) {
+            $fmt_data[$key] = SqlQueryBuilder::toSqlString($value);
+        }
+        $this->db->queryPrepare($ins_stmt, $fmt_data);
         $last_insert_id = $this->db->query("Select max(id) as id from ".$this->get_name(), true)[0]["id"];
-        $this->set_id($last_insert_id);
-        $data = [];
         $data = ["id" => $last_insert_id];
         return new Response($data, "POST ".$this->get_name(), 200);
     }
 
     public function put(array $data, int $id): Response
     {
-        $base_sql = (new SqlQueryBuilder())->update($this, $data, $id);
-        $data = $this->db->query($base_sql);
-        return new Response($data, "PUT event", 200);
+        $base_sql = SqlQueryBuilder::update($this, $data, $id);
+        $fmt_data = [];
+        foreach($data as $key => $value) {
+            $fmt_data[$key] = SqlQueryBuilder::toSqlString($value);
+        }
+        $this->db->queryPrepare($base_sql, $fmt_data);
+        return new Response([], "PUT event", 200);
     }
 
     public function delete(int $id): Response
     {
-        if (sizeof($this->get($id)->data) > 0) {
-            $data = $this->db->query("DELETE FROM ".$this->get_name()." WHERE id=".$id);
-            return new Response($data, "DELETE ".$this->get_name(), 200);
-        } else {
-            throw new Exception("No ".$this->get_name()." with id=".$id." found", 500);
-        }
+        $data= $this->db->query("DELETE FROM ".$this->get_name()." WHERE id=".$id);
+        return new Response($data, "DELETE ".$this->get_name(), 200);
     }
 
     public function get_id(): ?int
@@ -64,5 +67,11 @@ abstract class CrudEntity implements CrudEntityInterface
     public function set_id(int $id): void
     {
         $this->id = $id;
+    }
+    /**
+     * @return array<int,string>
+     */
+    static function get_custom_query_attributes(): array {
+        return ["id"=>null];
     }
 }

@@ -10,7 +10,7 @@ class Login extends CrudEntity implements CrudEntityInterface
         return 'login';
     }
 
-    public function check(array $data): bool
+    public function check(): bool
     {
         return true;
     }
@@ -78,11 +78,11 @@ class Login extends CrudEntity implements CrudEntityInterface
     {
         throw new Exception("Only POST request are accepted on /login", 400);
     }
-    public function delete(int $id = null): Response
+    public function delete(int $id): Response
     {
         throw new Exception("Only POST request are accepted on /login", 400);
     }
-    public function get(int $id = null): Response
+    public function get(array $options): Response
     {
         throw new Exception("Only POST request are accepted on /login", 400);
     }

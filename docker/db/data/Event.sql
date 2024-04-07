@@ -1,0 +1,177 @@
+INSERT INTO event (
+    roomId,
+    name, orgaName, orgaMail,
+    orgaTel, hostName, guests,
+    startDate, endDate,
+    startHour, endHour,
+    startHourOffset, endHourOffset,
+    roomConfiguration, roomConfigurationPrecision,
+    configurationSize, configurationQuantity,
+    hostTable,
+    paperboard, chairSup, tableSup,
+    pen, paper, scissors, scotch,
+    postItXl, paperA1, blocNote, gomette, postIt,
+    coffeeGroom, meal,
+    mealPrecision,
+    morningCoffee, afternoonCoffee, coktail, vegetarian, glutenFree
+) 
+VALUES (
+    6,
+    'Formation de formateur','Jean Robin',
+    'RobinJean@tsla.com', '0655237811',
+    'Anne Flaure', 10,
+    "2024-06-05", "2024-06-07",
+    "09:00", "17:00",
+    "2+1;3-2", "",
+    'Ilots', "",
+    6,2,
+    true,
+    2, 0, 0,
+    true, true, false, false,
+    false, false, true, false, false,
+    10, 0,
+    "",
+    10, 10, 0, 0, 0
+);
+
+INSERT INTO event (
+    roomId,
+    name, orgaName, orgaMail,
+    orgaTel, hostName, guests,
+    startDate, endDate,
+    startHour, endHour,
+    startHourOffset, endHourOffset,
+    roomConfiguration, roomConfigurationPrecision,
+    configurationSize,
+    hostTable,
+    paperboard, chairSup, tableSup,
+    pen, paper, scissors, scotch,
+    postItXl, paperA1, blocNote, gomette, postIt,
+    coffeeGroom, meal,
+    mealPrecision,
+    morningCoffee, afternoonCoffee, coktail, vegetarian, glutenFree
+) 
+VALUES (
+    4,
+    'Travailler avec les am&eacute;ricains', 'Inès Armaniedjan',
+    'ArmaniedjanIn&eacute;s@orpa.com', '0667829832',
+    'Florent Perez, Anne-Laure Martinez', 15,
+    "2024-06-03", "2024-06-07",
+    "09:00", "17:30",
+    "2+1;3-2", "2+1;3-2",
+    'U', "",
+    15,
+    true,
+    3, 0, 0,
+    true, false, false, false,
+    false, false, false, false, false,
+    15, 0,
+    "",
+    15, 15, 0, 0, 0
+);
+
+INSERT INTO event (
+    roomId,
+    name, orgaName, orgaMail,
+    orgaTel, hostName, guests,
+    startDate, endDate,
+    startHour, endHour,
+    startHourOffset, endHourOffset,
+    roomConfiguration, roomConfigurationPrecision,
+    configurationSize,
+    hostTable,
+    paperboard, chairSup, tableSup,
+    pen, paper, scissors, scotch,
+    postItXl, paperA1, blocNote, gomette, postIt,
+    coffeeGroom, meal,
+    mealPrecision,
+    morningCoffee, afternoonCoffee, coktail, vegetarian, glutenFree
+) 
+VALUES (
+    3,
+    'D&eacute;velopper ses comp&eacute;tences digitales','Renès Gavaud',
+    'GavaudRen&eacute;s@tromi.com', '0422786534',
+    'Laure Romentin', 12,
+    "2024-06-03", "2024-06-03",
+    "10:00", "17:30",
+    "", "",
+    'U', "Cam&eacute;ra + Pied",
+    12,
+    true,
+    2, 0, 0,
+    true, true, false, false,
+    false, false, true, false, true,
+    12, 12,
+    "",
+    12, 12, 0, 1, 3
+);
+
+INSERT INTO event (
+    roomId,
+    name, orgaName, orgaMail,
+    orgaTel, hostName, guests,
+    startDate, endDate,
+    startHour, endHour,
+    startHourOffset, endHourOffset,
+    roomConfiguration, roomConfigurationPrecision,
+    configurationSize, configurationQuantity,
+    hostTable,
+    paperboard, chairSup, tableSup,
+    pen, paper, scissors, scotch,
+    postItXl, paperA1, blocNote, gomette, postIt,
+    coffeeGroom, meal,
+    mealPrecision,
+    morningCoffee, afternoonCoffee, coktail, vegetarian, glutenFree
+) 
+VALUES (
+    1,
+    'R&eacute;union des actionnaires','Anies Aubart',
+    'AubartAnies@ericto.com', '0621224565',
+    'Florence Ranaud', 24,
+    "2024-06-05", "2024-06-07",
+    "08:00", "18:00",
+    "1+2.5;2+2", "2-4",
+    'Ilots', "Cam&eacute;ra + Pied",
+    6,4,
+    true,
+    4, 4, 1,
+    true, true, false, false,
+    true, false, true, false, true,
+    24, 24,
+    "",
+    24, 24, 0, 6, 1
+);
+
+INSERT INTO event (
+    roomId,
+    name, orgaName, orgaMail,
+    orgaTel, hostName, guests,
+    startDate, endDate,
+    startHour, endHour,
+    startHourOffset, endHourOffset,
+    roomConfiguration, roomConfigurationPrecision,
+    hostTable,
+    paperboard, chairSup, tableSup,
+    pen, paper, scissors, scotch,
+    postItXl, paperA1, blocNote, gomette, postIt,
+    coffeeGroom, meal,
+    mealPrecision,
+    morningCoffee, afternoonCoffee, coktail, vegetarian, glutenFree
+) 
+VALUES (
+    1,
+    'Pr&eacute;parer ses comptes rendus','Jean-Claude Jung',
+    'JungJeanClaude@axio.com', '0676655621',
+    'Etienne Fourmier, Marie Analte', 18,
+    "2024-06-03", "2024-06-03",
+    "08:00", "15:00",
+    "0", "0",
+    'U', "",
+    true,
+    3, 0, 0,
+    true, true, true, true,
+    false, false, true, false, true,
+    18, 12,
+    "Prise du repas à 12h30",
+    18, 18, 0, 4, 2
+);

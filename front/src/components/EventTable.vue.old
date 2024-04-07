@@ -1,9 +1,8 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { onMounted, defineComponent, ref } from 'vue'
 import { Event } from "@/classes/Event";
 import ValidationModal from '@/components/ValidationModal.vue'
-import { useEventGrid } from '@/stores/useEventGrid'
-import { useEventFilter } from '@/stores/useEventFilter';
+import { useEvent } from '@/stores/useEvent'
 
 export default defineComponent({
     components: {
@@ -16,13 +15,12 @@ export default defineComponent({
         }
     },
     data(props) {
-        const eventStore = useEventGrid()
-        const filterStore = useEventFilter()
-        return { eventStore, filterStore, props }
+        const eventStore = useEvent()
+        return { eventStore, props }
     },
     methods: {
-        getStartDate(event: Event): string { return event.startDate.toISOString().split('T')[0].replace(/-/g, '/') },
-        getEndDate(event: Event): string { return event.endDate.toISOString().split('T')[0].replace(/-/g, '/') }
+        getStartDate(event: Event): string { return event.start_date.toISOString().split('T')[0].replace(/-/g, '/') },
+        getEndDate(event: Event): string { return event.end_date.toISOString().split('T')[0].replace(/-/g, '/') }
     }
 })
 
@@ -44,23 +42,23 @@ export default defineComponent({
                 <th class="headAction"></th>
             </tr>
 
-            <tr v-for="event in filterStore.results.slice(0, props.limit)" :key="event.id" class="event"
-                :class="(event.id == eventStore.getSelected.eventId) ? 'selected' : ''" @click="eventStore.selectEvent(event.id)">
+            <tr v-for="event in eventStore.getEvents.slice(0, props.limit)" :key="event.id" class="event"
+                :class="(event.id == eventStore.getSelected.id) ? 'selected' : ''" @click="eventStore.selectEvent(event)">
                 <td>{{ event.id }}</td>
                 <td>{{ event.guests }}</td>
                 <td>{{ event.name }}</td>
-                <td>{{ event.orgaMail }}</td>
+                <td>{{ event.orga_mail }}</td>
                 <td>
                     {{ getStartDate(event) }}
                 </td>
                 <td>
                     {{ getEndDate(event) }}
                 </td>
-                <td>{{ event.startHour }}</td>
-                <td>{{ event.endHour }}</td>
-                <td>{{ event.roomId }}</td>
+                <td>{{ event.start_hour }}</td>
+                <td>{{ event.end_hour }}</td>
+                <td>{{ event.room }}</td>
                 <td class="action">
-                    <ValidationModal color="#337788" :func="filterStore.deleteEvent" action="supprimer" :id="event.id" />
+                    <ValidationModal color="#337788" :func="eventStore.delete" action="supprimer" :id="event.id" />
                 </td>
             </tr>
         </table>
@@ -81,6 +79,8 @@ export default defineComponent({
 .event {
     height: 3em;
 }
+
+table {}
 
 .edit-act:hover {
     filter: brightness(120%);

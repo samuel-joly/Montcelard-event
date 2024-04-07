@@ -2,8 +2,8 @@
 
 class Router
 {
-    public array $routes;
-    public EntityBuilder $eb;
+    private array $routes;
+    private EntityBuilder $eb;
 
     public function __construct()
     {
@@ -22,7 +22,8 @@ class Router
 
     public function route(Request $req): Response
     {
-        $entity_name = $req->getOptions()["entity"];
+        $entity_name = $req->queryParams["entity"];
+        unset($req->queryParams["entity"]);
         if (!array_key_exists($entity_name, $this->routes)) {
             throw new Exception("No crud on entity named \"".$entity_name."\"", 400);
         }
@@ -32,17 +33,18 @@ class Router
         $res = "";
         switch($req->getMethod()) {
             case RequestMethod::GET:
-                if (array_key_exists("id", $req->getOptions())) {
-                    $res = $entity->get($req->getOptions()["id"]);
-                } else {
-                    $res = $entity->get();
-                }
-                if (array_key_exists("schema", $req->getOptions())) {
+                $formated_type = [];
+                if (array_key_exists("schema", $req->queryParams)) {
+                    unset($req->queryParams["schema"]);
                     $entity_type = $this->eb->reflection->getProperties(ReflectionProperty::IS_PUBLIC);
-                    $formated_type = [];
                     foreach ($entity_type as $property_type) {
-                        $formated_type[$property_type->name] = $this->eb->rename_type($property_type->name);
+                        $formated_type[$property_type->name] = $this->eb->getPropType($property_type->name);
                     }
+                }
+                $fmt_params = $req->queryParams;
+                $this->eb->format_query_params($fmt_params);
+                $res = $entity->get($fmt_params);
+                if(count($formated_type) > 0) {
                     array_push($res->data , $formated_type);
                 }
                 break;
@@ -53,17 +55,17 @@ class Router
                 break;
 
             case RequestMethod::PUT:
-                if (array_key_exists("id", $req->getOptions())) {
-                    $user_data = $this->eb->instanciate_with($user_data);
-                    $res = $entity->put($user_data, (int)$req->getOptions()["id"]);
+                if (array_key_exists("id", $req->queryParams)) {
+                    $user_data = $this->eb->instanciate_partial($user_data);
+                    $res = $entity->put($user_data, $req->queryParams["id"]);
                 } else {
                     throw new Exception("PUT request need an id to operate", 500);
                 }
                 break;
 
             case RequestMethod::DELETE:
-                if (array_key_exists("id", $req->getOptions())) {
-                    $res = $entity->delete((int)$req->getOptions()["id"]);
+                if (array_key_exists("id", $req->queryParams)) {
+                    $res = $entity->delete($req->queryParams);
                 } else {
                     throw new Exception("DELETE request need an id to operate", 500);
                 }

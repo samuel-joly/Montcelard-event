@@ -12,6 +12,10 @@ export default defineComponent({
       type: Number,
       required: true
     },
+    color: {
+      type: String,
+      default: '#337788'
+    },
     quantity: {
       type: Number,
       default: 1
@@ -31,18 +35,23 @@ export default defineComponent({
       }
     }
     return { props, validate, show }
+  },
+  computed: {
+    setBgColor() {
+      return 'background-color:' + this.color
+    }
   }
 })
 </script>
 
 <template>
-  <button class="delete-act" @click="show = !show"></button>
+  <button :style="setBgColor" @click="show = !show">{{ props.action }}</button>
   <div v-if="show" class="modal">
     <div class="modalForm">
       <p>Êtes-vous sûr de vouloir {{ props.action }} sur {{ props.quantity }} élément ?</p>
       <span>
-        <button class="yesBtn" @click="validate(true)">Oui</button>
         <button class="noBtn" @click="validate(false)">Non</button>
+        <button class="yesBtn" @click="validate(true)">Oui</button>
       </span>
     </div>
   </div>
@@ -74,44 +83,29 @@ span {
   justify-content: space-evenly;
 }
 
-button {
-  font-size: 1.2em;
-  border: none;
-  color: white;
-  border-radius: 3px;
-  transition: 0.3s;
-}
-
-button:hover {
-  cursor: pointer;
-}
-
 .noBtn {
-  background-color: #00dd00;
+  background-color: var(--op-5);
 }
 .yesBtn {
-  background-color: #dd0000;
+  background-color: var(--op-4);
 }
 .noBtn:hover {
-  background-color: #00bb00;
+  filter: brightness(120%);
 }
 .yesBtn:hover {
-  background-color: #bb0000;
+  filter: brightness(120%);
 }
 
-.delete-act {
-  width: 26px;
-  height: 26px;
-  display: flex;
-  border: 0px;
-  background: url('@/assets/delete.png');
-  background-size: cover;
+button {
+  font-size: 1em;
+  color: white;
+  padding: 0.3em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
   transition: 0.3s;
 }
-
-.delete-act:hover {
-  cursor: pointer;
-  background: url('@/assets/delete-color.png');
-  background-size: cover;
+button:hover {
+  filter: brightness(120%);
 }
 </style>

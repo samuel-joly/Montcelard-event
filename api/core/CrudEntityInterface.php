@@ -3,8 +3,21 @@ declare(strict_types=1);
 
 interface CrudEntityInterface
 {
-    public function get(int $id = null): Response;
+    /**
+     * @param array<string,mixed> $query_params
+     */
+    public function get(array $query_params): Response;
+    /**
+     * @param array<string,mixed> $data
+     * @param array<string,mixed> $options
+     */
     public function post(array $data): Response;
+    /**
+     * @param array<string,mixed> $data
+     */
     public function put(array $data, int $id): Response;
+    /**
+     * @param array<string,mixed> $options
+     */
     public function delete(int $id): Response;
 }

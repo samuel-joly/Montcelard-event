@@ -2,14 +2,12 @@
 
 class EntityBuilder
 {
-    public SqlQueryBuilder $queryBuilder;
     public ReflectionClass $reflection;
     public CrudEntity $instance;
 
     public function set_instance(CrudEntity $instance): void
     {
         $this->instance = $instance;
-        $this->queryBuilder = new SqlQueryBuilder();
         $this->reflection = new ReflectionClass($instance->get_name());
     }
 
@@ -22,68 +20,108 @@ class EntityBuilder
         if (array_key_exists("id", $data)) {
             throw new Exception("No id can be manually set", 500);
         }
-        foreach($this->reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $e_property) {
-            $prop_name = $e_property->getName();
+        foreach($this->reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $refl_prop) {
+            $prop_name = $refl_prop->getName();
             if (!array_key_exists($prop_name, $data)) {
-                if ($e_property->hasDefaultValue()) {
-                    $data[$prop_name] = $e_property->getDefaultValue();
+                if ($refl_prop->hasDefaultValue()) {
+                    $data[$prop_name] = $refl_prop->getDefaultValue();
                 } else {
                     throw new Exception("Attribute \"$prop_name\" in \"".$this->instance->get_name()."\" is required and have no default values", 500);
                 }
             }
 
-            $entity_property_type = $this->rename_type($prop_name);
-            $data[$prop_name] = $this->cast($data[$prop_name], $entity_property_type);
+            $entity_property_type = $this->getPropType($prop_name);
+            $data[$prop_name] = $this::cast($data[$prop_name], $entity_property_type);
             $data_type = gettype($data[$prop_name]);
             if($data_type == 'object') {
                 $data_type = get_class($data[$prop_name]);
             }
             if ($data_type != $entity_property_type) {
                 throw new Exception(
-                    "Property \"$prop_name\" must be of type \"$entity_property_type\". "
-                    .$data_type." given.",
+                    "Instanciate all error: Property '$prop_name' must be of type '$entity_property_type', '$data_type' given.",
                     500
                 );
             }
             $this->instance->$prop_name = $data[$prop_name];
         }
-        $this->instance->check($data);
+        $this->instance->check();
         return $data;
     }
 
     /**
      * @param array<string,mixed> $data
      */
-    public function instanciate_with(array $data): array
+    public function instanciate_partial(array $data): array
     {
-        $entity_properties = $this->reflection->getProperties(ReflectionProperty::IS_PUBLIC);
-        $ep_format = [];
-        foreach ($entity_properties as $ep) {
-            $ep_format[$ep->getName()] = "";
+        $refl_props = $this->reflection->getProperties(ReflectionProperty::IS_PUBLIC);
+        $ep_list = [];
+        foreach ($refl_props as $refl_prop) {
+            $ep_list[$refl_prop->getName()] = $refl_prop;
         }
-        // Remove private property of $entity listed in $data
-        $data = array_intersect_key($data, $ep_format);
+        // Remove any non-public entity property from $data
+        $data = array_intersect_key($data, $ep_list);
 
-        foreach($data as $property => $d_value) {
-            $entity_property_type = $this->rename_type($property);
-            if (gettype($d_value) != $entity_property_type) {
-                if ($cast = $this->cast($d_value, $entity_property_type)) {
-                    $data[$property] = $cast;
-                } else {
+        foreach($data as $prop_name => $prop_value) {
+            $prop_type = $this->getPropType($prop_name);
+            if ($prop_value == null){
+               if ($ep_list[$prop_name]->hasDefaultValue() && $ep_list[$prop_name]->getDefaultValue() == null) {
+                   $this->instance->$prop_name = $data[$prop_name];
+               }
+            } else {
+                try {
+                    $data[$prop_name] = $this::cast($prop_value, $prop_type);
+                } catch(Exception $e) {
                     throw new Exception(
-                        "Property \"$property\" must be of type \"$entity_property_type\". "
-                        .gettype($d_value)." given.",
+                        "Instanciate partial: Property \"$prop_name\" must be of type \"$prop_type\". "
+                        .gettype($prop_value)." given.\n".$e->getMessage,
                         500
                     );
                 }
-                $this->instance->$property = $data[$property];
+                $this->instance->$prop_name = $data[$prop_name];
             }
         }
-        $this->instance->check($data);
+        $this->instance->check();
         return $data;
     }
+    /**
+     * @param array<int,string> $q_params
+     */
+    public function format_query_params(array &$q_params): void{
+        $entity_attrs = [];
+        $refl_attr = $this->reflection->getProperties(ReflectionProperty::IS_PUBLIC);
+        foreach ($refl_attr as $refl) {
+            $entity_attrs[$refl->getName()] = $refl;
+        }
+        foreach($q_params as $param => $value) {
+            $operator = $param[strlen($param)-1];
+            $param_str_arr = str_split($param);
+            if ($operator == '<' || $operator  == '>') {
+                unset($q_params[$param]);
+                array_pop($param_str_arr);
+                if($value[0] == "=") {
+                    $operator .= "=";
+                    $value = str_split($value);
+                    unset($value[0]);
+                    $value = implode($value);
+                }
+                $q_params[implode($param_str_arr)] = ["operator"=>$operator, "value"=>$value, "type"=>$this->getPropType(implode($param_str_arr))];
+            } else {
+                $q_params[$param] = ["operator"=>"=", "value"=>$value, "type"=>$this->getPropType($param)];
+            }
+        }
 
-    public function rename_type(string $property_name): string
+        $custom_query_attributes = array_diff_key($q_params, $this->instance->get_custom_query_attributes());
+        $attr_compare = array_diff_key($custom_query_attributes, $entity_attrs);
+        if (count($attr_compare) != 0) {
+            $bad_props = "";
+            foreach ($attr_compare as $prop_name => $value) {
+                $bad_props.=" '".$value."', ";
+            }
+            throw new Exception("EntityBuilder: '".$this->instance->get_name()."' does not contains following properties:".$bad_props);
+        }
+    }
+
+    public function getPropType(string $property_name): string
     {
         $type = $this->reflection->getProperty($property_name)->getType() ;
         if (get_class($type) == "ReflectionNamedType") {
@@ -104,54 +142,23 @@ class EntityBuilder
         return $ret;
     }
 
-    public function cast(mixed $data, string $target_type): mixed
+    static function cast(mixed $data, string $target_type): mixed
     {
         $casted = $data;
         switch ($target_type) {
             case "DateTimeImmutable":
-                $casted = DateTimeImmutable::createFromFormat("Y/m/d", htmlspecialchars($data));
+                $casted = DateTimeImmutable::createFromFormat("Y-m-d", explode("T", $data)[0]);
+                $casted = $casted->setTime(0,0,0,1);
                 break;
             case "string":
                 $casted = htmlspecialchars($data);
                 break;
             case "Room":
-                switch($data) {
-                case Room::Chine->value:
-                    $casted=Room::Chine;
-                    break;
-                case Room::Cambodge->value:
-                    $casted=Room::Cambodge;
-                    break;
-                case Room::Laos->value:
-                    $casted=Room::Laos;
-                    break;
-                case Room::Mali->value:
-                    $casted=Room::Mali;
-                    break;
-                case Room::Myanmar->value:
-                    $casted=Room::Myanmar;
-                    break;
-                case Room::Haiti->value:
-                    $casted=Room::Haiti;
-                    break;
-                case Room::Madagascar->value:
-                    $casted=Room::Madagascar;
-                    break;
-                case Room::Tadjikistan->value:
-                    $casted=Room::Tadjikistan;
-                    break;
-                case Room::Bresil->value:
-                    $casted=Room::Bresil;
-                    break;
-                case Room::Liban->value:
-                    $casted=Room::Liban;
-                    break;
-                }
+                $casted = new Room($data);
                 break;
             default:
                 ;
         }
-
         return $casted;
     }
 }

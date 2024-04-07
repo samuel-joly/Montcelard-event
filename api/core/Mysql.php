@@ -28,9 +28,9 @@ class Mysql
     private function connect(): void
     {
         $this->conn = new PDO(
-            "mysql:host=$this->servername;dbname=$this->dbname",
+            "mysql:host=$this->servername;dbname=$this->dbname;charset=utf8",
             $this->username,
-            $this->password
+            $this->password,
         );
         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
@@ -48,5 +48,18 @@ class Mysql
             return $data;
         }
         return $res;
+    }
+    /**
+     * @param array<string,mixed> $data
+     */
+    public function queryPrepare(string $query, array $data): array|bool
+    {
+        $prep = $this->conn->prepare($query);
+        $res = $prep->execute($data);
+        if (!$res) {
+            throw new Exception("Failed PDO query \"$prep\"", 500);
+        } 
+        $resp = $prep->fetchAll(PDO::FETCH_ASSOC);
+        return $resp;
     }
 }
