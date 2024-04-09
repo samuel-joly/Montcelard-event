@@ -65,26 +65,6 @@ class Event extends CrudEntity implements CrudEntityInterface
         return true;
     }
 
-    /* public function get(array $query_params): Response */
-    /* { */
-    /*     $startOfWeek=""; */
-    /*     if (array_key_exists("id", $query_params)) { */
-    /*         $data = $this->db->query("Select * from ".$this->get_name()." where id=".$query_params["id"]); */
-    /*     } else { */
-    /*         if (array_key_exists("week", $query_params) && array_key_exists("year", $query_params)) { */
-    /*             $startOfWeek=DateTime::createFromFormat('Y z', $query_params["year"]. ' ' .$query_params["week"]*7  ); */
-    /*             $endOfWeek=DateTime::createFromFormat('Y z', $query_params["year"]. ' ' .($query_params["week"]*7)+5  ); */
-
-    /*             $query = "Select * from ".$this->get_name() */
-    /*                 ." where startDate >= '".explode(" ", date_format($startOfWeek, "Y-m-d"))[0] */
-    /*                 ."' and endDate <= '".explode(" ", date_format($endOfWeek, "Y-m-d"))[0] */
-    /*                 ."'"; */
-    /*             $data = $this->db->query($query); */
-    /*         } */
-    /*     } */
-    /*     return new Response($data, "GET events", 200); */
-    /* } */
-
     static function get_custom_query_attributes(): array {
         $parent_attr = parent::get_custom_query_attributes();
         $parent_attr["week"] = null;

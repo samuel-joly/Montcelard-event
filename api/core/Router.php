@@ -23,29 +23,29 @@ class Router
     public function route(Request $req): Response
     {
         $entity_name = $req->queryParams["entity"];
-        unset($req->queryParams["entity"]);
         if (!array_key_exists($entity_name, $this->routes)) {
             throw new Exception("No crud on entity named \"".$entity_name."\"", 400);
         }
+        unset($req->queryParams["entity"]);
+
         $this->eb->set_instance($this->routes[$entity_name]);
         $entity = $this->eb->instance;
         $user_data = $req->getBody();
         $res = "";
         switch($req->getMethod()) {
             case RequestMethod::GET:
-                $formated_type = [];
+                $entity_schema = [];
                 if (array_key_exists("schema", $req->queryParams)) {
                     unset($req->queryParams["schema"]);
-                    $entity_type = $this->eb->reflection->getProperties(ReflectionProperty::IS_PUBLIC);
-                    foreach ($entity_type as $property_type) {
-                        $formated_type[$property_type->name] = $this->eb->getPropType($property_type->name);
+                    $entity_props = $this->eb->reflection->getProperties(ReflectionProperty::IS_PUBLIC);
+                    foreach ($entity_props as $prop) {
+                        $entity_schema[$prop->name] = $this->eb->getPropType($prop->name);
                     }
                 }
-                $fmt_params = $req->queryParams;
-                $this->eb->format_query_params($fmt_params);
-                $res = $entity->get($fmt_params);
-                if(count($formated_type) > 0) {
-                    array_push($res->data , $formated_type);
+                $this->eb->format_query_params($req->queryParams);
+                $res = $entity->get($req->queryParams);
+                if(count($entity_schema) > 0) {
+                    array_push($res->data , $entity_schema);
                 }
                 break;
 
