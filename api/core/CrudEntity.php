@@ -31,12 +31,12 @@ abstract class CrudEntity implements CrudEntityInterface
 
     public function post(array $data): Response
     {
-        $ins_stmt = SqlQueryBuilder::insert($this, $data);
-        $fmt_data = [];
+        $query = SqlQueryBuilder::insert($this, $data);
+        $query_values = [];
         foreach($data as $key => $value) {
-            $fmt_data[$key] = SqlQueryBuilder::toSqlString($value);
+            $query_values[$key] = SqlQueryBuilder::toSqlString($value);
         }
-        $this->db->queryPrepare($ins_stmt, $fmt_data);
+        $this->db->queryPrepare($query, $query_values);
         $last_insert_id = $this->db->query("Select max(id) as id from ".$this->get_name(), true)[0]["id"];
         $data = ["id" => $last_insert_id];
         return new Response($data, "POST ".$this->get_name(), 200);
@@ -44,18 +44,18 @@ abstract class CrudEntity implements CrudEntityInterface
 
     public function put(array $data, int $id): Response
     {
-        $base_sql = SqlQueryBuilder::update($this, $data, $id);
-        $fmt_data = [];
+        $query = SqlQueryBuilder::update($this, $data, $id);
+        $query_values = [];
         foreach($data as $key => $value) {
-            $fmt_data[$key] = SqlQueryBuilder::toSqlString($value);
+            $query_values[$key] = SqlQueryBuilder::toSqlString($value);
         }
-        $this->db->queryPrepare($base_sql, $fmt_data);
+        $this->db->queryPrepare($query, $query_values);
         return new Response([], "PUT event", 200);
     }
 
     public function delete(int $id): Response
     {
-        $data= $this->db->query("DELETE FROM ".$this->get_name()." WHERE id=".$id);
+        $data = $this->db->query("DELETE FROM ".$this->get_name()." WHERE id=".$id);
         return new Response($data, "DELETE ".$this->get_name(), 200);
     }
 
