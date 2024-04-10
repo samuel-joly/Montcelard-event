@@ -14,17 +14,17 @@ export class Client {
   async get<EntityType extends EntityInterface>(
     entity: EntityType,
     id?: number,
-    qp?: string,
+    qp?: string
   ): Promise<{ data: EntityType[]; message: string }> {
     let req_uri = this.baseUrl + entity.getEntityName()
-    if(qp == null) {
-        if (id != null) {
-          req_uri += '/' + id
-        }
+    if (qp == null) {
+      if (id != null) {
+        req_uri += '/' + id
+      }
     }
-    req_uri += '?schema=true';
-    if(qp != null) {
-        req_uri += "&"+qp
+    req_uri += '?schema=true'
+    if (qp != null) {
+      req_uri += '&' + qp
     }
     const res = await fetch(req_uri, {
       method: 'GET',
@@ -32,7 +32,7 @@ export class Client {
         accept: 'application/json',
         'Content-Type': 'application/json',
         Bearer: this.loginStore.jwt
-      },  
+      }
     })
     if (res.status != 200) {
       this.handleStatus(res.status)
@@ -73,10 +73,10 @@ export class Client {
 
   async put<EntityType extends EntityInterface>(
     entityName: string,
-    entity: EntityType,
+    entity: EntityType
   ): Promise<{ data: any[]; message: string }> {
-    let req_uri = this.baseUrl + entityName + "/" + entity.id;
-    let data;
+    let req_uri = this.baseUrl + entityName + '/' + entity.id
+    let data
     const res = await fetch(req_uri, {
       method: 'PUT',
       headers: {

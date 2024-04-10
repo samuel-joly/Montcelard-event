@@ -1,8 +1,8 @@
 import type { EventInterface } from '@/types/Event'
 
-export class Event implements EventInterface{
+export class Event implements EventInterface {
   id: number
-  roomId: number|null
+  roomId: number | null
   name: string
   guests: number
   hostName: string
@@ -16,7 +16,7 @@ export class Event implements EventInterface{
   endHour: string
   roomConfigurationPrecision: string
   configurationSize: number
-  configurationQuantity: number|null
+  configurationQuantity: number | null
   pauseDate: number
   startHourOffset: string
   endHourOffset: string

@@ -30,7 +30,7 @@ class Router
 
         $this->eb->set_instance($this->routes[$entity_name]);
         $entity = $this->eb->instance;
-        $user_data = $req->getBody();
+        $body = $req->getBody();
         $res = "";
         switch($req->getMethod()) {
             case RequestMethod::GET:
@@ -50,14 +50,14 @@ class Router
                 break;
 
             case RequestMethod::POST:
-                $user_data = $this->eb->instanciate_all($user_data);
-                $res = $entity->post($user_data);
+                $data = $this->eb->instanciate_all($body);
+                $res = $entity->post($data);
                 break;
 
             case RequestMethod::PUT:
                 if (array_key_exists("id", $req->queryParams)) {
-                    $user_data = $this->eb->instanciate_partial($user_data);
-                    $res = $entity->put($user_data, $req->queryParams["id"]);
+                    $body = $this->eb->instanciate_partial($body);
+                    $res = $entity->put($body, $req->queryParams["id"]);
                 } else {
                     throw new Exception("PUT request need an id to operate", 500);
                 }
@@ -65,7 +65,7 @@ class Router
 
             case RequestMethod::DELETE:
                 if (array_key_exists("id", $req->queryParams)) {
-                    $res = $entity->delete($req->queryParams);
+                    $res = $entity->delete($req->queryParams["id"]);
                 } else {
                     throw new Exception("DELETE request need an id to operate", 500);
                 }

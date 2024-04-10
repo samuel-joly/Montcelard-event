@@ -5,20 +5,27 @@ class SqlQueryBuilder
     /**
      * @param array<string,mixed> $query_params
      */
-    static public function get(CrudEntity $entity, array $query_params): string {
-        $glob_operator = ["limit", "order"];
-            $where_clause = " WHERE";
-            foreach($query_params as $attr=> $query_opt) {
-                if (array_key_exists($attr, $glob_operator)) {
-
-                } else {
-                    $where_clause .= " $attr ".$query_opt["operator"]." :$attr";
-                    if (array_key_last($query_params) != $attr) {
-                        $where_clause .= " AND";
-                    }
+    static public function get(CrudEntity $entity, array &$query_params): string {
+        $where_clause = " WHERE";
+        $ending_clause = " ";
+        foreach($query_params as $attr => $op_val) {
+            if (array_key_exists($attr, ["limit"=>"", "order"=>""])) {
+                switch ($attr) {
+                case "limit":
+                    $ending_clause .= " LIMIT ".htmlspecialchars($op_val[1]); 
+                    break;
+                case "order":
+                    throw new Exception("SQL Order in query params is not supported", 500);
+                }
+                unset($query_params[$attr]);
+            } else {
+                $where_clause .= " $attr ".$op_val[0]." :$attr";
+                if (array_key_last($query_params) != $attr) {
+                    $where_clause .= " AND";
                 }
             }
-        return "SELECT * FROM ".$entity->get_name().$where_clause;
+        }
+        return "SELECT * FROM ".$entity->get_name().$where_clause.$ending_clause;
     }
 
     /**
@@ -82,12 +89,12 @@ class SqlQueryBuilder
 
         case "object":
             switch(get_class($to_cast)) {
-                case "DateTimeImmutable":
-                    $format = date_format($to_cast, DateTimeInterface::ATOM);
-                    if ($format == false) { throw new Exception("SQLQueryBuilder: Wrong date format when casting DateTimeImmutable", 500);}
-                    $sqlString = explode("+", str_replace("T", " ", $format))[0];
-                    break;
-                }
+            case "DateTimeImmutable":
+                $format = date_format($to_cast, DateTimeInterface::ATOM);
+                if ($format == false) { throw new Exception("SQLQueryBuilder: Wrong date format when casting DateTimeImmutable", 500);}
+                $sqlString = explode("+", str_replace("T", " ", $format))[0];
+                break;
+            }
             break;
 
         }
