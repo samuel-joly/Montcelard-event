@@ -23,8 +23,11 @@ class Room extends CrudEntity{
         return "Room";
     }
 
-    public function check(): bool
+    public function validate(): bool
     {
+        if ($this->name == "") {
+            return false;
+        } 
         return true;
     }
 }

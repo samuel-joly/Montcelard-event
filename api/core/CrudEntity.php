@@ -12,20 +12,15 @@ abstract class CrudEntity implements CrudEntityInterface
 
     abstract public function get_name(): string;
 
-    /**
-     ** @param array<string,mixed> $data
-     */
-    abstract public function check(): bool;
+    abstract public function validate(): bool;
 
     public function get(array $query_params): Response
     {
         $query = SqlQueryBuilder::get($this, $query_params);
-        $query_values = [];
-        foreach($query_params as $attr => $query_opts) {
-            $cast = EntityBuilder::cast($query_opts["value"], $query_opts["type"]);
-            $query_values[$attr] = SqlQueryBuilder::toSqlString($cast);
+        foreach($query_params as $key => $val) {
+            $query_params[$key] = $val[1];
         }
-        $data = $this->db->queryPrepare($query,$query_values);
+        $data = $this->db->queryPrepare($query,$query_params);
         return new Response($data, "GET events", 200);
     }
 
@@ -68,10 +63,15 @@ abstract class CrudEntity implements CrudEntityInterface
     {
         $this->id = $id;
     }
+
     /**
-     * @return array<int,string>
+     * @return array<string,string>
      */
     static function get_custom_query_attributes(): array {
-        return ["id"=>null];
+        return [
+            "id" => "integer",
+            "limit" => "integer",
+            "order" => "string"
+        ];
     }
 }

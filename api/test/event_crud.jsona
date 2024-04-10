@@ -7,7 +7,7 @@
         'content-type':'application/json',
       },
       body: {
-          name: "Montcelard_user",
+          email: "Montcelard_user",
           password: "Montcelard_password",
       },
     },

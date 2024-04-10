@@ -1,8 +1,8 @@
-import type { EntityInterface } from "./EntityInterface"
+import type { EntityInterface } from './EntityInterface'
 
 export interface EventInterface extends EntityInterface {
   id: number
-  roomId: number|null
+  roomId: number | null
   name: string
   guests: number
   hostName: string
@@ -14,7 +14,7 @@ export interface EventInterface extends EntityInterface {
   orgaName: string
   roomConfiguration: string
   configurationQuantity: number | null
-  configurationSize: number 
+  configurationSize: number
   endHour: string
   roomConfigurationPrecision: string
   pauseDate: number

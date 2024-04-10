@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 class Event extends CrudEntity implements CrudEntityInterface
@@ -55,20 +54,21 @@ class Event extends CrudEntity implements CrudEntityInterface
     public function __construct() {
         parent::__construct();
     }
+
     public function get_name(): string
     {
         return Entity::event->value;
     }
 
-    public function check(): bool
+    public function validate(): bool
     {
         return true;
     }
 
     static function get_custom_query_attributes(): array {
         $parent_attr = parent::get_custom_query_attributes();
-        $parent_attr["week"] = null;
-        $parent_attr["year"] = null;
+        $parent_attr["week"] = "integer";
+        $parent_attr["year"] = "integer";
         return $parent_attr;
     }
 }

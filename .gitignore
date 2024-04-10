@@ -1,6 +1,5 @@
 tailwind.css
 .php-cs-fixer.cache
-sess.nvim
 api/test/curl_debug.html
 env.dev.sh
-*.nvim
+*.sess

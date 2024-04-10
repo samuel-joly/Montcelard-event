@@ -1,9 +1,9 @@
 export default class Login {
-  name: string
   email: string
+  password: string
 
-  constructor(name: string, email: string) {
-    this.name = name
+  constructor(email: string, password: string) {
+    this.password = password
     this.email = email
     return this
   }

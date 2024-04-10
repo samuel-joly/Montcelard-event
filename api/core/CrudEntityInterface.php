@@ -9,7 +9,6 @@ interface CrudEntityInterface
     public function get(array $query_params): Response;
     /**
      * @param array<string,mixed> $data
-     * @param array<string,mixed> $options
      */
     public function post(array $data): Response;
     /**
@@ -17,7 +16,7 @@ interface CrudEntityInterface
      */
     public function put(array $data, int $id): Response;
     /**
-     * @param array<string,mixed> $options
+     * @param int $id
      */
     public function delete(int $id): Response;
 }
