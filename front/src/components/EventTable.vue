@@ -2,7 +2,6 @@
 import { defineComponent } from 'vue'
 import { Event } from '@/classes/Event'
 import ValidationModal from '@/components/ValidationModal.vue'
-import { useEventGrid } from '@/stores/useEventGrid'
 import { useEventFilter } from '@/stores/useEventFilter'
 
 export default defineComponent({
@@ -16,9 +15,9 @@ export default defineComponent({
     }
   },
   data(props) {
-    const eventStore = useEventGrid()
     const filterStore = useEventFilter()
-    return { eventStore, filterStore, props }
+    return { filterStore, props }
+
   },
   methods: {
     getStartDate(event: Event): string {
@@ -32,7 +31,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="eventStore.getSelected != null">
+  <div v-if="filterStore.getSelected != null">
+
     <table>
       <tr id="tableHead">
         <th class="short">ID</th>
@@ -51,8 +51,8 @@ export default defineComponent({
         v-for="event in filterStore.results.slice(0, props.limit)"
         :key="event.id"
         class="event"
-        :class="event.id == eventStore.getSelected.eventId ? 'selected' : ''"
-        @click="eventStore.selectEvent(event.id)"
+        :class="event.id == filterStore.getSelected.id ? 'selected' : ''"
+        @click="filterStore.selectEvent(event)"
       >
         <td>{{ event.id }}</td>
         <td>{{ event.guests }}</td>
