@@ -17,6 +17,7 @@ export default defineComponent({
   data(props) {
     const filterStore = useEventFilter()
     return { filterStore, props }
+
   },
   methods: {
     getStartDate(event: Event): string {
@@ -31,6 +32,7 @@ export default defineComponent({
 
 <template>
   <div v-if="filterStore.getSelected != null">
+
     <table>
       <tr id="tableHead">
         <th class="short">ID</th>
