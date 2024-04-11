@@ -9,9 +9,9 @@ enum RequestMethod: string
 
 class Request
 {
-    private RequestMethod $method;
-    private array $body;
-    private array $options;
+    public RequestMethod $method;
+    public array $body;
+    public array $queryParams;
 
     /**
      * @param $query_params
@@ -36,7 +36,7 @@ class Request
 
         $this->setMethod($method);
         $this->setBody($body);
-        $this->options = $query_params;
+        $this->queryParams = $query_params;
     }
 
     public function getMethod(): RequestMethod
@@ -75,10 +75,5 @@ class Request
             } else {
                 $this->body = [];
             }
-    }
-
-    public function getOptions(): array
-    {
-        return $this->options;
     }
 }

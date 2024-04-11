@@ -5,15 +5,18 @@ source ./env.$env_type.sh;
 
 help() {
     echo -e "\e[1;37mList of commands:\e[m";
+    echo -e "db \e[32mup\e[m\t\t\t Setup and fill database";
+    echo -e "db \e[32mdrop\e[m\t\t\t Drop all tables";
+    echo -e "db \e[32mclear\e[m\t\t Remove all table content";
     echo -e "db \e[32mmigrate\e[m\t\t Execute database migrations schema at \e[33mMYSQL_DATABASE\e[m ";
     echo -e "db \e[32mpopulate\e[m\t\t Execute sql query from \e[33mdocker/db/data/*.sql\e[m in \e[33mMYSQL_DATABASE\e[m ";
-    echo -e "db \e[32mmigpop\e[m\t\t Migrate database schema then populate them";
     echo -e "db \e[32mrefresh\e[m \t\t Drop all table and migrate + masspopulate them";
     echo -e "db \e[32mmasspop\e[m <int> \t Execute <int> times mk db populate (default 10)";
     echo -e "db \e[32mquery\e[m <string>\t Execute query as \e[33mMYSQL_USER\e[m to \e[33mMYSQL_DATABASE\e[m defined in the mysql container";
     echo -e "db \e[32mquery\e[m root <string>\t Same as above but as root mysql user";
     echo "";
     echo -e "docker \e[32mup\e[m\t\t docker compose up with env loading";
+    echo -e "docker \e[32mbuild\e[m\t\t docker build with env loading";
     echo -e "docker \e[32mdown\e[m\t\t docker compose down";
     echo -e "docker \e[32mstart\e[m\t\t Start already build containers";
     echo -e "docker \e[32mstop\e[m\t\t Stop already started containers";
@@ -38,6 +41,10 @@ case $1 in
 
     "docker")
         case $2 in
+            "build")
+                shift 2
+                docker compose build $@
+                ;;
             "up")
                 shift 2
                 docker compose up $@
@@ -87,6 +94,13 @@ case $1 in
             exit 0;
         else
             case $2 in
+                "drop")
+                        ./mk db clear;
+                        ./mk db query "drop table event;drop table room; drop table login;"
+                    ;;
+                "clear")
+                        ./mk db query "delete from event;delete from room; delete from login;"
+                    ;;
                 "query")
                     shift
                     if [[ $2 == "root" ]]; then
@@ -111,11 +125,11 @@ case $1 in
                     ;;
 
                 "masspop")
-                    shift 2
+                    shift 3
                     i=0
                     limit=10
-                    if [[ -z $2 ]];then
-                        limit=$1;
+                    if [[ -z $1 ]];then
+                        limit=10;
                     fi
                     while [[ $i -le $limit ]]; do 
                         ((i++));
@@ -123,13 +137,17 @@ case $1 in
                     done;
                     ;;
 
-                "migpop")
+                "up")
+                    echo -e "\e[1;38mMigrate\e[m";
                     ./mk db migrate;
-                    ./mk db masspop;
+                    echo -e "\e[1;38mPopulate\e[m";
+                    ./mk db populate;
                     ;;
+
                 "refresh")
-                    ./mk db query root "drop table event; drop table login;";
-                    ./mk db migpop;
+                    echo -e "\e[1;38mDrop\e[m";
+                    ./mk db drop;
+                    ./mk db up;
                     ;;
 
                 *)

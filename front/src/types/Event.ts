@@ -1,39 +1,44 @@
-export interface EventInterface {
+import type { EntityInterface } from './EntityInterface'
+
+export interface EventInterface extends EntityInterface {
   id: number
+  roomId: number | null
   name: string
   guests: number
-  host_name: string
-  start_date: Date
-  end_date: Date
-  start_hour: string
-  orga_mail: string
-  orga_tel: string
-  orga_name: string
-  room_configuration: string
-  end_hour: string
-  room_configuration_precision: string
-  pause_date: number
-  start_hour_offset: string
-  end_hour_offset: string
-  host_table: boolean
+  hostName: string
+  startDate: Date
+  endDate: Date
+  startHour: string
+  orgaMail: string
+  orgaTel: string
+  orgaName: string
+  roomConfiguration: string
+  configurationQuantity: number | null
+  configurationSize: number
+  endHour: string
+  roomConfigurationPrecision: string
+  pauseDate: number
+  startHourOffset: string
+  endHourOffset: string
+  hostTable: boolean
   paperboard: number
-  chair_sup: number
-  table_sup: number
+  chairSup: number
+  tableSup: number
   pen: boolean
   paper: boolean
   scissors: boolean
   scotch: boolean
-  post_it_xl: boolean
-  paper_a1: boolean
-  bloc_note: boolean
+  postItXl: boolean
+  paperA1: boolean
+  blocNote: boolean
   gomette: boolean
-  post_it: boolean
-  coffee_groom: number
+  postIt: boolean
+  coffeeGroom: number
   meal: number
-  morning_coffee: number
-  afternoon_coffee: number
+  morningCoffee: number
+  afternoonCoffee: number
   coktail: number
   vegetarian: number
-  gluten_free: number
-  meal_precision: string
+  glutenFree: number
+  mealPrecision: string
 }

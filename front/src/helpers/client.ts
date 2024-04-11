@@ -1,6 +1,7 @@
 import { useLogin } from '@/stores/login'
 import EntityBuilder from '@/helpers/EntityBuilder'
 import type { EntityInterface } from '@/types/EntityInterface'
+import { Event } from '@/classes/Event'
 
 export class Client {
   baseUrl: string = 'http://localhost/api/'
@@ -12,13 +13,20 @@ export class Client {
 
   async get<EntityType extends EntityInterface>(
     entity: EntityType,
-    id?: number
+    id?: number,
+    qp?: string
   ): Promise<{ data: EntityType[]; message: string }> {
     let req_uri = this.baseUrl + entity.getEntityName()
-    if (id != null) {
-      req_uri += '/' + id
+    if (qp == null) {
+      if (id != null) {
+        req_uri += '/' + id
+      }
     }
-    const res = await fetch(req_uri + '?schema=true', {
+    req_uri += '?schema=true'
+    if (qp != null) {
+      req_uri += '&' + qp
+    }
+    const res = await fetch(req_uri, {
       method: 'GET',
       headers: {
         accept: 'application/json',
@@ -33,9 +41,6 @@ export class Client {
 
     const resp: { data: any; message: string } = await res.json()
     const data_schema: { [name: string]: string } = resp.data.pop()
-    if (resp.data.length == 0) {
-      throw new Error('Request GET "' + entity.getEntityName() + '" return empty array')
-    }
     resp.data.map((resp_obj: any) => {
       EntityBuilder.build<EntityType>(entity, resp_obj, data_schema)
     })
@@ -66,6 +71,31 @@ export class Client {
     return data
   }
 
+  async put<EntityType extends EntityInterface>(
+    entityName: string,
+    entity: EntityType
+  ): Promise<{ data: any[]; message: string }> {
+    let req_uri = this.baseUrl + entityName + '/' + entity.id
+    let data
+    const res = await fetch(req_uri, {
+      method: 'PUT',
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        Bearer: this.loginStore.jwt
+      },
+      body: JSON.stringify(entity)
+    })
+
+    if (!res.ok) {
+      this.handleStatus(res.status)
+      throw new Error('PUT request failed with status ' + res.status)
+    } else {
+      data = await res.json()
+    }
+    return data
+  }
+
   async post(
     entityName: String,
     body: any,
@@ -83,12 +113,12 @@ export class Client {
         'Content-Type': 'application/json',
         Bearer: this.loginStore.jwt
       },
-      body: body
+      body: JSON.stringify(body)
     })
 
     if (!res.ok) {
       this.handleStatus(res.status)
-      throw new Error('request failed with status ' + res.status)
+      throw new Error('POST request failed with status ' + res.status)
     } else {
       data = await res.json()
     }

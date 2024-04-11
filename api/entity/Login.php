@@ -2,7 +2,7 @@
 
 class Login extends CrudEntity implements CrudEntityInterface
 {
-    public string $name;
+    public string $email;
     public string $password;
 
     public function get_name(): string
@@ -10,14 +10,14 @@ class Login extends CrudEntity implements CrudEntityInterface
         return 'login';
     }
 
-    public function check(array $data): bool
+    public function validate(): bool
     {
         return true;
     }
 
     public function post(array $data): Response
     {
-        $db_call = (new Mysql())->query("Select password from login where name = '".$this->name."';");
+        $db_call = (new Mysql())->query("Select password from login where name = '".$this->email."';");
         if (sizeof($db_call) == 0) {
             return new Response([], "Wrong login or password", 401);
         }
@@ -35,7 +35,7 @@ class Login extends CrudEntity implements CrudEntityInterface
     private function gen_JWT(): array
     {
         $header = '{"typ":"JWT","alg":"HS256"}';
-        $payload = '{"iss":"'.$this->name.'","exp":'.strtotime("+5 day", (int)(new DateTime())->format("U")).'}';
+        $payload = '{"iss":"'.$this->email.'","exp":'.strtotime("+5 day", (int)(new DateTime())->format("U")).'}';
         $encoded_header =  base64_encode($header);
         $encoded_payload = base64_encode($payload);
         return ["header" => $encoded_header,
@@ -78,11 +78,11 @@ class Login extends CrudEntity implements CrudEntityInterface
     {
         throw new Exception("Only POST request are accepted on /login", 400);
     }
-    public function delete(int $id = null): Response
+    public function delete(int $id): Response
     {
         throw new Exception("Only POST request are accepted on /login", 400);
     }
-    public function get(int $id = null): Response
+    public function get(array $options): Response
     {
         throw new Exception("Only POST request are accepted on /login", 400);
     }

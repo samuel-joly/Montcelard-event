@@ -1,5 +1,4 @@
 import type { EntityInterface } from '@/types/EntityInterface'
-import { Room } from '@/classes/Event'
 
 export default class EntityBuilder {
   static build<EntityType extends EntityInterface>(
@@ -7,23 +6,19 @@ export default class EntityBuilder {
     data: any,
     entitySchema: { [name: string]: string }
   ): EntityType {
-    let a = Object.keys(entity)
-    let b = Object.keys(data)
-    const a_diff_b = a.filter((e: string) => !b.includes(e))
-    const b_diff_a = b.filter((e: string) => !a.includes(e))
+    const a = Object.keys(entity)
+    const b = Object.keys(data)
+    const a_diff_b = a.filter((ae: string) => !b.includes(ae))
+    const b_diff_a = b.filter((be: string) => !a.includes(be))
     if (a_diff_b.length > 0) {
       throw new Error(
-        "Attribute(s) '" +
-          [...a_diff_b] +
-          "'is not present in data for entity '" +
-          entity.getEntityName() +
-          "'"
+        "Attribute(s) '" + [...a_diff_b] + "'is not present in data'" + entity.getEntityName() + "'"
       )
     } else if (b_diff_a.length > 0) {
       throw new Error(
         "Attribute(s) '" +
           [...b_diff_a] +
-          "'is not present in entity for for data '" +
+          "'is not present in entity'" +
           entity.getEntityName() +
           "'"
       )
@@ -37,7 +32,7 @@ export default class EntityBuilder {
           }
         } catch (error) {
           console.error(
-            'During mapping of ' +
+            'Error during mapping of ' +
               entity.getEntityName() +
               ' on ' +
               schema_attr_name +
@@ -85,49 +80,6 @@ export default class EntityBuilder {
           )
         }
         break
-      case 'Room':
-        if (data == null) {
-        } else if (typeof data != 'string') {
-          throw new Error('Can only cast string to Room, type="' + typeof data + '" given')
-        } else {
-          switch (data) {
-            case 'Chine':
-              data = Room[Room.Chine]
-              break
-            case 'Bresil':
-              data = Room[Room.Bresil]
-              break
-            case 'Tadjikistan':
-              data = Room[Room.Tadjikistan]
-              break
-            case 'Madagascar':
-              data = Room[Room.Madagascar]
-              break
-            case 'Liban':
-              data = Room[Room.Chine]
-              break
-            case 'Haiti':
-              data = Room[Room.Haiti]
-              break
-            case 'Myanmar':
-              data = Room[Room.Myanmar]
-              break
-            case 'Mali':
-              data = Room[Room.Mali]
-              break
-            case 'Laos':
-              data = Room[Room.Laos]
-              break
-            case 'Cambodge':
-              data = Room[Room.Cambodge]
-              break
-            default:
-              throw new Error(
-                'String to Room works only if string value is in RoomEnum. "' + data + '" given'
-              )
-          }
-        }
-        break
     }
     return data
   }
@@ -136,10 +88,8 @@ export default class EntityBuilder {
     switch (type) {
       case 'integer':
         return 'number'
-        break
       default:
         return type
-        break
     }
   }
 }

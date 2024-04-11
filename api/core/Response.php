@@ -30,10 +30,8 @@ class Response
     private function makeHeader():void {
         $header_string = "Content-Type: application/json";
         $append_string = "";
-        switch($this->code) {
-            case 401:
-                $append_string = ";WWW-Authenticate: Bearer";
-                break;
+        if ($this->code == 401) {
+            $append_string = ";WWW-Authenticate: Bearer";
         }
         header($header_string.$append_string, true, $this->code);
     }

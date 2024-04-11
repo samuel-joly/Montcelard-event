@@ -1,267 +1,392 @@
 <script lang="ts">
-import { useRoute } from 'vue-router'
+import { defineComponent } from 'vue'
+import Icon from '@/components/Icon.vue'
 import { Client } from '@/helpers/client'
-import { defineComponent, ref, onMounted } from 'vue'
-import { Event } from '@/classes/Event'
-
+import { Event as Ev } from '@/classes/Event'
+import { useEventFilter } from '@/stores/useEventFilter'
 export default defineComponent({
+  components: {
+    Icon
+  },
   setup() {
-    const event = ref<Event>()
-    onMounted(async () => {
-      try {
-        const router = useRoute()
-        const client = new Client()
-        const result = await client.get<Event>(new Event(), Number(router.params.id))
-        if (result.data != null) {
-          event.value = result.data[0]
-        }
-      } catch (error) {
-        console.error('EventForm client call:', error)
+    const filterStore = useEventFilter()
+    const client = new Client()
+    async function putEvent(e: Event) {
+      e.preventDefault()
+      if (filterStore.selected != null) {
+        client.put<Ev>('event', filterStore.selected)
+        filterStore.results.map((e) => {
+          if (filterStore.selected != null) {
+            if (e.id == filterStore.selected.id) {
+              e = filterStore.selected
+            }
+          }
+        })
       }
-    })
+    }
     return {
-      event
+      filterStore: filterStore,
+      putEvent
+    }
+  },
+  computed: {
+    getHostsName(): string[] | null {
+      if (this.filterStore.selected != null) {
+        return this.filterStore.selected.hostName.split(',')
+      }
+      return null
     }
   }
 })
 </script>
 
 <template>
-  <main v-if="event != null">
+  <form id="eventForm" v-if="filterStore.selected != null">
+    <button @click="putEvent">PUT</button>
     <div id="topInfo">
       <span>
-        <input id="formationName" name="name" v-model="event.name" />
+        <input id="formationName" name="name" v-model="filterStore.selected.name" />
+        <div id="topBar">
+          <div class="flex-row just-between">
+            <span>
+              <input
+                name="start_date"
+                type="date"
+                :value="filterStore.selected.startDate.toISOString().split('T')[0]"
+                @input="
+                  (event) => {
+                    const newDate = (event.target as HTMLInputElement).valueAsDate
+                    if (filterStore.selected != null && newDate != null) {
+                      filterStore.selected.startDate = newDate
+                    }
+                  }
+                "
+              />
+            </span>
 
-        <div class="dateInput">
-          <span>
-            <label for="start_date">du</label>
-            <input
-              name="start_date"
-              type="date"
-              @input="event.start_date"
-              :value="event.start_date.toISOString().split('T')[0]"
-            />
-          </span>
-          <span>
-            <label for="end_date">au</label>
-            <input
-              name="end_date"
-              type="date"
-              @input="event.end_date"
-              :value="event.end_date.toISOString().split('T')[0]"
-            />
-          </span>
-        </div>
-        <div class="dateInput">
-          <span>
-            <label for="guests">pour</label>
-            <input id="paxNumber" type="number" name="guests" v-model="event.guests" />
-          </span>
+            <span class="inlineInput just-between">
+              <input
+                id="paxNumber"
+                type="number"
+                name="guests"
+                v-model="filterStore.selected.guests"
+              />
+            </span>
+          </div>
+          <div class="flex-row just-between">
+            <span>
+              <input
+                name="end_date"
+                type="date"
+                :value="filterStore.selected.endDate.toISOString().split('T')[0]"
+                @input="
+                  (event) => {
+                    const newDate = (event.target as HTMLInputElement).valueAsDate
+                    if (filterStore.selected != null && newDate != null) {
+                      filterStore.selected.endDate = newDate
+                    }
+                  }
+                "
+              />
+            </span>
+            <span id="room-select" class="just-between">
+              <select v-model="filterStore.selected.roomId">
+                <option value="1">Chine</option>
+                <option value="2">Cambodge</option>
+                <option value="3">Laos</option>
+                <option value="4">Jardin d'hiver</option>
+                <option value="5">Mali</option>
+                <option value="6">Myanmar</option>
+                <option value="7">Haiti</option>
+                <option value="8">Liban</option>
+                <option value="9">Madagascar</option>
+                <option value="10">Tadjikistan</option>
+                <option value="11">Bresil</option>
+                <option value="12">Orangerie</option>
+              </select>
+            </span>
+          </div>
         </div>
       </span>
-
       <div id="orgaInfo">
         <span>
-          <label for="orga_name">Contact administratif</label>
-          <input name="orga_name" v-model="event.orga_name" />
+          <label class="iconLabel" for="orga_name">
+            <Icon :w="23" :h="23" n="user" />
+          </label>
+          <input name="orgaName" v-model="filterStore.selected.orgaName" />
         </span>
         <span>
-          <label for="orga_mail">Mail</label>
-          <input name="orga_mail" v-model="event.orga_mail" />
+          <label class="iconLabel" for="orga_mail">
+            <Icon :w="23" :h="23" n="mail" />
+          </label>
+          <input name="orgaMail" v-model="filterStore.selected.orgaMail" />
         </span>
         <span>
-          <label for="orga_tel">Téléphone</label>
-          <input name="orga_tel" v-model="event.orga_tel" />
+          <label class="iconLabel" for="orga_tel">
+            <Icon :w="23" :h="23" n="phone" />
+          </label>
+          <input name="orgaTel" v-model="filterStore.selected.orgaTel" />
         </span>
       </div>
     </div>
-
-    <div id="roomInfo">
-      <h2>Salle</h2>
-      <div id="conf">
-        <span>
-          <label>Configuration</label>
-          <select v-model="event.room_configuration">
-            <option value="U">En U</option>
-            <option value="Ilots">Ilots</option>
-            <option value="Theatre">Théâtre</option>
-            <option value="Board">Board</option>
-          </select>
-        </span>
-        <span v-if="event.room_configuration == 'Ilots'">
-          <div class="roomConfigurationArg">
-            <small></small>
-          </div>
-          <div class="roomConfigurationValue">
-            <input type="text" placeholder="2x3 ou 2 par 3" v-model="event.configuration_size" />
-          </div>
-        </span>
-        <span v-if="event.room_configuration == 'U'">
-          <div id="roomConfigurationArg">
-            <small></small>
-          </div>
-          <div id="roomConfigurationValue">
-            <select v-model="event.configuration_quantity">
-              <option value="8">8</option>
-              <option value="10">10</option>
-              <option value="12" selected>12</option>
-              <option value="14">14</option>
-              <option value="16">16</option>
+    <div id="formEventContainer">
+      <div id="roomInfo">
+        <div id="conf">
+          <span>
+            <h3>Configuration</h3>
+            <select v-model="filterStore.selected.roomConfiguration">
+              <option value="U">En U</option>
+              <option value="Ilots">Ilots</option>
+              <option value="Theatre">Théâtre</option>
+              <option value="Board">Board</option>
             </select>
+          </span>
+          <span v-if="filterStore.selected.roomConfiguration == 'Ilots'">
+            <div class="roomConfigurationArg">
+              <small></small>
+            </div>
+            <div class="roomConfigurationValue" style="display: flex; flex-direction: row">
+              <input
+                class="configuration_opt"
+                type="number"
+                v-model="filterStore.selected.configurationQuantity"
+              />
+              <p style="margin: 0 0.5rem 0 0.5rem">x</p>
+              <input
+                class="configuration_opt"
+                type="number"
+                v-model="filterStore.selected.configurationSize"
+              />
+            </div>
+          </span>
+          <span v-if="filterStore.selected.roomConfiguration == 'U'">
+            <div id="roomConfigurationArg">
+              <small></small>
+            </div>
+            <div id="roomConfigurationValue">
+              <select v-model="filterStore.selected.configurationSize">
+                <option :value="8">8</option>
+                <option :value="10">10</option>
+                <option :value="12">12</option>
+                <option :value="14">14</option>
+                <option :value="16">16</option>
+                <option :value="18">18</option>
+              </select>
+            </div>
+          </span>
+        </div>
+        <div id="roomFurnitures">
+          <span>
+            <label for="paperboard">ppbd</label>
+            <input
+              type="number"
+              id="paperboard"
+              name="paperboard"
+              v-model="filterStore.selected.paperboard"
+            />
+          </span>
+          <span>
+            <label for="chair_sup">chaise +</label>
+            <input type="number" name="chairSup" v-model="filterStore.selected.chairSup" />
+          </span>
+          <span>
+            <label for="table_sup">tables +</label>
+            <input type="number" name="tableSup" v-model="filterStore.selected.tableSup" />
+          </span>
+          <span id="hostTable">
+            <label
+              :class="[filterStore.selected.hostTable ? 'selectedFurniture' : '']"
+              for="host_table"
+              >Table Formateur</label
+            >
+            <input
+              type="checkbox"
+              id="host_table"
+              name="host_table"
+              v-model="filterStore.selected.hostTable"
+            />
+          </span>
+        </div>
+        <h3>Matériel</h3>
+        <div id="furnituresBox">
+          <span class="furnitures">
+            <label :class="[filterStore.selected.pen ? 'selectedFurniture' : '']" for="pen"
+              >stylos</label
+            >
+            <input type="checkbox" id="pen" name="pen" v-model="filterStore.selected.pen" />
+          </span>
+          <span class="furnitures">
+            <label
+              :class="[filterStore.selected.blocNote ? 'selectedFurniture' : '']"
+              for="bloc_note"
+              >bloc-note</label
+            >
+            <input
+              id="bloc_note"
+              type="checkbox"
+              name="bloc_note"
+              v-model="filterStore.selected.blocNote"
+            />
+          </span>
+          <span class="furnitures">
+            <label :class="[filterStore.selected.paper ? 'selectedFurniture' : '']" for="paper"
+              >A4</label
+            >
+            <input id="paper" type="checkbox" name="paper" v-model="filterStore.selected.paper" />
+          </span>
+          <span class="furnitures">
+            <label :class="[filterStore.selected.paperA1 ? 'selectedFurniture' : '']" for="paper_a1"
+              >A1</label
+            >
+            <input
+              id="paper_a1"
+              type="checkbox"
+              name="paper_a1"
+              v-model="filterStore.selected.paperA1"
+            />
+          </span>
+          <span class="furnitures">
+            <label
+              :class="[filterStore.selected.scissors ? 'selectedFurniture' : '']"
+              for="scissors"
+              >ciseau</label
+            >
+            <input
+              id="scissors"
+              type="checkbox"
+              name="scissors"
+              v-model="filterStore.selected.scissors"
+            />
+          </span>
+          <span class="furnitures">
+            <label :class="[filterStore.selected.scotch ? 'selectedFurniture' : '']" for="scotch"
+              >scotch</label
+            >
+            <input
+              id="scotch"
+              type="checkbox"
+              name="scotch"
+              v-model="filterStore.selected.scotch"
+            />
+          </span>
+          <span class="furnitures">
+            <label :class="[filterStore.selected.postIt ? 'selectedFurniture' : '']" for="post_it"
+              >post-it</label
+            >
+            <input
+              id="postIt"
+              type="checkbox"
+              name="postIt"
+              v-model="filterStore.selected.postIt"
+            />
+          </span>
+          <span class="furnitures">
+            <label
+              :class="[filterStore.selected.postItXl ? 'selectedFurniture' : '']"
+              for="post_it_xl"
+              >post-it XL</label
+            >
+            <input
+              id="post_it_xl"
+              type="checkbox"
+              name="post_it_xl"
+              v-model="filterStore.selected.postItXl"
+            />
+          </span>
+          <span class="furnitures">
+            <label :class="[filterStore.selected.gomette ? 'selectedFurniture' : '']" for="gomette"
+              >gomette</label
+            >
+            <input
+              id="gomette"
+              type="checkbox"
+              name="gomette"
+              v-model="filterStore.selected.gomette"
+            />
+          </span>
+        </div>
+        <span>
+          <label for="room_configuration_precision">Précision</label>
+          <textarea
+            name="room_configuration_precision"
+            v-model="filterStore.selected.roomConfigurationPrecision"
+          />
+        </span>
+      </div>
+      <div id="startDay">
+        <span>
+          <label for="host_name">Nom formateur</label>
+          <div id="hosts-name" v-if="getHostsName != null">
+            <input
+              :v-model="getHostsName[index]"
+              :value="hostName"
+              v-for="(hostName, index) in getHostsName"
+            />
           </div>
         </span>
+        <div>
+          <span>
+            <label for="start_hour">Heure de début</label>
+            <input name="startHour" v-model="filterStore.selected.startHour" />
+          </span>
+          <span>
+            <label for="end_hour">Heure de fin</label>
+            <input name="endHour" v-model="filterStore.selected.endHour" />
+          </span>
+        </div>
+      </div>
+      <div id="restauration">
         <span>
-          <label for="paperboard">ppbd</label>
-          <input type="number" id="paperboard" name="paperboard" v-model="event.paperboard" />
+          <label for="coffee_groom">Café accueil</label>
+          <input name="coffeeGroom" v-model="filterStore.selected.coffeeGroom" />
         </span>
         <span>
-          <label for="chair_sup">chaises +</label>
-          <input type="number" name="chair_sup" v-model="event.chair_sup" />
+          <label for="meal">Repas</label>
+          <input name="meal" v-model="filterStore.selected.meal" />
         </span>
         <span>
-          <label for="table_sup">tables +</label>
-          <input type="number" name="table_sup" v-model="event.table_sup" />
+          <label for="afternoon_coffee">Viennoiserie</label>
+          <input name="afternoonCoffee" v-model="filterStore.selected.afternoonCoffee" />
         </span>
-        <span id="hostTable">
-          <label for="host_table">Table formateur</label>
-          <input type="checkbox" id="host_table" name="host_table" v-model="event.host_table" />
+        <span>
+          <label for="coktail">coktail</label>
+          <input name="coktail" v-model="filterStore.selected.coktail" />
+        </span>
+        <span>
+          <label for="vegetarian">vegetarian </label>
+          <input name="vegetarian" v-model="filterStore.selected.vegetarian" />
+        </span>
+        <span>
+          <label for="gluten_free">gluten_free </label>
+          <input name="glutenFree" v-model="filterStore.selected.glutenFree" />
+        </span>
+        <span>
+          <label for="meal_precision">meal_precision </label>
+          <input name="mealPrecision" v-model="filterStore.selected.mealPrecision" />
         </span>
       </div>
-      <h3>Matériel</h3>
-
-      <div id="furnituresBox">
-        <span class="furnitures">
-          <label :class="[event.pen ? 'selectedFurniture' : '']" for="pen">stylos</label>
-          <input type="checkbox" id="pen" name="pen" v-model="event.pen" />
-        </span>
-        <span class="furnitures">
-          <label :class="[event.bloc_note ? 'selectedFurniture' : '']" for="bloc_note"
-            >bloc-note</label
-          >
-          <input id="bloc_note" type="checkbox" name="bloc_note" v-model="event.bloc_note" />
-        </span>
-        <span class="furnitures">
-          <label :class="[event.paper ? 'selectedFurniture' : '']" for="paper">feuilles</label>
-          <input id="paper" type="checkbox" name="paper" v-model="event.paper" />
-        </span>
-        <span class="furnitures">
-          <label :class="[event.paper_a1 ? 'selectedFurniture' : '']" for="paper_a1"
-            >feuilles A1</label
-          >
-          <input id="paper_a1" type="checkbox" name="paper_a1" v-model="event.paper_a1" />
-        </span>
-        <span class="furnitures">
-          <label :class="[event.scissors ? 'selectedFurniture' : '']" for="scissors">ciseau</label>
-          <input id="scissors" type="checkbox" name="scissors" v-model="event.scissors" />
-        </span>
-        <span class="furnitures">
-          <label :class="[event.scotch ? 'selectedFurniture' : '']" for="scotch">scotch</label>
-          <input id="scotch" type="checkbox" name="scotch" v-model="event.scotch" />
-        </span>
-        <span class="furnitures">
-          <label :class="[event.post_it ? 'selectedFurniture' : '']" for="post_it">post-it</label>
-          <input id="post_it" type="checkbox" name="post_it" v-model="event.post_it" />
-        </span>
-        <span class="furnitures">
-          <label :class="[event.post_it_xl ? 'selectedFurniture' : '']" for="post_it_xl"
-            >post-it XL</label
-          >
-          <input id="post_it_xl" type="checkbox" name="post_it_xl" v-model="event.post_it_xl" />
-        </span>
-        <span class="furnitures">
-          <label :class="[event.gomette ? 'selectedFurniture' : '']" for="gomette">gomette</label>
-          <input id="gomette" type="checkbox" name="gomette" v-model="event.gomette" />
-        </span>
-      </div>
-
-      <span>
-        <label for="room_configuration_precision">Précision</label>
-        <textarea
-          name="room_configuration_precision"
-          v-model="event.room_configuration_precision"
-        />
-      </span>
     </div>
-
-    <span>
-      <label for="host_name">Nom formateur</label>
-      <input name="host_name" v-model="event.host_name" />
-    </span>
-
-    <span>
-      <label for="start_hour">Heure de début</label>
-      <input name="start_hour" v-model="event.start_hour" />
-    </span>
-
-    <span>
-      <label for="end_hour">Heure de fin</label>
-      <input name="end_hour" v-model="event.end_hour" />
-    </span>
-
-    <span>
-      <label for="pause_date">pause_date </label>
-      <input name="pause_date" v-model="event.pause_date" />
-    </span>
-
-    <span>
-      <label for="start_hour_offset">start_hour_offset </label>
-      <input name="start_hour_offset" v-model="event.start_hour_offset" />
-    </span>
-
-    <span>
-      <label for="end_hour_offset">end_hour_offset </label>
-      <input name="end_hour_offset" v-model="event.end_hour_offset" />
-    </span>
-
-    <span>
-      <label for="coffee_groom">coffee_groom </label>
-      <input name="coffee_groom" v-model="event.coffee_groom" />
-    </span>
-
-    <span>
-      <label for="meal">meal </label>
-      <input name="meal" v-model="event.meal" />
-    </span>
-
-    <span>
-      <label for="morning_coffee">morning_coffee </label>
-      <input name="morning_coffee" v-model="event.morning_coffee" />
-    </span>
-
-    <span>
-      <label for="afternoon_coffee">afternoon_coffee </label>
-      <input name="afternoon_coffee" v-model="event.afternoon_coffee" />
-    </span>
-
-    <span>
-      <label for="coktail">coktail </label>
-      <input name="coktail" v-model="event.coktail" />
-    </span>
-
-    <span>
-      <label for="vegetarian">vegetarian </label>
-      <input name="vegetarian" v-model="event.vegetarian" />
-    </span>
-
-    <span>
-      <label for="gluten_free">gluten_free </label>
-      <input name="gluten_free" v-model="event.gluten_free" />
-    </span>
-
-    <span>
-      <label for="meal_precision">meal_precision </label>
-      <input name="meal_precision" v-model="event.meal_precision" />
-    </span>
-  </main>
+  </form>
 </template>
 
 <style scoped>
-main {
+#eventForm {
+  background-color: #cfd4e4;
+  height: 100vh;
+}
+form {
+  position: absolute;
+  left: 75vw;
+  top: 0;
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
-  color: black;
-  width: 90vw;
+  width: 25vw;
+  z-index: 999;
+}
+
+span input,
+span select {
+  background-color: #eff1f6;
 }
 
 input,
@@ -269,7 +394,6 @@ select {
   padding: 0.3rem;
   border-radius: 0.2rem;
   border: none;
-  background-color: #cfd4e4;
   transition: 0.2s;
 }
 
@@ -279,21 +403,23 @@ input:focus {
   color: white;
 }
 
-#topInfo {
+.inlineInput {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  margin-top: 0.15em;
+  justify-content: flex-end;
+}
+
+#topInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   padding: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5em;
   background-color: #434f77;
   color: white;
   font-size: 1.2rem;
-}
-
-topInfo span div {
-  padding: 0.2rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
 }
 
 #formationName:hover {
@@ -301,20 +427,18 @@ topInfo span div {
 }
 
 #formationName {
-  background-color: #434f77 !important;
-  color: white;
-  font-size: 2rem;
+  font-size: 1.3rem;
   margin: 0px;
+  width: 100%;
 }
-#formationName:focus {
-  outline: none;
-  background-color: #313956 !important;
-  color: white;
+
+.dateInput {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-.dateIput {
-  margin: 0px;
-}
-.dateInput span label {
+
+span label {
   margin-left: 0.2rem;
   margin-right: 0.2rem;
 }
@@ -322,7 +446,7 @@ topInfo span div {
 .dateInput span input {
   margin: 0px;
   padding: 0px !important;
-  font-size: 0.85rem;
+  font-size: 0.7em;
 }
 
 #paxNumber {
@@ -341,21 +465,16 @@ topInfo span div {
   padding: 0.1rem;
 }
 
+.iconLabel {
+  display: flex;
+  width: fit-content;
+  justify-content: center;
+  align-items: center;
+}
+
 #orgaInfo span label {
   margin-right: 0.8rem;
   font-size: 0.8em;
-}
-
-#roomInfo {
-  padding: 1rem;
-  padding-top: 0px;
-  background-color: #cfd4e4;
-  width: 50%;
-}
-
-#roomInfo span input,
-#roomInfo span select {
-  background-color: #eff1f6;
 }
 
 #roomInfo h2 {
@@ -372,12 +491,15 @@ topInfo span div {
   display: flex;
   justify-content: flex-start;
 }
+
 #conf span {
   margin-right: 0.5rem;
 }
+
 #conf span label {
   text-align: center;
 }
+
 #furnituresBox {
   display: flex;
   flex-direction: row;
@@ -386,6 +508,7 @@ topInfo span div {
   flex-wrap: wrap;
   transition: 0.2s;
 }
+
 .selectedFurniture {
   background-color: #434f77;
   color: white;
@@ -398,18 +521,21 @@ topInfo span div {
 
 .furnitures label {
   padding: 0.2rem;
-  border-radius: 5px;
   transition: 0.2s;
+  border-radius: 5px;
   border: 1px solid white;
 }
+
 .furnitures label:hover {
   cursor: pointer !important;
   border-radius: 5px;
   background-color: #313956;
   color: white;
 }
+
 .furnitures {
-  margin-right: 0.4rem;
+  margin-right: 0.2rem;
+  margin-bottom: 0.2rem;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
@@ -420,29 +546,146 @@ topInfo span div {
   width: 3rem;
   align-self: center;
 }
+
 #hostTable {
   display: flex;
   flex-direction: row !important;
   align-items: flex-end;
 }
+
 #hostTable input {
   align-self: flex-end;
   margin-bottom: 0.3rem;
 }
+
 #hostTable label {
   margin-right: 0.5rem;
 }
+
 #roomConfigurationValue {
   display: flex;
   flex-direction: row !important;
   align-items: flex-end !important;
 }
+
 .roomConfigurationValue input,
 .roomConfigurationValue select {
   max-width: 9em;
 }
+
 .roomConfigurationArg {
   display: flex;
   flex-direction: row;
+}
+
+.configuration_opt {
+  width: 2rem;
+}
+
+#room-select {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0.2rem;
+}
+
+#formEventContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-center;
+  flex-wrap: wrap;
+}
+
+#roomInfo {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0px;
+}
+
+#startDay {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0px;
+}
+
+#startDay div,
+#startDay span div {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.5rem;
+}
+
+#restauration {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+}
+
+#topBar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.just-center {
+  justify-content: center;
+}
+
+.pt-1 {
+  padding-top: 1em;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.just-between {
+  justify-content: space-between;
+}
+
+#roomFurnitures span input[type='checkbox'] {
+  display: none;
+}
+
+#roomFurnitures span input[type='number'] {
+  width: 4rem;
+}
+
+#roomFurnitures {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+#roomFurnitures span {
+  margin: 0.2rem;
+}
+
+#hostTable label {
+  margin-left: 0px;
+  padding: 0.2rem;
+  transition: 0.2s !important;
+  border-radius: 5px;
+  border: 1px solid white;
+}
+
+#hostTable label:hover {
+  cursor: pointer;
+}
+
+#hostTable {
+  display: flex;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+}
+#hosts-name input {
+  margin-top: 0.2em;
 }
 </style>

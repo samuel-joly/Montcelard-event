@@ -1,11 +1,10 @@
 <script lang="ts">
-import type { EventInterface } from '../types/Event'
+import { defineComponent } from 'vue'
 import { Event } from '@/classes/Event'
-import { onMounted, defineComponent, ref } from 'vue'
 import ValidationModal from '@/components/ValidationModal.vue'
-import { Client } from '@/helpers/client'
+import { useEventGrid } from '@/stores/useEventGrid'
+import { useEventFilter } from '@/stores/useEventFilter'
 
-const client = new Client()
 export default defineComponent({
   components: {
     ValidationModal
@@ -16,69 +15,65 @@ export default defineComponent({
       default: 10
     }
   },
-  setup(props) {
-    const events = ref<Event[]>([])
-
-    onMounted(async () => {
-      try {
-        const res = await client.get<Event>(new Event())
-        res.data.map((value) => {
-          events.value.push(value)
-        })
-      } catch (error: any) {
-        console.error(error)
-      }
-    })
-    function deleteEvent(id: number) {
-      client.delete('event', id)
-      events.value = events.value.filter((e: EventInterface) => e.id != id)
+  data(props) {
+    const eventStore = useEventGrid()
+    const filterStore = useEventFilter()
+    return { eventStore, filterStore, props }
+  },
+  methods: {
+    getStartDate(event: Event): string {
+      return event.startDate.toISOString().split('T')[0].replace(/-/g, '/')
+    },
+    getEndDate(event: Event): string {
+      return event.endDate.toISOString().split('T')[0].replace(/-/g, '/')
     }
-    return { events, props, deleteEvent }
   }
 })
 </script>
 
 <template>
-  <div>
+  <div v-if="eventStore.getSelected != null">
     <table>
       <tr id="tableHead">
-        <th>Début</th>
-        <th>Fin</th>
+        <th class="short">ID</th>
+        <th class="short">Pax</th>
         <th>Formation</th>
         <th>Organisateur</th>
-        <th>Participants</th>
-        <th>ID</th>
-        <th style="background-color: white"></th>
+        <th class="medium">Début</th>
+        <th class="medium">Fin</th>
+        <th class="short">Arrivée</th>
+        <th class="short">Départ</th>
+        <th>Salle</th>
+        <th class="headAction"></th>
       </tr>
 
-      <tr v-for="event in events.slice(0, props.limit)" :key="event.id">
-        <td>
-          {{
-            event.start_date.toLocaleDateString('fr-FR', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })
-          }}
-        </td>
-        <td>
-          {{
-            event.end_date.toLocaleDateString('fr-FR', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })
-          }}
-        </td>
-        <td>{{ event.name }}</td>
-        <td>{{ event.orga_name }}</td>
-        <td>{{ event.guests }}</td>
+      <tr
+        v-for="event in filterStore.results.slice(0, props.limit)"
+        :key="event.id"
+        class="event"
+        :class="event.id == eventStore.getSelected.eventId ? 'selected' : ''"
+        @click="eventStore.selectEvent(event.id)"
+      >
         <td>{{ event.id }}</td>
+        <td>{{ event.guests }}</td>
+        <td>{{ event.name }}</td>
+        <td>{{ event.orgaMail }}</td>
+        <td>
+          {{ getStartDate(event) }}
+        </td>
+        <td>
+          {{ getEndDate(event) }}
+        </td>
+        <td>{{ event.startHour }}</td>
+        <td>{{ event.endHour }}</td>
+        <td>{{ event.roomId }}</td>
         <td class="action">
-          <router-link class="edit-act" :to="{ name: 'event-edit', params: { id: event.id } }" />
-          <ValidationModal :func="deleteEvent" action="supprimer" :id="event.id" />
+          <ValidationModal
+            color="#337788"
+            :func="filterStore.deleteEvent"
+            action="supprimer"
+            :id="event.id"
+          />
         </td>
       </tr>
     </table>
@@ -90,27 +85,33 @@ export default defineComponent({
   background-color: white;
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: flex-start;
+  padding-left: 2em;
+  height: 3em;
 }
 
-.edit-act {
-  width: 26px;
-  height: 26px;
-  display: flex;
-  border: 0px;
-  background: url('@/assets/edit.png');
-  background-size: cover;
-  transition: 0.3s;
+.event {
+  height: 3em;
 }
 
 .edit-act:hover {
+  filter: brightness(120%);
+}
+
+.edit-act {
+  background-color: var(--op-3);
+  font-size: 1em;
+  color: white;
+  padding: 0.3em;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  background: url('@/assets/edit-color.png');
-  background-size: cover;
+  transition: 0.3s;
 }
 
 tr:hover {
-  background-color: lightgray;
+  background-color: var(--op-2);
 }
 
 td {
@@ -118,17 +119,31 @@ td {
 }
 
 div {
-  width: 80vw;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  width: 100vw;
 }
 
 #tableHead {
-  background-color: gray;
+  background-color: var(--op-4);
   color: white;
 }
 
-td {
-  text-align: center;
+.headAction {
+  background-color: var(--op-1);
+  width: fit-content;
+}
+
+.short {
+  width: 2em;
+}
+
+.medium {
+  width: 5em;
+}
+
+.selected {
+  background-color: var(--op-2);
 }
 </style>
