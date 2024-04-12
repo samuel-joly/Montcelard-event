@@ -53,8 +53,8 @@ INSERT INTO event (
 ) 
 VALUES (
     4,
-    'Travailler avec les am&eacute;ricains', 'Inès Armaniedjan',
-    'ArmaniedjanIn&eacute;s@orpa.com', '0667829832',
+    'Travailler avec les américains', 'Inès Armanie',
+    'ArmanieInès@orpa.com', '0667829832',
     'Florent Perez, Anne-Laure Martinez', 15,
     "2024-06-03", "2024-06-07",
     "09:00", "17:30",
@@ -89,13 +89,13 @@ INSERT INTO event (
 ) 
 VALUES (
     3,
-    'D&eacute;velopper ses comp&eacute;tences digitales','Renès Gavaud',
-    'GavaudRen&eacute;s@tromi.com', '0422786534',
+    'Développer ses compétences digitales','Renès Gavaud',
+    'GavaudRenès@tromi.com', '0422786534',
     'Laure Romentin', 12,
     "2024-06-03", "2024-06-03",
     "10:00", "17:30",
     "", "",
-    'U', "Cam&eacute;ra + Pied",
+    'U', "Caméra + Pied",
     12,
     true,
     2, 0, 0,
@@ -125,13 +125,13 @@ INSERT INTO event (
 ) 
 VALUES (
     1,
-    'R&eacute;union des actionnaires','Anies Aubart',
+    'Réunion des actionnaires','Anies Aubart',
     'AubartAnies@ericto.com', '0621224565',
     'Florence Ranaud', 24,
     "2024-06-05", "2024-06-07",
     "08:00", "18:00",
     "1+2.5;2+2", "2-4",
-    'Ilots', "Cam&eacute;ra + Pied",
+    'Ilots', "Caméra + Pied",
     6,4,
     true,
     4, 4, 1,
@@ -160,7 +160,7 @@ INSERT INTO event (
 ) 
 VALUES (
     1,
-    'Pr&eacute;parer ses comptes rendus','Jean-Claude Jung',
+    'Préparer ses comptes rendus','Jean-Claude Jung',
     'JungJeanClaude@axio.com', '0676655621',
     'Etienne Fourmier, Marie Analte', 18,
     "2024-06-03", "2024-06-03",

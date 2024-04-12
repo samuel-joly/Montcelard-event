@@ -172,7 +172,7 @@ case $1 in
         # Ask repo admin for credentials
         shift 1;
         bin/phpstan analyse -c bin/phpstan.neon api
-        bin/apitest ./api/test/main.jsona $@ 2>&1
+        bin/apitest ./api/test/main.jsona $@ 2>&1 
         ;;
 
     *)
