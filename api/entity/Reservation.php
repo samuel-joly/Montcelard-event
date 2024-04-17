@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-class Event extends CrudEntity implements CrudEntityInterface
+class Reservation extends CrudEntity implements CrudEntityInterface
 {
     public ?int $roomId = null;
     public string $name;
@@ -36,7 +36,7 @@ class Event extends CrudEntity implements CrudEntityInterface
     public bool $paper = false;
     public bool $scissors = false;
     public bool $scotch = false;
-    public bool $postItXl = false;
+    public int $postItXl = 0;
     public bool $paperA1 = false;
     public bool $blocNote = false;
     public bool $gomette = false;
@@ -53,22 +53,28 @@ class Event extends CrudEntity implements CrudEntityInterface
 
     public function __construct() {
         parent::__construct();
+        $this->schema = CrudEntity::create_entity_schema($this);
     }
 
     public function get_name(): string
     {
-        return Entity::event->value;
+        return "reservation";
     }
 
     public function validate(): bool
     {
+        $query_params = [
+            "startDate" => [">=", $this->startDate],
+            "endDate" => ["<=", $this->endDate],
+            "roomId" => ["=", $this->roomId] 
+        ];
+        $overlapping_events = ($this->get($query_params))->data;
+        if (count($overlapping_events) > 1 )
+        {
+            throw new Exception(
+                "Event '".$this->name."' cannot start the ".$this->startDate->format("d-m-Y").
+                " because event '".$overlapping_events[1]["name"]."' is already present that day", 500);
+        }
         return true;
-    }
-
-    static function get_custom_query_attributes(): array {
-        $parent_attr = parent::get_custom_query_attributes();
-        $parent_attr["week"] = "integer";
-        $parent_attr["year"] = "integer";
-        return $parent_attr;
     }
 }

@@ -24,7 +24,7 @@
 
   post: {
     req: {
-      url: "http://localhost/api/event",
+      url: "http://localhost/api/reservation",
       method: "post",
       headers: {
         'content-type':'application/json',
@@ -70,14 +70,14 @@
         data: {
                 "id": 0, @type
             },
-        message: "POST event"
+        message: "POST reservation"
       }
     }
   },
 
   get: {
     req: {
-      url: `"http://localhost/api/event/"+post.res.body.data.id`, @eval
+      url: `"http://localhost/api/reservation/"+post.res.body.data.id`, @eval
       method: 'get',
       headers: {
         'content-type':'application/json',
@@ -133,21 +133,20 @@
             glutenFree: 1
           }
         ],
-        message: "GET events",
+        message: "GET reservation",
       }
   }
   },
 
   put: {
     req: {
-      url: `"http://localhost/api/event/"+ post.res.body.data.id`, @eval
+      url: `"http://localhost/api/reservation/"+ post.res.body.data.id`, @eval
       method: "put",
       headers: {
         'content-type':'application/json',
         'Bearer': `login.res.body.data.jwt`, @eval
       },
       body: {
-        id: 8,
         guests: 2,
         endDate: "2023-12-30",
         configurationQuantity: null,
@@ -158,14 +157,14 @@
       status: 200,
       body: {
         data: [],
-        message: "PUT event"
+        message: "PUT reservation"
       }
     }
   },
 
   getAfterPut: {
     req: {
-      url: `"http://localhost/api/event/"+ post.res.body.data.id`, @eval
+      url: `"http://localhost/api/reservation/"+ post.res.body.data.id`, @eval
       method: 'get',
       headers: {
         'content-type':'application/json',
@@ -219,14 +218,14 @@
             glutenFree: 0 
           }
         ],
-        message: "GET events",
+        message: "GET reservation",
       }
   }
 },
 
   delete: {
     req: {
-      url: `"http://localhost/api/event/"+ post.res.body.data.id`, @eval
+      url: `"http://localhost/api/reservation/"+ post.res.body.data.id`, @eval
       method: "delete",
       headers: {
         'content-type':'application/json',
@@ -237,7 +236,7 @@
       status: 200,
       body: {
         data: [],
-        message: "DELETE event"
+        message: "DELETE reservation"
       }
     }
   }

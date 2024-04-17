@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Event } from '@/classes/Event'
+import { Reservation } from '@/classes/Reservation'
 import ValidationModal from '@/components/ValidationModal.vue'
-import { useEventFilter } from '@/stores/useEventFilter'
+import { useResaFilter } from '@/stores/useResaFilter'
 
 export default defineComponent({
   components: {
@@ -15,16 +15,15 @@ export default defineComponent({
     }
   },
   data(props) {
-    const filterStore = useEventFilter()
+    const filterStore = useResaFilter()
     return { filterStore, props }
-
   },
   methods: {
-    getStartDate(event: Event): string {
-      return event.startDate.toISOString().split('T')[0].replace(/-/g, '/')
+    getStartDate(resa: Reservation): string {
+      return resa.startDate.toISOString().split('T')[0].replace(/-/g, '/')
     },
-    getEndDate(event: Event): string {
-      return event.endDate.toISOString().split('T')[0].replace(/-/g, '/')
+    getEndDate(resa: Reservation): string {
+      return resa.endDate.toISOString().split('T')[0].replace(/-/g, '/')
     }
   }
 })
@@ -32,7 +31,6 @@ export default defineComponent({
 
 <template>
   <div v-if="filterStore.getSelected != null">
-
     <table>
       <tr id="tableHead">
         <th class="short">ID</th>
@@ -48,31 +46,31 @@ export default defineComponent({
       </tr>
 
       <tr
-        v-for="event in filterStore.results.slice(0, props.limit)"
-        :key="event.id"
-        class="event"
-        :class="event.id == filterStore.getSelected.id ? 'selected' : ''"
-        @click="filterStore.selectEvent(event)"
+        v-for="resa in filterStore.results.slice(0, props.limit)"
+        :key="resa.id"
+        class="resa"
+        :class="resa.id == filterStore.getSelected.id ? 'selected' : ''"
+        @click="filterStore.selectResa(resa)"
       >
-        <td>{{ event.id }}</td>
-        <td>{{ event.guests }}</td>
-        <td>{{ event.name }}</td>
-        <td>{{ event.orgaMail }}</td>
+        <td>{{ resa.id }}</td>
+        <td>{{ resa.guests }}</td>
+        <td>{{ resa.name }}</td>
+        <td>{{ resa.orgaMail }}</td>
         <td>
-          {{ getStartDate(event) }}
+          {{ getStartDate(resa) }}
         </td>
         <td>
-          {{ getEndDate(event) }}
+          {{ getEndDate(resa) }}
         </td>
-        <td>{{ event.startHour }}</td>
-        <td>{{ event.endHour }}</td>
-        <td>{{ event.roomId }}</td>
+        <td>{{ resa.startHour }}</td>
+        <td>{{ resa.endHour }}</td>
+        <td>{{ resa.roomId }}</td>
         <td class="action">
           <ValidationModal
             color="#337788"
-            :func="filterStore.deleteEvent"
+            :func="filterStore.deleteResa"
             action="supprimer"
-            :id="event.id"
+            :id="resa.id"
           />
         </td>
       </tr>
@@ -91,7 +89,7 @@ export default defineComponent({
   height: 3em;
 }
 
-.event {
+.resa {
   height: 3em;
 }
 

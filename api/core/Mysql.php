@@ -55,11 +55,14 @@ class Mysql
     public function queryPrepare(string $query, array $data): array|bool
     {
         $prep = $this->conn->prepare($query);
-        /* var_dump($prep->debugDumpParams()); */
-        $res = $prep->execute($data);
-        /* var_dump($prep->debugDumpParams()); */
-        if (!$res) {
-            throw new Exception("Failed PDO query \"$prep\"", 500);
+        $d = [];
+        foreach($data as $key => $value) {
+            $d[$key] = SqlQueryBuilder::cast_for_pdo($value);
+        }
+        try {
+            $res = $prep->execute($d);
+        } catch (PDOException $e) {
+            throw new Exception("PDOException in queryPrepare :".$e->getMessage(), 500, $e);
         } 
         $resp = $prep->fetchAll(PDO::FETCH_ASSOC);
         return $resp;

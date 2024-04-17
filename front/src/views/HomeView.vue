@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useLogin } from '@/stores/login'
-import Events from '@/components/Events.vue'
+import Reservations from '@/components/Reservations.vue'
 import Login from '@/classes/Login'
 
 const loginStore = useLogin()
@@ -9,7 +9,7 @@ const login: Login = new Login('Montcelard_user', 'Montcelard_password')
 
 <template>
   <div v-if="loginStore.jwt.length > 0">
-    <Events />
+    <Reservations />
   </div>
   <div v-else>
     <input v-model="login.email" />

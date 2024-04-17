@@ -1,6 +1,6 @@
 import type { EntityInterface } from './EntityInterface'
 
-export interface EventInterface extends EntityInterface {
+export interface ReservationInterface extends EntityInterface {
   id: number
   roomId: number | null
   name: string

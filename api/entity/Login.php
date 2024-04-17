@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 class Login extends CrudEntity implements CrudEntityInterface
 {
@@ -15,7 +16,7 @@ class Login extends CrudEntity implements CrudEntityInterface
         return true;
     }
 
-    public function post(array $data): Response
+    public function post(): Response
     {
         $db_call = (new Mysql())->query("Select password from login where name = '".$this->email."';");
         if (sizeof($db_call) == 0) {
@@ -74,11 +75,11 @@ class Login extends CrudEntity implements CrudEntityInterface
         return false;
     }
 
-    public function put(array $data, int $id): Response
+    public function put(array $data): Response
     {
         throw new Exception("Only POST request are accepted on /login", 400);
     }
-    public function delete(int $id): Response
+    public function delete(): Response
     {
         throw new Exception("Only POST request are accepted on /login", 400);
     }

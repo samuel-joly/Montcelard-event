@@ -1,7 +1,6 @@
 <script lang="ts">
-import type { Event } from '@/classes/Event'
-import { EventGridContent } from '@/helpers/EventGrid'
-import { useEventFilter } from '@/stores/useEventFilter'
+import type { Reservation } from '@/classes/Reservation'
+import { useResaFilter } from '@/stores/useResaFilter'
 import { defineComponent, onMounted, ref } from 'vue'
 
 export default defineComponent({
@@ -9,8 +8,8 @@ export default defineComponent({
     id: Number
   },
   setup(props) {
-    const filterStore = useEventFilter()
-    const evnt = ref<Event | null>()
+    const filterStore = useResaFilter()
+    const evnt = ref<Reservation | null>()
     let room: number | null = null
     let day: number | null = null
     if (props.id != null) {
@@ -21,7 +20,7 @@ export default defineComponent({
     return { filterStore, props, ev: evnt, day: day, room: room }
   },
   computed: {
-    getEvent() {
+    getReservation() {
       this.ev = this.filterStore.results.filter((e) => {
         if (this.day != null && this.room != null) {
           return (
@@ -37,7 +36,7 @@ export default defineComponent({
     },
     setGridStyle() {
       let style = ''
-      const filterStore = useEventFilter()
+      const filterStore = useResaFilter()
       if (this.ev != null && this.day != null && this.room != null) {
         // if event started before this day and end this day
         if (this.ev.startDate.getDay() < this.day && this.ev.endDate.getDay() == this.day) {
@@ -62,7 +61,7 @@ export default defineComponent({
       }
       return style
     },
-    splitEventName() {
+    splitReservationName() {
       let evName = ''
       if (this.ev != null) {
         evName = this.ev.name.slice(0, 35)
@@ -71,15 +70,15 @@ export default defineComponent({
     }
   },
   methods: {
-    selectEvent() {
+    selectReservation() {
       if (this.ev != null) {
         if (this.filterStore.selected != null && this.ev.id == this.filterStore.selected.id) {
-          this.filterStore.selectEvent(null)
+          this.filterStore.selectResa(null)
         } else {
-          this.filterStore.selectEvent(this.ev)
+          this.filterStore.selectResa(this.ev)
         }
       } else {
-        this.filterStore.selectEvent(null)
+        this.filterStore.selectResa(null)
       }
     }
   }
@@ -87,23 +86,27 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="gridElement" :style="setGridStyle" @click="selectEvent">
-    <div v-if="getEvent != null && day != null && room != null">
-      <div class="infoEvent" v-if="getEvent.startDate.getDay() == day">
-        <p style="align-self: flex-start">{{ splitEventName }}</p>
+  <div class="gridElement" :style="setGridStyle" @click="selectReservation">
+    <div v-if="getReservation != null && day != null && room != null">
+      <div class="infoReservation" v-if="getReservation.startDate.getDay() == day">
+        <p style="align-self: flex-start">{{ splitReservationName }}</p>
         <span
           style="display: flex; flex-direction: row; width: 100%; justify-content: space-between"
         >
           <p style="align-self: flex-start">
-            {{ getEvent.roomConfiguration }}
-            {{ getEvent.configurationSize }}
-            {{ getEvent.configurationQuantity != null ? 'x' + getEvent.configurationQuantity : '' }}
+            {{ getReservation.roomConfiguration }}
+            {{ getReservation.configurationSize }}
+            {{
+              getReservation.configurationQuantity != null
+                ? 'x' + getReservation.configurationQuantity
+                : ''
+            }}
           </p>
-          <p style="align-self: flex-end">{{ getEvent.guests }} pax</p>
+          <p style="align-self: flex-end">{{ getReservation.guests }} pax</p>
         </span>
       </div>
-      <p v-if="getEvent.startDate.getDay() + 1 == day">{{ getEvent.hostName }}</p>
-      <p v-if="getEvent.startDate.getDay() + 2 == day">{{ getEvent.meal }}</p>
+      <p v-if="getReservation.startDate.getDay() + 1 == day">{{ getReservation.hostName }}</p>
+      <p v-if="getReservation.startDate.getDay() + 2 == day">{{ getReservation.meal }}</p>
     </div>
     <div v-else class="empty">
       <button id="add-event">+</button>
@@ -166,11 +169,11 @@ export default defineComponent({
   justify-content: center;
 }
 
-.infoEvent p {
+.infoReservation p {
   font-size: 1.5em;
 }
 
-.infoEvent {
+.infoReservation {
   padding: 0px;
   width: 100%;
   display: flex;

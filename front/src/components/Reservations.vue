@@ -1,43 +1,43 @@
 <script lang="ts">
-import { useEventFilter } from '@/stores/useEventFilter'
-import EventForm from '@/components/EventForm.vue'
-import EventGrid from '@/components/EventGrid.vue'
+import { useResaFilter } from '@/stores/useResaFilter'
+import ResaForm from '@/components/ResaForm.vue'
+import ResaGrid from '@/components/ResaGrid.vue'
 
 export default {
   components: {
-    EventForm,
-    EventGrid
+    ResaForm,
+    ResaGrid
   },
   setup() {
-    const filterStore = useEventFilter()
+    const filterStore = useResaFilter()
     return { filter: filterStore }
   }
 }
 </script>
 
 <template>
-  <div id="filterEvents">
+  <div id="filterResas">
     <Transition>
-      <EventForm />
+      <ResaForm />
     </Transition>
     <form>
-      <input type="number" min="0" max="52" v-model="filter.week" @change="filter.fetchEvent" />
-      <input type="number" v-model="filter.year" @change="filter.fetchEvent" />
+      <input type="number" min="0" max="52" v-model="filter.week" @change="filter.fetchResa" />
+      <input type="number" v-model="filter.year" @change="filter.fetchResa" />
     </form>
-    <div id="gridEvents">
-      <EventGrid />
+    <div id="gridResas">
+      <ResaGrid />
     </div>
   </div>
 </template>
 
 <style scoped>
-#filterEvents {
+#filterResas {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-#gridEvents {
+#gridResas {
   display: flex;
   width: 100vw;
   overflow-x: hidden;

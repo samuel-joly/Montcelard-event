@@ -1,6 +1,6 @@
-import type { EventInterface } from '@/types/Event'
+import type { ReservationInterface } from '@/types/Reservation'
 
-export class Event implements EventInterface {
+export class Reservation implements ReservationInterface {
   id: number
   roomId: number | null
   name: string
@@ -90,6 +90,6 @@ export class Event implements EventInterface {
   }
 
   getEntityName(): string {
-    return 'event'
+    return 'reservation'
   }
 }

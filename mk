@@ -96,10 +96,10 @@ case $1 in
             case $2 in
                 "drop")
                         ./mk db clear;
-                        ./mk db query "drop table event;drop table room; drop table login;"
+                        ./mk db query "drop table reservation;drop table room; drop table login;"
                     ;;
                 "clear")
-                        ./mk db query "delete from event;delete from room; delete from login;"
+                        ./mk db query "delete from reservation;delete from room; delete from login;"
                     ;;
                 "query")
                     shift

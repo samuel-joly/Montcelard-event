@@ -1,16 +1,14 @@
 <script lang="ts">
-import type { Event } from '@/classes/Event'
-import { EventGridContent } from '@/helpers/EventGrid'
-import { useEventFilter } from '@/stores/useEventFilter'
+import { useResaFilter } from '@/stores/useResaFilter'
 import GridElement from '@/components/GridElement.vue'
-import { defineComponent, onMounted, onUpdated } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   components: {
     GridElement: GridElement
   },
   setup() {
-    const filterStore = useEventFilter()
+    const filterStore = useResaFilter()
     return { filterStore }
   },
   computed: {
@@ -170,7 +168,7 @@ export default defineComponent({
   display: none;
 }
 
-.selectedEvent {
+.selectedResa {
   filter: brightness(120%);
 }
 </style>

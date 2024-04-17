@@ -10,13 +10,7 @@ interface CrudEntityInterface
     /**
      * @param array<string,mixed> $data
      */
-    public function post(array $data): Response;
-    /**
-     * @param array<string,mixed> $data
-     */
-    public function put(array $data, int $id): Response;
-    /**
-     * @param int $id
-     */
-    public function delete(int $id): Response;
+    public function put(array $data): Response;
+    public function post(): Response;
+    public function delete(): Response;
 }

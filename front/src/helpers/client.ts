@@ -1,7 +1,6 @@
 import { useLogin } from '@/stores/login'
 import EntityBuilder from '@/helpers/EntityBuilder'
 import type { EntityInterface } from '@/types/EntityInterface'
-import { Event } from '@/classes/Event'
 
 export class Client {
   baseUrl: string = 'http://localhost/api/'

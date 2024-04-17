@@ -2,19 +2,19 @@
 import { defineComponent } from 'vue'
 import Icon from '@/components/Icon.vue'
 import { Client } from '@/helpers/client'
-import { Event as Ev } from '@/classes/Event'
-import { useEventFilter } from '@/stores/useEventFilter'
+import { Reservation as Resa } from '@/classes/Reservation'
+import { useResaFilter } from '@/stores/useResaFilter'
 export default defineComponent({
   components: {
     Icon
   },
   setup() {
-    const filterStore = useEventFilter()
+    const filterStore = useResaFilter()
     const client = new Client()
-    async function putEvent(e: Event) {
+    async function putResa(e: Event) {
       e.preventDefault()
       if (filterStore.selected != null) {
-        client.put<Ev>('event', filterStore.selected)
+        client.put<Resa>('reservation', filterStore.selected)
         filterStore.results.map((e) => {
           if (filterStore.selected != null) {
             if (e.id == filterStore.selected.id) {
@@ -26,7 +26,7 @@ export default defineComponent({
     }
     return {
       filterStore: filterStore,
-      putEvent
+      putResa
     }
   },
   computed: {
@@ -42,7 +42,7 @@ export default defineComponent({
 
 <template>
   <form id="eventForm" v-if="filterStore.selected != null">
-    <button @click="putEvent">PUT</button>
+    <button @click="putResa">PUT</button>
     <div id="topInfo">
       <span>
         <input id="formationName" name="name" v-model="filterStore.selected.name" />
@@ -129,7 +129,7 @@ export default defineComponent({
         </span>
       </div>
     </div>
-    <div id="formEventContainer">
+    <div id="formResaContainer">
       <div id="roomInfo">
         <div id="conf">
           <span>
@@ -164,13 +164,23 @@ export default defineComponent({
               <small></small>
             </div>
             <div id="roomConfigurationValue">
-              <select v-model="filterStore.selected.configurationSize">
-                <option :value="8">8</option>
-                <option :value="10">10</option>
-                <option :value="12">12</option>
-                <option :value="14">14</option>
-                <option :value="16">16</option>
-                <option :value="18">18</option>
+              <select
+                :value="filterStore.selected.configurationSize"
+                @input="
+                  (event) => {
+                    const value = (event.target as HTMLInputElement).value
+                    if (filterStore.selected != null && value != null) {
+                      filterStore.selected.configurationSize = Number(value)
+                    }
+                  }
+                "
+              >
+                <option value="8">8</option>
+                <option value="10">10</option>
+                <option value="12">12</option>
+                <option value="14">14</option>
+                <option value="16">16</option>
+                <option value="18">18</option>
               </select>
             </div>
           </span>
@@ -374,6 +384,7 @@ export default defineComponent({
   background-color: #cfd4e4;
   height: 100vh;
 }
+
 form {
   position: absolute;
   left: 75vw;
@@ -588,7 +599,7 @@ span label {
   margin-top: 0.2rem;
 }
 
-#formEventContainer {
+#formResaContainer {
   display: flex;
   flex-direction: row;
   justify-content: space-center;
@@ -685,6 +696,7 @@ span label {
   flex-direction: column !important;
   justify-content: flex-end !important;
 }
+
 #hosts-name input {
   margin-top: 0.2em;
 }

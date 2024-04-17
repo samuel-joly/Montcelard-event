@@ -1,6 +1,6 @@
-import type { Event } from '@/classes/Event'
+import type { Reservation } from '@/classes/Reservation'
 
-export function EventGridContent(event: Event) {
+export function EventGridContent(event: Reservation) {
   return `<div>
         <h3>${event.name}</h3>
         <span>

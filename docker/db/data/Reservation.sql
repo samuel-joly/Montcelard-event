@@ -1,4 +1,4 @@
-INSERT INTO event (
+INSERT INTO reservation (
     roomId,
     name, orgaName, orgaMail,
     orgaTel, hostName, guests,
@@ -28,13 +28,13 @@ VALUES (
     true,
     2, 0, 0,
     true, true, false, false,
-    false, false, true, false, false,
+    2, false, true, false, false,
     10, 0,
     "",
     10, 10, 0, 0, 0
 );
 
-INSERT INTO event (
+INSERT INTO reservation (
     roomId,
     name, orgaName, orgaMail,
     orgaTel, hostName, guests,
@@ -60,17 +60,17 @@ VALUES (
     "09:00", "17:30",
     "2+1;3-2", "2+1;3-2",
     'U', "",
-    15,
+    18,
     true,
     3, 0, 0,
     true, false, false, false,
-    false, false, false, false, false,
+    0, false, false, false, false,
     15, 0,
     "",
     15, 15, 0, 0, 0
 );
 
-INSERT INTO event (
+INSERT INTO reservation (
     roomId,
     name, orgaName, orgaMail,
     orgaTel, hostName, guests,
@@ -100,13 +100,13 @@ VALUES (
     true,
     2, 0, 0,
     true, true, false, false,
-    false, false, true, false, true,
+    2, false, true, false, true,
     12, 12,
     "",
     12, 12, 0, 1, 3
 );
 
-INSERT INTO event (
+INSERT INTO reservation (
     roomId,
     name, orgaName, orgaMail,
     orgaTel, hostName, guests,
@@ -136,13 +136,13 @@ VALUES (
     true,
     4, 4, 1,
     true, true, false, false,
-    true, false, true, false, true,
+    0, false, true, false, true,
     24, 24,
     "",
     24, 24, 0, 6, 1
 );
 
-INSERT INTO event (
+INSERT INTO reservation (
     roomId,
     name, orgaName, orgaMail,
     orgaTel, hostName, guests,
@@ -150,6 +150,7 @@ INSERT INTO event (
     startHour, endHour,
     startHourOffset, endHourOffset,
     roomConfiguration, roomConfigurationPrecision,
+    configurationSize,
     hostTable,
     paperboard, chairSup, tableSup,
     pen, paper, scissors, scotch,
@@ -167,10 +168,11 @@ VALUES (
     "08:00", "15:00",
     "0", "0",
     'U', "",
+    18,
     true,
     3, 0, 0,
     true, true, true, true,
-    false, false, true, false, true,
+    4, false, true, false, true,
     18, 12,
     "Prise du repas à 12h30",
     18, 18, 0, 4, 2

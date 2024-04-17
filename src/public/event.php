@@ -9,7 +9,6 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $statement = $conn->prepare("DESCRIBE event;");
     $statement->execute();
-    var_dump($statement->fetchAll(PDO::FETCH_COLUMN));
     echo "Connected successfully";
 } catch(PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
