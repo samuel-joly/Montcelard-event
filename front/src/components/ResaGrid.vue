@@ -9,7 +9,7 @@ export default defineComponent({
   },
   setup() {
     const filterStore = useResaFilter()
-    filterStore.fetchResa();
+    filterStore.fetchResa()
     return { filterStore }
   },
   computed: {
