@@ -53,9 +53,9 @@ INSERT INTO reservation (
 ) 
 VALUES (
     4,
-    'Travailler avec les américains', 'Inès Armanie',
-    'ArmanieInès@orpa.com', '0667829832',
-    'Florent Perez, Anne-Laure Martinez', 15,
+    _utf8'Travailler avec les américains', 'Inès Armanie',
+    _utf8'ArmanieInès@orpa.com', '0667829832',
+    _utf8'Florent Perez, Anne-Laure Martinez', 15,
     "2024-06-03", "2024-06-07",
     "09:00", "17:30",
     "2+1;3-2", "2+1;3-2",
@@ -89,13 +89,13 @@ INSERT INTO reservation (
 ) 
 VALUES (
     3,
-    'Développer ses compétences digitales','Renès Gavaud',
-    'GavaudRenès@tromi.com', '0422786534',
+    _utf8'Développer ses compétences digitales','Renès Gavaud',
+    _utf8'GavaudRenès@tromi.com', '0422786534',
     'Laure Romentin', 12,
     "2024-06-03", "2024-06-03",
     "10:00", "17:30",
     "", "",
-    'U', "Caméra + Pied",
+    'U', _utf8"Caméra + Pied",
     12,
     true,
     2, 0, 0,
@@ -125,13 +125,13 @@ INSERT INTO reservation (
 ) 
 VALUES (
     1,
-    'Réunion des actionnaires','Anies Aubart',
+    _utf8'Réunion des actionnaires','Anies Aubart',
     'AubartAnies@ericto.com', '0621224565',
     'Florence Ranaud', 24,
     "2024-06-05", "2024-06-07",
     "08:00", "18:00",
     "1+2.5;2+2", "2-4",
-    'Ilots', "Caméra + Pied",
+    'Ilots', _utf8"Caméra + Pied",
     6,4,
     true,
     4, 4, 1,
@@ -161,7 +161,7 @@ INSERT INTO reservation (
 ) 
 VALUES (
     1,
-    'Préparer ses comptes rendus','Jean-Claude Jung',
+    _utf8'Préparer ses comptes rendus','Jean-Claude Jung',
     'JungJeanClaude@axio.com', '0676655621',
     'Etienne Fourmier, Marie Analte', 18,
     "2024-06-03", "2024-06-03",

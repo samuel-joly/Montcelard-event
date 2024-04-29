@@ -6,6 +6,11 @@ class Login extends CrudEntity implements CrudEntityInterface
     public string $email;
     public string $password;
 
+    public function __construct() {
+        parent::__construct();
+        $this->schema = CrudEntity::create_entity_schema($this);
+    }
+
     public function get_name(): string
     {
         return 'login';

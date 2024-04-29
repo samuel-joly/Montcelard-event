@@ -7,27 +7,31 @@ class SqlQueryBuilder
      * @param array<string,mixed> $query_params
      */
     static public function get(CrudEntity $entity, ?array &$query_params): string {
-        if($entity->get_id() != null) {
+        $qp = [];
+        if($entity->get_id() != null && $query_params == null) {
             return "SELECT * FROM ".$entity->get_name()." WHERE id=".$entity->get_id();
         } else if($query_params != null && count($query_params) > 0 ) {
             $where_clause = " WHERE";
             $ending_clause = " ";
-            foreach($query_params as $attr => $op_val) {
-                if (array_key_exists($attr, ["limit"=>0])) {
-                    switch ($attr) {
-                    case "limit":
-                        $ending_clause .= " LIMIT ".htmlspecialchars($op_val[1]); 
-                        break;
+            foreach($query_params as $logic_nest => $query_param) {
+                foreach($query_param as $attr => $op_val) {
+                    if ($attr == "limit") {
+                        $ending_clause .= " LIMIT ".htmlspecialchars($query_param[1]); 
+                        unset($query_params[$logic_nest][$attr]);
+                    } else {
+                        if(!isset($op_val[2])) {
+                            $op_val[2] = "AND";
+                        }       
+                        if(array_key_first($query_params) == $logic_nest && array_key_first($query_param) == $attr) {
+                            $where_clause .= " $attr ".$op_val[0]." :$attr".$logic_nest;
+                        } else {
+                            $where_clause .= " ".$op_val[2]." $attr ".$op_val[0]." :$attr".$logic_nest;
+                        }
                     }
-                    unset($query_params[$attr]);
-                } else {
-                    $where_clause .= " $attr ".$op_val[0]." :$attr";
-                    if (array_key_last($query_params) != $attr) {
-                        $where_clause .= " AND";
-                    }
+                    $qp[$attr.$logic_nest] = $op_val[1];
                 }
-                $query_params[$attr] = $op_val[1];
             }
+            $query_params = $qp;
             return "SELECT * FROM ".$entity->get_name().$where_clause.$ending_clause;
         }else {
             return "SELECT * FROM ".$entity->get_name();
@@ -59,6 +63,7 @@ class SqlQueryBuilder
      */
     static public function update(CrudEntity $entity, array $properties): string
     {
+        if(count($properties) == 0) { throw new Error("Require at least one attribute to update", 200); }
         $insert_statement = "UPDATE ".$entity->get_name()." SET ";
         $update_list = "";
         $where_clause = " where id=".$entity->get_id();

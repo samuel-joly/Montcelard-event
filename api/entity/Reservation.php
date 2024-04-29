@@ -61,20 +61,51 @@ class Reservation extends CrudEntity implements CrudEntityInterface
         return "reservation";
     }
 
-    public function validate(): bool
-    {
+    public function post(): Response {
+        $this->check_overlapping();
+        return parent::post();
+    }
+
+    public function check_overlapping(): bool {
         $query_params = [
-            "startDate" => [">=", $this->startDate],
-            "endDate" => ["<=", $this->endDate],
-            "roomId" => ["=", $this->roomId] 
+            [
+                "startDate" => ["<=", $this->startDate],
+                "endDate" => [">=", $this->endDate],
+                "roomId" => ["=", $this->roomId]
+            ],
+            [
+                "startDate" => ["=", $this->startDate, "OR"],
+                "roomId" => ["=", $this->roomId] ,
+            ],
+            [
+                "endDate" => ["=", $this->endDate, "OR"],
+                "roomId" => ["=", $this->roomId ],
+            ],
+            [
+                "startDate" => ["=", $this->startDate, "OR"],
+                "endDate" => ["=", $this->endDate],
+                "roomId" => ["=", $this->roomId] ,
+            ],
         ];
-        $overlapping_events = ($this->get($query_params))->data;
-        if (count($overlapping_events) > 1 )
+        $overlapping_resa = ($this->get($query_params))->data;
+        foreach($overlapping_resa as $key => $resa) {
+            if ($resa["id"] == $this->get_id()) {
+                unset($overlapping_resa[$key]);
+            }
+        }
+        if (count($overlapping_resa) != 0)
         {
             throw new Exception(
-                "Event '".$this->name."' cannot start the ".$this->startDate->format("d-m-Y").
-                " because event '".$overlapping_events[1]["name"]."' is already present that day", 500);
+                "Reservation '".$this->name."' cannot start the ".$this->startDate->format("Y-m-d").
+                " because reservation '".$overlapping_resa[0]["name"]."' is already present that day", 200);
+        } else {
+            return true;
         }
+    }
+
+    public function validate(): bool
+    {
+        $this->check_overlapping();
         return true;
     }
 }

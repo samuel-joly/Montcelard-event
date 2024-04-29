@@ -1,0 +1,827 @@
+{
+  login: {
+    req: {
+      url: "http://localhost/api/login",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+      },
+      body: {
+          email: "Montcelard_user",
+          password: "Montcelard_password",
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: {
+                "jwt": "", @type
+            },
+        message: "login successfull"
+      }
+    }
+  },
+
+  post_no_startDate: {
+    req: {
+      url: "http://localhost/api/reservation",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        roomId: 1,
+        endDate: "2023-12-28",
+        startHour: "08:00",
+        endHour: "18:00",
+        pauseDate: 23,
+        startHourOffset: "1+3.25;2-2.5"
+        endHourOffset: "1-2.5;2+2",
+        guests: 8,
+        hostName: "Jean Formation",
+        name: "Formation test",
+        configurationSize: 0,
+        configurationQuantity: 0,
+        roomConfiguration: "U",
+        roomConfigurationPrecision: "Some option for the room config",
+        orgaName: "Super organisateur",
+        orgaMail: "Orga-mail@mail.com",
+        orgaTel: "0622222222",
+        paperboard:2,
+        chairSup:4,
+        tableSup:2,
+        pen: true,
+        blocNote:true,
+        postIt: true,
+        coffeeGroom: 8,
+        meal:8
+        mealPrecision:"Pas de noix de cajou",
+        morningCoffee:8,
+        afternoonCoffee:8,
+        vegetarian:2,
+        glutenFree:1
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [],
+        message: "Attribute 'startDate' is required in entity 'reservation'"
+      }
+    }
+  },
+
+  post_unknown_attr: {
+    req: {
+      url: "http://localhost/api/reservation",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        Mysql: "echo (new Mysql())->password;die;"
+        roomId: 1,
+        startDate: "2023-12-25"
+        endDate: "2023-12-28",
+        startHour: "08:00",
+        endHour: "18:00",
+        pauseDate: 23,
+        startHourOffset: "1+3.25;2-2.5"
+        endHourOffset: "1-2.5;2+2",
+        guests: 8,
+        hostName: "Jean Formation",
+        name: "Formation test",
+        configurationSize: 0,
+        configurationQuantity: 0,
+        roomConfiguration: "U",
+        roomConfigurationPrecision: "Some option for the room config",
+        orgaName: "Super organisateur",
+        orgaMail: "Orga-mail@mail.com",
+        orgaTel: "0622222222",
+        paperboard:2,
+        chairSup:4,
+        tableSup:2,
+        pen: true,
+        blocNote:true,
+        postIt: true,
+        coffeeGroom: 8,
+        meal:8
+        mealPrecision:"Pas de noix de cajou",
+        morningCoffee:8,
+        afternoonCoffee:8,
+        vegetarian:2,
+        glutenFree:1
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        "data": [],
+        "message": "Following properties are not defined in reservation :  'Mysql'"
+      }
+    }
+  },
+
+  post_legit: {
+    req: {
+      url: "http://localhost/api/reservation",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        roomId: 1,
+        startDate: "2023-12-25"
+        endDate: "2023-12-28",
+        startHour: "08:00",
+        endHour: "18:00",
+        pauseDate: 23,
+        startHourOffset: "1+3.25;2-2.5"
+        endHourOffset: "1-2.5;2+2",
+        guests: 8,
+        hostName: "Jean Formation",
+        name: "post legit",
+        configurationSize: 0,
+        configurationQuantity: 10,
+        roomConfiguration: "U",
+        roomConfigurationPrecision: "Some option for the room config",
+        orgaName: "Super organisateur",
+        orgaMail: "Orga-mail@mail.com",
+        orgaTel: "0622222222",
+        paperboard:2,
+        chairSup:4,
+        tableSup:2,
+        pen: true,
+        blocNote:true,
+        postIt: true,
+        coffeeGroom: 8,
+        meal:8
+        mealPrecision:"Pas de noix de cajou",
+        morningCoffee:8,
+        afternoonCoffee:8,
+        vegetarian:2,
+        glutenFree:1
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: {
+                "id": 0, @type
+            },
+        message: "POST reservation"
+      }
+    }
+  },
+
+  post_on_existing_startDate: {
+    req: {
+      url: "http://localhost/api/reservation",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        roomId: 1,
+        startDate: "2023-12-25"
+        endDate: "2023-12-25",
+        startHour: "08:00",
+        endHour: "18:00",
+        pauseDate: 23,
+        startHourOffset: "1+3.25;2-2.5"
+        endHourOffset: "1-2.5;2+2",
+        guests: 8,
+        hostName: "Jean Formation",
+        name: "Formation test",
+        configurationSize: 0,
+        configurationQuantity: 0,
+        roomConfiguration: "U",
+        roomConfigurationPrecision: "Some option for the room config",
+        orgaName: "Super organisateur",
+        orgaMail: "Orga-mail@mail.com",
+        orgaTel: "0622222222",
+        paperboard:2,
+        chairSup:4,
+        tableSup:2,
+        pen: true,
+        blocNote:true,
+        postIt: true,
+        coffeeGroom: 8,
+        meal:8
+        mealPrecision:"Pas de noix de cajou",
+        morningCoffee:8,
+        afternoonCoffee:8,
+        vegetarian:2,
+        glutenFree:1
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [],
+        message: "Reservation 'Formation test' cannot start the 2023-12-25 because reservation 'post legit' is already present that day"
+      }
+    }
+  },
+
+  post_between_existing_resa: {
+    req: {
+      url: "http://localhost/api/reservation",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        roomId: 1,
+        startDate: "2023-12-26"
+        endDate: "2023-12-27",
+        startHour: "08:00",
+        endHour: "18:00",
+        pauseDate: 23,
+        startHourOffset: "1+3.25;2-2.5"
+        endHourOffset: "1-2.5;2+2",
+        guests: 8,
+        hostName: "Jean Formation",
+        name: "Formation test",
+        configurationSize: 0,
+        configurationQuantity: 0,
+        roomConfiguration: "U",
+        roomConfigurationPrecision: "Some option for the room config",
+        orgaName: "Super organisateur",
+        orgaMail: "Orga-mail@mail.com",
+        orgaTel: "0622222222",
+        paperboard:2,
+        chairSup:4,
+        tableSup:2,
+        pen: true,
+        blocNote:true,
+        postIt: true,
+        coffeeGroom: 8,
+        meal:8
+        mealPrecision:"Pas de noix de cajou",
+        morningCoffee:8,
+        afternoonCoffee:8,
+        vegetarian:2,
+        glutenFree:1
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [],
+        message: "Reservation 'Formation test' cannot start the 2023-12-26 because reservation 'post legit' is already present that day"
+      }
+    }
+  },
+
+  post_on_endDate: {
+    req: {
+      url: "http://localhost/api/reservation",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        roomId: 1,
+        startDate: "2023-12-28"
+        endDate: "2023-12-28",
+        startHour: "08:00",
+        endHour: "18:00",
+        pauseDate: 23,
+        startHourOffset: "1+3.25;2-2.5"
+        endHourOffset: "1-2.5;2+2",
+        guests: 8,
+        hostName: "Jean Formation",
+        name: "Formation test",
+        configurationSize: 0,
+        configurationQuantity: 0,
+        roomConfiguration: "U",
+        roomConfigurationPrecision: "Some option for the room config",
+        orgaName: "Super organisateur",
+        orgaMail: "Orga-mail@mail.com",
+        orgaTel: "0622222222",
+        paperboard:2,
+        chairSup:4,
+        tableSup:2,
+        pen: true,
+        blocNote:true,
+        postIt: true,
+        coffeeGroom: 8,
+        meal:8
+        mealPrecision:"Pas de noix de cajou",
+        morningCoffee:8,
+        afternoonCoffee:8,
+        vegetarian:2,
+        glutenFree:1
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [],
+        message: "Reservation 'Formation test' cannot start the 2023-12-28 because reservation 'post legit' is already present that day"
+      }
+    }
+  },
+
+  post_overlapping_resa: {
+    req: {
+      url: "http://localhost/api/reservation",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        roomId: 1,
+        startDate: "2023-12-25"
+        endDate: "2023-12-28",
+        startHour: "08:00",
+        endHour: "18:00",
+        pauseDate: 23,
+        startHourOffset: "1+3.25;2-2.5"
+        endHourOffset: "1-2.5;2+2",
+        guests: 8,
+        hostName: "Jean Formation",
+        name: "Formation test",
+        configurationSize: 0,
+        configurationQuantity: 0,
+        roomConfiguration: "U",
+        roomConfigurationPrecision: "Some option for the room config",
+        orgaName: "Super organisateur",
+        orgaMail: "Orga-mail@mail.com",
+        orgaTel: "0622222222",
+        paperboard:2,
+        chairSup:4,
+        tableSup:2,
+        pen: true,
+        blocNote:true,
+        postIt: true,
+        coffeeGroom: 8,
+        meal:8
+        mealPrecision:"Pas de noix de cajou",
+        morningCoffee:8,
+        afternoonCoffee:8,
+        vegetarian:2,
+        glutenFree:1
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [],
+        message: "Reservation 'Formation test' cannot start the 2023-12-25 because reservation 'post legit' is already present that day"
+
+      }
+    }
+  },
+
+  post_null_configurationSize: {
+    req: {
+      url: "http://localhost/api/reservation",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        roomId: 1,
+        startDate: "2023-12-25"
+        endDate: "2023-12-28",
+        startHour: "08:00",
+        endHour: "18:00",
+        pauseDate: 23,
+        startHourOffset: "1+3.25;2-2.5"
+        endHourOffset: "1-2.5;2+2",
+        guests: 8,
+        hostName: "Jean Formation",
+        name: "Formation test",
+        configurationSize: null,
+        configurationQuantity: 0,
+        roomConfiguration: "U",
+        roomConfigurationPrecision: "Some option for the room config",
+        orgaName: "Super organisateur",
+        orgaMail: "Orga-mail@mail.com",
+        orgaTel: "0622222222",
+        paperboard:2,
+        chairSup:4,
+        tableSup:2,
+        pen: true,
+        blocNote:true,
+        postIt: true,
+        coffeeGroom: 8,
+        meal:8
+        mealPrecision:"Pas de noix de cajou",
+        morningCoffee:8,
+        afternoonCoffee:8,
+        vegetarian:2,
+        glutenFree:1
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [],
+        message: "Cannot assign null to property Reservation::$configurationSize of type int"
+      }
+    }
+  },
+
+  put_null_configurationSize: {
+    req: {
+      url: `"http://localhost/api/reservation/"+ post_legit.res.body.data.id`, @eval
+      method: "put",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        configurationSize: null,
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [],
+        message: "Cannot assign null to property Reservation::$configurationSize of type int"
+      }
+    }
+  },
+
+  post_legit_2: {
+    req: {
+      url: "http://localhost/api/reservation",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        roomId: 1,
+        startDate: "2023-12-29"
+        endDate: "2023-12-29",
+        startHour: "08:00",
+        endHour: "18:00",
+        pauseDate: 23,
+        startHourOffset: "1+3.25;2-2.5"
+        endHourOffset: "1-2.5;2+2",
+        guests: 8,
+        hostName: "Jean Formation",
+        name: "legit 2",
+        configurationSize: 0,
+        configurationQuantity: 0,
+        roomConfiguration: "U",
+        roomConfigurationPrecision: "Some option for the room config",
+        orgaName: "Super organisateur",
+        orgaMail: "Orga-mail@mail.com",
+        orgaTel: "0622222222",
+        paperboard:2,
+        chairSup:4,
+        tableSup:2,
+        pen: true,
+        blocNote:true,
+        postIt: true,
+        coffeeGroom: 8,
+        meal:8
+        mealPrecision:"Pas de noix de cajou",
+        morningCoffee:8,
+        afternoonCoffee:8,
+        vegetarian:2,
+        glutenFree:1
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: {
+                "id": 0, @type
+            },
+        message: "POST reservation"
+      }
+    }
+  },
+
+  post_legit_3: {
+    req: {
+      url: "http://localhost/api/reservation",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        roomId: 2,
+        startDate: "2023-12-25"
+        endDate: "2023-12-27",
+        startHour: "08:00",
+        endHour: "18:00",
+        pauseDate: 23,
+        startHourOffset: "1+3.25;2-2.5"
+        endHourOffset: "1-2.5;2+2",
+        guests: 8,
+        hostName: "Jean Formation",
+        name: "legit 3",
+        configurationSize: 0,
+        configurationQuantity: 0,
+        roomConfiguration: "U",
+        roomConfigurationPrecision: "Some option for the room config",
+        orgaName: "Super organisateur",
+        orgaMail: "Orga-mail@mail.com",
+        orgaTel: "0622222222",
+        paperboard:2,
+        chairSup:4,
+        tableSup:2,
+        pen: true,
+        blocNote:true,
+        postIt: true,
+        coffeeGroom: 8,
+        meal:8
+        mealPrecision:"Pas de noix de cajou",
+        morningCoffee:8,
+        afternoonCoffee:8,
+        vegetarian:2,
+        glutenFree:1
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: {
+                "id": 0, @type
+            },
+        message: "POST reservation"
+      }
+    }
+  },
+
+  put_empty: {
+    req: {
+      url: `"http://localhost/api/reservation/"+ post_legit_2.res.body.data.id`, @eval
+      method: "put",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [],
+        message: "Require at least one attribute to update"
+
+      }
+    }
+  },
+
+  put_id: {
+    req: {
+      url: `"http://localhost/api/reservation/"+ post_legit_2.res.body.data.id`, @eval
+      method: "put",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        id: 2,
+      },
+    },
+    res: {
+        "status": 200,
+        "body": {
+            data: [],
+            message: "PUT reservation"
+        }
+    }
+  },
+
+  put_on_existing_startDate: {
+    req: {
+      url: `"http://localhost/api/reservation/"+ post_legit_2.res.body.data.id`, @eval
+      method: "put",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        startDate: "2023-12-25"
+        endDate: "2023-12-25",
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        "data": [],
+        "message": "Reservation 'legit 2' cannot start the 2023-12-25 because reservation 'post legit' is already present that day"
+
+      }
+    }
+  },
+
+  put_on_existing_endDate: {
+    req: {
+      url: `"http://localhost/api/reservation/"+ post_legit_2.res.body.data.id`, @eval
+      method: "put",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        startDate: "2023-12-28"
+        endDate: "2023-12-28",
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        "data": [],
+        "message": "Reservation 'legit 2' cannot start the 2023-12-28 because reservation 'post legit' is already present that day"
+
+      }
+    }
+  },
+
+  put_overlapping_resa: {
+    req: {
+      url: `"http://localhost/api/reservation/"+ post_legit_2.res.body.data.id`, @eval
+      method: "put",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        startDate: "2023-12-25"
+        endDate: "2023-12-27",
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        "data": [],
+        "message": "Reservation 'legit 2' cannot start the 2023-12-25 because reservation 'post legit' is already present that day"
+      }
+    }
+  },
+
+  put_between_existing_resa: {
+    req: {
+      url: `"http://localhost/api/reservation/"+ post_legit_2.res.body.data.id`, @eval
+      method: "put",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        startDate: "2023-12-26"
+        endDate: "2023-12-26",
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [],
+        message: "Reservation 'legit 2' cannot start the 2023-12-26 because reservation 'post legit' is already present that day"
+      }
+    }
+  },
+  post_overlapping_resa: {
+    req: {
+      url: "http://localhost/api/reservation",
+      method: "post",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+        roomId: 1,
+        startDate: "2023-12-25"
+        endDate: "2023-13-28",
+        startHour: "08:00",
+        endHour: "18:00",
+        pauseDate: 23,
+        startHourOffset: "1+3.25;2-2.5"
+        endHourOffset: "1-2.5;2+2",
+        guests: 8,
+        hostName: "Jean Formation",
+        name: "Formation test",
+        configurationSize: 0,
+        configurationQuantity: 0,
+        roomConfiguration: "U",
+        roomConfigurationPrecision: "Some option for the room config",
+        orgaName: "Super organisateur",
+        orgaMail: "Orga-mail@mail.com",
+        orgaTel: "0622222222",
+        paperboard:2,
+        chairSup:4,
+        tableSup:2,
+        pen: true,
+        blocNote:true,
+        postIt: true,
+        coffeeGroom: 8,
+        meal:8
+        mealPrecision:"Pas de noix de cajou",
+        morningCoffee:8,
+        afternoonCoffee:8,
+        vegetarian:2,
+        glutenFree:1
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [],
+        message: "Reservation 'Formation test' cannot start the 2023-12-25 because reservation 'post legit' is already present that day"
+
+      }
+    }
+  },
+
+  delete_unknown_id: {
+    req: {
+      url: "http://localhost/api/reservation/1000",
+      method: "delete",
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [],
+        message: "Entity does not exist, no deletion performed"
+      }
+    }
+  }
+
+  get: {
+    req: {
+      url: `"http://localhost/api/reservation/"+post_legit.res.body.data.id`, @eval
+      method: 'get',
+      headers: {
+        'content-type':'application/json',
+        'Bearer': `login.res.body.data.jwt`, @eval
+      },
+      body: {
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        data: [
+          {
+            id: `post_legit.res.body.data.id`, @eval
+            name: "post legit",
+            roomId: 1,
+            orgaName: "Super organisateur",
+            orgaMail: "Orga-mail@mail.com",
+            orgaTel: "0622222222",
+            hostName: "Jean Formation",
+            guests: 8,
+            startDate: "2023-12-25",
+            endDate: "2023-12-28",
+            pauseDate: 23,
+            startHour: "08:00",
+            endHour: "18:00",
+            startHourOffset: "1+3.25;2-2.5",
+            endHourOffset: "1-2.5;2+2",
+            roomConfiguration: "U",
+            configurationSize: 0,
+            configurationQuantity: 10,
+            roomConfigurationPrecision: "Some option for the room config",
+            hostTable: 1,
+            paperboard: 2,
+            chairSup: 4,
+            tableSup: 2,
+            pen: 1,
+            paper: 0,
+            scissors: 0,
+            scotch: 0,
+            postItXl: 0,
+            paperA1: 0,
+            blocNote: 1,
+            gomette: 0,
+            postIt: 1,
+            coffeeGroom: 8,
+            meal: 8,
+            mealPrecision: "Pas de noix de cajou",
+            morningCoffee: 8,
+            afternoonCoffee: 8,
+            coktail: 0,
+            vegetarian: 2,
+            glutenFree: 1
+          }
+        ],
+        message: "GET reservation",
+      }
+  }
+  },
+
+}

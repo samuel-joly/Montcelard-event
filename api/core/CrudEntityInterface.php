@@ -4,7 +4,7 @@ declare(strict_types=1);
 interface CrudEntityInterface
 {
     /**
-     * @param array<string,mixed> $query_params
+     * @param array<int,array<string, mixed>> $query_params
      */
     public function get(array $query_params): Response;
     /**

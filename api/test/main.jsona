@@ -1,5 +1,6 @@
 {
-@module("event_crud")
+@module("reservation_crud")
+@module("reservation_err")
 //@module("prod")
 //@module("staging")
 }

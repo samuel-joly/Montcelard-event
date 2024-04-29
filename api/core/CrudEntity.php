@@ -15,58 +15,85 @@ abstract class CrudEntity implements CrudEntityInterface
     abstract public function get_name(): string;
 
     abstract public function validate(): bool;
+
     /**
-     * @param array<string,mixed> $body
+     * @param array<string,mixed> $data
      */
-    public function constructFromArray(array $body): void {
+    public function constructFromArray(array $data): void {
         $reflection = new ReflectionClass($this->get_name());
         $entity_properties = $reflection->getProperties(ReflectionProperty::IS_PUBLIC);
         foreach($entity_properties as $reflection_property) {
             $prop_name = $reflection_property->getName();
-            if (!array_key_exists($prop_name, $body) ) {
+            if (!array_key_exists($prop_name, $data) ) {
                 if ($reflection_property->hasDefaultValue()) {
-                    $body[$prop_name] = $reflection_property->getDefaultValue();
+                    $data[$prop_name] = $reflection_property->getDefaultValue();
+                } else {
+                    throw new Error("Attribute '$prop_name' is required in entity '".$this->get_name()."'", 200);
                 }
             } 
             $prop_type = $reflection_property->getType()."";
-            $body[$prop_name] = Helper::tryCast($body[$prop_name], $prop_type);
-            $this->$prop_name = $body[$prop_name];
+            $data[$prop_name] = Helper::tryCast($data[$prop_name], $prop_type);
+            $this->$prop_name = $data[$prop_name];
         }
         $this->validate();
     }
 
     /**
      * @param array<string,mixed> $q_params
-     * @return array<string,mixed>
+     * @return array<int,array<string, mixed>>
      */
     public function parseQueryParams(array $q_params): array{
         $qp = [];
         $entity_attrs = [];
-        foreach($q_params as $attr => $value) {
-            $operator = $attr[strlen($attr)-1];
-            $param_str_arr = str_split($attr);
-            if ($operator == '<' || $operator  == '>') {
-                array_pop($param_str_arr);
-                if($value[0] == "=") {
+        $logic_nest = 0;
+        foreach($q_params as $value) {
+            $attr = $value[0];
+            $attr_str_arr = str_split($attr);
+            $operator = implode(array_slice($attr_str_arr, count($attr_str_arr)-3, count($attr_str_arr)));
+            $logical_operator = $value[0][0];
+
+            if($logical_operator == "|") {
+                $attr = implode(array_slice($attr_str_arr, 1,count($attr_str_arr)));
+                $logical_operator = "OR";
+                $logic_nest+=1;
+            } else {
+                $logical_operator = "AND";
+            }
+            
+            if ($operator == '%3C' || $operator  == '%3E') {
+                array_pop($attr_str_arr);
+                array_pop($attr_str_arr);
+                array_pop($attr_str_arr);
+                if($operator == "%3C") $operator = "<";
+                if($operator == "%3E") $operator = ">";
+                if($value[1][0] == "=") {
                     $operator .= "=";
-                    $value = str_split($value);
-                    unset($value[0]);
-                    $value = implode($value);
+                    $value[1] = str_split($value[1]);
+                    unset($value[1][0]);
+                    $value[1] = implode($value[1]);
                 }
-                if(implode($param_str_arr) == "id") {
-                    $this->set_id($value);
+
+                if(implode($attr_str_arr) == "id") {
+                    $this->set_id($value[1]);
                 } else {
-                    $type = $this->schema[implode($param_str_arr)];
-                    $cast = Helper::tryCast($value, $type);
-                    $qp[implode($param_str_arr)] = [$operator,$value];
+                    $type = $this->schema[implode($attr_str_arr)];
+                    $casted = Helper::tryCast(array_values($value)[count($value)-1], $type);
+                    $qp[$logic_nest][implode($attr_str_arr)] = [$operator,$casted,$logical_operator];
                 }
+            } else if($attr_str_arr[count($attr_str_arr)-1] == "!") {
+                array_pop($attr_str_arr);
+                $attr = implode($attr_str_arr);
+                $operator = "!=";
+                $type = $this->schema[$attr];
+                $value[1] = Helper::tryCast($value[1], $type);
+                $qp[$logic_nest][$attr] = [$operator,$value[1],$logical_operator];
             } else {
                 if($attr == "id") {
-                    $this->set_id((int)$value);
+                    $this->set_id((int)$value[1]);
                 } else {
                     $type = $this->schema[$attr];
-                    $cast = Helper::tryCast($value, $type);
-                    $qp[$attr] = ["=", $value];
+                    $value[1] = Helper::tryCast($value[1], $type);
+                    $qp[$logic_nest][$attr] = ["=", $value[1], $logical_operator];
                 }
             }
         }

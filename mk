@@ -112,14 +112,14 @@ case $1 in
 
                 "migrate")
                     for file in ./docker/db/migrations/*.sql; do
-                        echo -e "\e[1;34m${file}\e[m";
-                        docker exec $container sh -c "mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < /docker-entrypoint-initdb.d/migrations/$(basename $file)"
+                        echo -e "  \e[1;34m${file}\e[m";
+                        docker exec $container sh -c "mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < /docker-entrypoint-initdb.d/migrations/$(basename $file)" 
                     done;
                     ;;
 
                 "populate")
                     for file in ./docker/db/data/*.sql; do
-                        echo -e "\e[1;34m${file}\e[m";
+                        echo -e "  \e[1;34m${file}\e[m";
                         docker exec $container sh -c "mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < /docker-entrypoint-initdb.d/data/$(basename $file)"
                     done;
                     ;;
@@ -172,6 +172,7 @@ case $1 in
         # Ask repo admin for credentials
         shift 1;
         bin/phpstan analyse -c bin/phpstan.neon api
+        ./mk db refresh;
         bin/apitest ./api/test/main.jsona $@ 2>&1 
         ;;
 

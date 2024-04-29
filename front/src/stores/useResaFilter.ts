@@ -6,7 +6,7 @@ export const useResaFilter = defineStore('resaFilter', {
   state: () => ({
     selected: null as Reservation | null,
     results: [] as Reservation[],
-    week: 24 as number,
+    week: 23 as number,
     year: new Date().getFullYear() as number
   }),
   getters: {
