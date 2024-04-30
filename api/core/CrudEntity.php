@@ -74,7 +74,7 @@ abstract class CrudEntity implements CrudEntityInterface
                 }
 
                 if(implode($attr_str_arr) == "id") {
-                    $this->set_id($value[1]);
+                    $this->set_id((int)$value[1]);
                 } else {
                     $type = $this->schema[implode($attr_str_arr)];
                     $casted = Helper::tryCast(array_values($value)[count($value)-1], $type);
