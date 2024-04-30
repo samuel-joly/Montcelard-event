@@ -25,15 +25,15 @@ class Request
         string $body,
         string $query_params,
     ) {
-        /* if($query_params["entity"] != "login") { */
-        /*     if (!array_key_exists("Bearer", getallheaders())) { */
-        /*             throw new Exception("Request must have a JWT",403); */
-        /*     } */ 
-        /*     $bearer = getallheaders()["Bearer"]; */
-        /*     if(!Login::validate_JWT($bearer)) { */
-        /*         throw new Exception("Request must have a valid JWT",403); */
-        /*     } */
-        /* } */
+        if($query_params["entity"] != "login") {
+            if (!array_key_exists("Bearer", getallheaders())) {
+                    throw new Exception("Request must have a JWT",403);
+            } 
+            $bearer = getallheaders()["Bearer"];
+            if(!Login::validate_JWT($bearer)) {
+                throw new Exception("Request must have a valid JWT",403);
+            }
+        }
 
         $this->setQueryParams($query_params);
         $this->setMethod($method);
