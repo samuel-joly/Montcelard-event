@@ -25,7 +25,11 @@ class Request
         string $body,
         string $query_params,
     ) {
-        if($query_params["entity"] != "login") {
+        $this->setQueryParams($query_params);
+        $this->setMethod($method);
+        $this->setBody($body);
+
+        if($this->entityName != "login") {
             if (!array_key_exists("Bearer", getallheaders())) {
                     throw new Exception("Request must have a JWT",403);
             } 
@@ -35,9 +39,6 @@ class Request
             }
         }
 
-        $this->setQueryParams($query_params);
-        $this->setMethod($method);
-        $this->setBody($body);
     }
     /**
      * @param string $qp

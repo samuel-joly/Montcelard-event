@@ -19,6 +19,19 @@ query parameter `GET localhost/api/[entity]/2?schema=true`!!!
 
 ## HowTo
 
+### Filter with query params
+Request template is as usual
+`<host>/api/<entity>?<attr_name><operator>=<value>`
+
+Allowed operators are typicals `<` `>` `<=` `>=` `!`
+Notice that when you want tou use greater/lesser or equal, your will have two `=` after the `<attr_name>`
+`localhost/api/reservation?startDate>==2024-06-03`
+
+When you chain comparisons in request, the default is to bind them with the `and` logical operator.
+If you want to use `or` logical operator, juste use the pipe `|` just before the `<attr_name>` as follow
+`localhost/api/reservation?startDate>=2024-06-03&|name=resa with name`
+
+
 ### Fetch an entity from database
 ```php
 $query_filter = [
@@ -26,13 +39,13 @@ $query_filter = [
         "attr_name" => 
             ["=", "comparison_value"],
         "attr_2" => 
-            ["<=", "comparison_value", OR],
+            ["<=", "comparison_value"],
     ],
     [
         "attr_name" =>
             [">=", "comparison_value_2", OR],
         "attr_2" =>
-            ["!=", "comparison_value_2", OR],
+            ["!=", "comparison_value_2"],
     ],
 ];
 $db_entity = ($entity->get($query_filter))->data;
