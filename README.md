@@ -24,11 +24,11 @@ Request template is as usual
 
 Allowed operators are typicals `<` `>` `<=` `>=` `!`
 Notice that when you want tou use greater/lesser or equal, your will have two `=` after the `<attr_name>`
-`localhost/api/reservation?startDate>==2024-06-03`
+```localhost/api/reservation?startDate>==2024-06-03```
 
 When you chain comparisons in request, the default is to bind them with the `and` logical operator.
-If you want to use `or` logical operator, juste use the pipe `|` just before the `<attr_name>` as follow
-`localhost/api/reservation?startDate>=2024-06-03&|name=resa with name`
+If you want to use `or` logical operator, you can use the pipe `|` just before the `<attr_name>` as follow
+```localhost/api/reservation?startDate>=2024-06-03&|name=resa with name```
 
 
 ### Fetch an entity from database
