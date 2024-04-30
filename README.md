@@ -11,7 +11,6 @@ I recommand you to use thoses aliases
 
 ## Quirks
 
-- Last inserted entity ID must alway be highest ID in table
 - If you use the limit keyword in query params to get values, pass it as the first query param argument
 - !!!All public properties (name and type) of crud entities can be fetched with a GET method with the schema 
 query parameter `GET localhost/api/[entity]/2?schema=true`!!!
