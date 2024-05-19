@@ -12,8 +12,8 @@ services:
       - ./src:/usr/local/apache2/htdocs/src
       - ./api:/usr/local/apache2/htdocs/api
       - ./front/dist:/usr/local/apache2/htdocs/front
-      - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
-      - ./docker/apache/extra/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+      - ./docker/apache/conf/extra/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+      - ./docker/apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf
     networks:
       - web-network
 
@@ -43,7 +43,6 @@ services:
 
   docker-db:
     image: mysql
-    command: --default-authentication-plugin=caching_sha2_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"

@@ -5,12 +5,14 @@ import { defineStore } from 'pinia'
 export const useResaFilter = defineStore('resaFilter', {
   state: () => ({
     selected: null as Reservation | null,
+    hovered: 1 as number ,
     results: [] as Reservation[],
     week: 23 as number,
     year: new Date().getFullYear() as number
   }),
   getters: {
     getResas: (state): Reservation[] => state.results,
+    getHovered: (state): number|null => state.hovered,
     getNumber: (state): number => state.week,
     getSelected: (state): Reservation | null => state.selected
   },
@@ -44,6 +46,7 @@ export const useResaFilter = defineStore('resaFilter', {
         firstWeekDay.getDate()
       const weekEndDateString =
         lastWeekDay.getFullYear() + '-' + (1 + lastWeekDay.getMonth()) + '-' + lastWeekDay.getDate()
+      try {
       this.results = (
         await cli.get<Reservation>(
           new Reservation(),
@@ -51,6 +54,9 @@ export const useResaFilter = defineStore('resaFilter', {
           'startDate>==' + weekDateString + '&endDate<=' + weekEndDateString
         )
       ).data
+      } catch (e) {
+        console.log(e);
+      }
     },
     async deleteResa(id: number) {
       const cli = new Client()

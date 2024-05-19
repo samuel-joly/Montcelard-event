@@ -2,12 +2,13 @@
 declare(strict_types=1);
 include("autoload.php");
 
-$routes = [
-    "reservation" => new Reservation(),
-    "login" => new Login()
-];
 
 try {
+    $routes = [
+        "reservation" => new Reservation(),
+        "login" => new Login()
+    ];
+
     $req = new Request(
         $_SERVER["REQUEST_METHOD"],
         file_get_contents("php://input"),
@@ -94,6 +95,6 @@ try {
         break;
     }
     $res->send();
-} catch (PDOException|Exception|Error $e) {
+} catch (PDOException|Exception $e) {
     (new Response([], $e->getMessage(), (int)$e->getCode()))->send();
 }

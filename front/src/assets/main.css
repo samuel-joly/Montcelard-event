@@ -1,7 +1,15 @@
 @import './base.css';
 
-main {
+.bg-primary {
   background-color: var(--op-1);
+}
+
+.bg-dark {
+  background-color: var(--op-4);
+}
+
+.bg-mark {
+  background-color: var(--op-5);
 }
 
 #app {
@@ -16,6 +24,44 @@ a {
   font-style: none;
   transition: 0.3s;
   padding: 0.5rem;
+}
+
+input,
+select {
+  background-color: #eff1f6;
+  padding: 0.3rem;
+  border-radius: 0.2rem;
+  border: none;
+  transition: 0.2s;
+  margin-right: 0.2em;
+}
+
+input:focus {
+  outline: none;
+  background-color: #313956 !important;
+  color: white;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.just-center {
+  justify-content: center;
+}
+
+.pt-1 {
+  padding-top: 1em;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.just-between {
+  justify-content: space-between;
 }
 
 @media (hover: hover) {

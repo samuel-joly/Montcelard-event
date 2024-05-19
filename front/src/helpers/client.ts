@@ -36,6 +36,7 @@ export class Client {
     if (res.status != 200) {
       this.handleStatus(res.status)
       throw new Error('request failed with status ' + res.status)
+      console.error(res.json());
     }
 
     const resp: { data: any; message: string } = await res.json()

@@ -8,15 +8,18 @@ export default class EntityBuilder {
   ): EntityType {
     const a = Object.keys(entity)
     const b = Object.keys(data)
+    if (a.length != b.length) {
+        throw new Error("Erreure pendant la récupération des réservations");
+    }
     const a_diff_b = a.filter((ae: string) => !b.includes(ae))
     const b_diff_a = b.filter((be: string) => !a.includes(be))
     if (a_diff_b.length > 0) {
       throw new Error(
-        "Attribute(s) '" + [...a_diff_b] + "'is not present in data'" + entity.getEntityName() + "'"
+        "EntityBuilder: Attribute(s) '" + [...a_diff_b] + "'is not present in data'" + entity.getEntityName() + "'"
       )
     } else if (b_diff_a.length > 0) {
       throw new Error(
-        "Attribute(s) '" +
+        "EntityBuilder: Attribute(s) '" +
           [...b_diff_a] +
           "'is not present in entity'" +
           entity.getEntityName() +
@@ -32,9 +35,9 @@ export default class EntityBuilder {
           }
         } catch (error) {
           console.error(
-            'Error during mapping of ' +
+            'Error during schema mapping of entity ' +
               entity.getEntityName() +
-              ' on ' +
+              ' on attribute ' +
               schema_attr_name +
               ' with type: ' +
               schema_type,
@@ -76,7 +79,7 @@ export default class EntityBuilder {
           throw new Error(
             'Can only cast string to Date. Create the cast "' +
               typeof data +
-              '" to "Date" if necessary'
+              '" to "Date"'
           )
         }
         break
