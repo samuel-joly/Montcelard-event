@@ -95,6 +95,6 @@ try {
         break;
     }
     $res->send();
-} catch (PDOException|Exception $e) {
+} catch (Error|PDOException|Exception $e) {
     (new Response([], $e->getMessage(), (int)$e->getCode()))->send();
 }
