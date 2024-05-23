@@ -10,7 +10,7 @@ export default defineComponent({
   },
   setup() {
     const filterStore = useResaFilter()
-    const gridStore = useGridFilter();
+    const gridStore = useGridFilter()
     filterStore.fetchResa()
     return { filterStore, gridStore }
   },
@@ -222,10 +222,10 @@ export default defineComponent({
 }
 
 .hovered {
-  background-color: rgba(74,90,128,30%) !important;
+  background-color: rgba(74, 90, 128, 30%) !important;
 }
 
-    .date {
-        height:90%;
-    }
+.date {
+  height: 90%;
+}
 </style>

@@ -7,8 +7,7 @@ export default {
     ResaForm,
     ResaGrid
   },
-  setup() {
-  }
+  setup() {}
 }
 </script>
 

@@ -10,7 +10,7 @@ export const useResaFilter = defineStore('resaFilter', {
   }),
   getters: {
     getResas: (state): Reservation[] => state.results,
-    getCurrentWeek: (state): number => state.week,
+    getCurrentWeek: (state): number => state.week
   },
   actions: {
     getFirstWeekDay(): Date {

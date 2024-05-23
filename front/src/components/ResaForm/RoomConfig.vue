@@ -1,11 +1,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useResaFilter } from '@/stores/useResaFilter'
-import { useGridFilter } from '@/stores/useGridFilter';
+import { useGridFilter } from '@/stores/useGridFilter'
 
 export default defineComponent({
   setup() {
-    const gridStore = useGridFilter();
+    const gridStore = useGridFilter()
     return {
       gridStore
     }
@@ -87,9 +87,7 @@ export default defineComponent({
           <input type="number" name="tableSup" v-model="gridStore.selected.tableSup" />
         </span>
         <span id="hostTable">
-          <label
-            :class="[gridStore.selected.hostTable ? 'selectedFurniture' : '']"
-            for="host_table"
+          <label :class="[gridStore.selected.hostTable ? 'selectedFurniture' : '']" for="host_table"
             >Table Formateur</label
           >
           <input
@@ -160,9 +158,7 @@ export default defineComponent({
           <input id="postIt" type="checkbox" name="postIt" v-model="gridStore.selected.postIt" />
         </span>
         <span class="furnitures">
-          <label
-            :class="[gridStore.selected.postItXl ? 'selectedFurniture' : '']"
-            for="post_it_xl"
+          <label :class="[gridStore.selected.postItXl ? 'selectedFurniture' : '']" for="post_it_xl"
             >post-it XL</label
           >
           <input
@@ -176,12 +172,7 @@ export default defineComponent({
           <label :class="[gridStore.selected.gomette ? 'selectedFurniture' : '']" for="gomette"
             >gomette</label
           >
-          <input
-            id="gomette"
-            type="checkbox"
-            name="gomette"
-            v-model="gridStore.selected.gomette"
-          />
+          <input id="gomette" type="checkbox" name="gomette" v-model="gridStore.selected.gomette" />
         </span>
       </div>
       <span>

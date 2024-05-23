@@ -16,7 +16,7 @@ export default defineComponent({
   },
   setup() {
     const filterStore = useResaFilter()
-    const gridStore = useGridFilter();
+    const gridStore = useGridFilter()
     const client = new Client()
     async function putResa(e: Event) {
       e.preventDefault()
