@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { Reservation } from '@/classes/Reservation'
+import { useGridFilter } from '@/stores/useGridFilter'
 import { useResaFilter } from '@/stores/useResaFilter'
 import { defineComponent, onMounted, ref } from 'vue'
 
@@ -9,6 +10,7 @@ export default defineComponent({
     },
     setup(props) {
         const filterStore = useResaFilter()
+        const gridStore = useGridFilter()
         const resa = ref<Reservation | null>()
         let room: number | null = null
         let day: number | null = null
@@ -17,7 +19,8 @@ export default defineComponent({
             room = Math.ceil(props.id / 5)
             day = dayVal != 0 ? dayVal : 5
         }
-        return { filterStore, props, resa: resa, day: day, room: room, id: props.id }
+
+        return { gridStore, filterStore, props, resa: resa, day: day, room: room, id: props.id }
     },
     computed: {
         getReservation() {
@@ -34,27 +37,44 @@ export default defineComponent({
             })[0]
             return this.resa
         },
-        setGridStyle() {
+
+        setGridContentStyle() {
             let style = ''
-            const filterStore = useResaFilter()
+            const hoveredGridId = this.gridStore.getHovered;
+            let hoveredGridResa = null;
+            if (hoveredGridId != null) {
+                hoveredGridResa = this.gridStore.getReservationByGridId(hoveredGridId);
+            }
             if (this.resa != null && this.day != null && this.room != null) {
-                // if event started today and end tomorow or after;
+                if (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) {
+                    style += 'filter:brightness(115%);'
+                }
+                // if resa started today and end later
                 if (this.resa.startDate.getDay() == this.day && this.resa.endDate.getDay() != this.day) {
                     style += 'border-radius:0.5rem 0 0 0.5rem;'
                 }
-                // if event started before this day and end this day
-                else if (this.resa.startDate.getDay() < this.day && this.resa.endDate.getDay() == this.day) {
+
+                // if resa started before today and end today
+                else if (
+                    this.resa.startDate.getDay() < this.day &&
+                    this.resa.endDate.getDay() == this.day
+                ) {
                     style += 'border-radius:0 0.5rem 0.5rem 0;'
                 }
-                // if event started before this day and end after
+                // if reservation started before today and end after
                 else if (this.resa.startDate.getDay() < this.day && this.resa.endDate.getDay() > this.day) {
                     style += 'border-radius:0 0 0 0;'
+                    // if resa start and end today
                 } else {
                     style += 'border-radius:0.5rem 0.5rem 0.5rem 0.5rem;'
                 }
-                if (filterStore.selected != null && this.resa.id == filterStore.selected.id) {
+
+                // if resa is selected
+                if (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id) {
                     style += 'color:white;'
                 }
+
+                // Dynamic background color (jenky)
                 let color =
                     'background-color:rgba(' +
                     (50 + this.resa.startDate.getDay() * 41.0) +
@@ -63,21 +83,30 @@ export default defineComponent({
                     ',' +
                     (100 + (this.room + (this.resa.endDate.getDay() - this.resa.startDate.getDay())) * 6.56) +
                     ', 100%);'
-                style += color;
+                style += color
             }
-
             return style
         },
-        setGridChildStyle() {
+        setEmptyGridElementHover() {
+            let style = "";
+            // Empty grid day
+            if(this.resa == null && this.day != null && this.room != null && this.gridStore.hovered == this.id) {
+                style += "background-color: rgba(74,90,128,30%);";
+            }
+            return style;
+        },
+        setGridBoxStyle() {
             let style = ''
-            const filterStore = useResaFilter()
             if (this.resa != null && this.day != null && this.room != null) {
                 // if event started today and end tomorow or after;
                 if (this.resa.startDate.getDay() == this.day && this.resa.endDate.getDay() != this.day) {
                     style += 'padding:0.1rem 0 0.1rem 0.1rem;'
                 }
                 // if event started before this day and end this day
-                else if (this.resa.startDate.getDay() < this.day && this.resa.endDate.getDay() == this.day) {
+                else if (
+                    this.resa.startDate.getDay() < this.day &&
+                    this.resa.endDate.getDay() == this.day
+                ) {
                     style += 'padding:0.1rem 0.1rem 0.1rem 0;'
                 }
                 // if event started before this day and end after
@@ -88,80 +117,56 @@ export default defineComponent({
                 }
             }
 
-            if (filterStore.getHovered != null) {
-                let hoveredId = filterStore.getHovered;
-                if (this.id != null) {
-                    let sum = 5;
-                    if (this.id < hoveredId) {
-                        do {
-                            if (this.id == hoveredId - sum) {
-                                style += "background-color:#adb2c4";
-                                break;
-                            } else {
-                                sum += 5;
-                            }
-                        } while (sum <= hoveredId);
-
-                        sum = 1;
-                        if ((hoveredId-1)%5 != 0) {
-                            do {
-                                if (this.id == hoveredId - sum) {
-                                    style += "background-color:#adb2c4";
-                                    break;
-                                } else {
-                                    sum += 1;
-                                }
-                            } while ((hoveredId - sum) % 5 != 0);
-                        }
-                    } 
-                }
-            }
-            return style;
+            return style
         },
         splitReservationName() {
             let evName = ''
             if (this.resa != null) {
                 evName = this.resa.name.slice(0, 30)
                 if (this.resa.name.length > 30) {
-                    evName += "...";
+                    evName += '...'
                 }
             }
             return evName
-        },
+        }
     },
     methods: {
         selectReservation() {
             if (this.resa != null) {
-                if (this.filterStore.selected != null && this.resa.id == this.filterStore.selected.id) {
-                    this.filterStore.selectResa(null)
+                if (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id) {
+                    this.gridStore.selectResa(null)
                 } else {
-                    this.filterStore.selectResa(this.resa)
+                    this.gridStore.selectResa(this.resa)
                 }
             } else {
-                this.filterStore.selectResa(null)
+                this.gridStore.selectResa(null)
             }
         },
         setHoverBehavior() {
             if (this.id != null) {
-                this.filterStore.hovered = this.id;
+                this.gridStore.hovered = this.id
             }
-        }
+        },
+
     }
 })
 </script>
 
 <template>
-    <div :style="setGridChildStyle" class="gridElement" @click="selectReservation" @mouseover="setHoverBehavior">
-        <div :style="setGridStyle" :class="getReservation != null ? 'hoverable' : ''"
+    <div :style="setGridBoxStyle" class="gridElement" @click="selectReservation" @mouseover="setHoverBehavior">
+        <div :style="setGridContentStyle" :class="getReservation != null ? 'hoverable' : ''"
             v-if="getReservation != null && day != null && room != null">
             <div class="infoReservation" v-if="getReservation.startDate.getDay() == day">
-                <p style="align-self: flex-start" :title="getReservation.name">{{ splitReservationName }}</p>
-                <span class="flex-row just-between" style="width:100%;">
+                <p style="align-self: flex-start" :title="getReservation.name">
+                    {{ splitReservationName }}
+                </p>
+                <span class="flex-row just-between" style="width: 100%">
                     <p style="align-self: flex-start">
                         {{ getReservation.roomConfiguration }}
                         {{ getReservation.configurationSize }}
                         {{
-                            (getReservation.configurationQuantity != null && getReservation.roomConfiguration == "Ilots")
+                            getReservation.configurationQuantity != null &&
+                            getReservation.roomConfiguration == 'Ilots'
                             ? 'x' + getReservation.configurationQuantity
                             : ''
                         }}
@@ -172,9 +177,9 @@ export default defineComponent({
             <p v-if="getReservation.startDate.getDay() + 1 == day">{{ getReservation.hostName }}</p>
             <p v-if="getReservation.startDate.getDay() + 2 == day">{{ getReservation.meal }}</p>
         </div>
-        <div v-else class="add-event">
+        <div v-else class="add-event" :style="setEmptyGridElementHover">
             <Transition>
-                <button v-if="id == filterStore.getHovered"class="add-btn">+</button>
+                <button v-if="id == gridStore.getHovered" class="add-btn">+</button>
             </Transition>
         </div>
     </div>
@@ -190,18 +195,20 @@ export default defineComponent({
     justify-content: flex-start;
     align-items: flex-start;
     font-size: 0.7em;
+    transition-duration: 0.15s;
 }
+
 
 .gridElement {
     width: 100%;
     height: 100%;
     min-height: 3.5rem;
-    color: black;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     transition-duration: 0.3s;
+    border-radius: 0.5em;
 }
 
 .hoverable:hover {
@@ -209,24 +216,29 @@ export default defineComponent({
 }
 
 .add-btn {
-    background-color: rgba(175,175,175,30%);
-    border-radius:0.5em;
-    border-style: none;
+    background-color: rgba(74,90,128,80%);
+    border-radius: 0.65em;
+    border-style:none;
     align-self: self-end;
-    width: 25%;
+    width: 2em;
     height: 100%;
     transition-duration: 0.2s;
-    position:relative;
+    position: relative;
 }
 
 .add-btn:hover {
     cursor: pointer;
-    background-color: rgba(175,175,175,70%)
+    border-style: none;
+    color: #EEEEEE;
+    filter:brightness(120%);
 }
 
 .add-event {
-    height:100%;
+    margin:0.2em;
+    border-radius:0.8em;
     overflow: hidden;
+    width:90%;
+    height:90%;
 }
 
 .infoReservation p {
@@ -245,7 +257,7 @@ export default defineComponent({
 .v-enter-active,
 .v-leave-active {
     transition: all 0.2s ease;
-    left:0;
+    left: 0;
 }
 
 .v-enter-from,

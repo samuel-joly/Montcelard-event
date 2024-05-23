@@ -4,17 +4,13 @@ import { defineStore } from 'pinia'
 
 export const useResaFilter = defineStore('resaFilter', {
   state: () => ({
-    selected: null as Reservation | null,
-    hovered: 1 as number ,
     results: [] as Reservation[],
     week: 23 as number,
     year: new Date().getFullYear() as number
   }),
   getters: {
     getResas: (state): Reservation[] => state.results,
-    getHovered: (state): number|null => state.hovered,
-    getNumber: (state): number => state.week,
-    getSelected: (state): Reservation | null => state.selected
+    getCurrentWeek: (state): number => state.week,
   },
   actions: {
     getFirstWeekDay(): Date {
@@ -23,9 +19,6 @@ export const useResaFilter = defineStore('resaFilter', {
         firstWeekDay.setDate(firstWeekDay.getDate() - 1)
       }
       return firstWeekDay
-    },
-    selectResa(resa: Reservation | null) {
-      this.selected = resa
     },
     getFromDate(date: Date): Reservation {
       return this.results.filter((e) => e.startDate == date)[0]
@@ -47,15 +40,15 @@ export const useResaFilter = defineStore('resaFilter', {
       const weekEndDateString =
         lastWeekDay.getFullYear() + '-' + (1 + lastWeekDay.getMonth()) + '-' + lastWeekDay.getDate()
       try {
-      this.results = (
-        await cli.get<Reservation>(
-          new Reservation(),
-          0,
-          'startDate>==' + weekDateString + '&endDate<=' + weekEndDateString
-        )
-      ).data
+        this.results = (
+          await cli.get<Reservation>(
+            new Reservation(),
+            0,
+            'startDate>==' + weekDateString + '&endDate<=' + weekEndDateString
+          )
+        ).data
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
     async deleteResa(id: number) {

@@ -9,13 +9,17 @@ export default class EntityBuilder {
     const a = Object.keys(entity)
     const b = Object.keys(data)
     if (a.length != b.length) {
-        throw new Error("Erreure pendant la récupération des réservations");
+      throw new Error('Erreure pendant la récupération des réservations')
     }
     const a_diff_b = a.filter((ae: string) => !b.includes(ae))
     const b_diff_a = b.filter((be: string) => !a.includes(be))
     if (a_diff_b.length > 0) {
       throw new Error(
-        "EntityBuilder: Attribute(s) '" + [...a_diff_b] + "'is not present in data'" + entity.getEntityName() + "'"
+        "EntityBuilder: Attribute(s) '" +
+          [...a_diff_b] +
+          "'is not present in data'" +
+          entity.getEntityName() +
+          "'"
       )
     } else if (b_diff_a.length > 0) {
       throw new Error(
@@ -77,9 +81,7 @@ export default class EntityBuilder {
           data = new Date(data)
         } else {
           throw new Error(
-            'Can only cast string to Date. Create the cast "' +
-              typeof data +
-              '" to "Date"'
+            'Can only cast string to Date. Create the cast "' + typeof data + '" to "Date"'
           )
         }
         break
