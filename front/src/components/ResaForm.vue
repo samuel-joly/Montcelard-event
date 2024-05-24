@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import Icon from '@/components/Icon.vue'
 import { Client } from '@/helpers/client'
 import { Reservation as Resa, Reservation } from '@/classes/Reservation'
@@ -18,6 +18,7 @@ export default defineComponent({
     const filterStore = useResaFilter()
     const gridStore = useGridFilter()
     const client = new Client()
+    const isFullWeek = ref<Boolean>(true)
     async function putResa(e: Event) {
       e.preventDefault()
       if (gridStore.selected != null) {
@@ -33,6 +34,7 @@ export default defineComponent({
     }
 
     return {
+      isFullWeek,
       filterStore,
       gridStore,
       putResa
@@ -55,15 +57,27 @@ export default defineComponent({
     <RoomConfig />
     <div id="startDay">
       <span> </span>
-      <div>
-        <span>
-          <label for="start_hour">Heure de début</label>
+      <div id="resaHour" class="flex-row just-around align-center">
+        <div style="margin-right: 2em">
+          <label for="start_hour">Arrivée</label>
           <input name="startHour" v-model="gridStore.selected.startHour" />
-        </span>
-        <span>
-          <label for="end_hour">Heure de fin</label>
+        </div>
+        <div style="margin-right: 2em">
+          <label for="end_hour">Départ</label>
           <input name="endHour" v-model="gridStore.selected.endHour" />
-        </span>
+        </div>
+        <div>
+          <label id="isHourFull" :class="[isFullWeek ? 'selectedFurniture' : '']" for="hourFullWeek"
+            >Tous les jours</label
+          >
+          <input
+            class="hidden"
+            type="checkbox"
+            id="hourFullWeek"
+            name="hourFullWeek"
+            v-model="isFullWeek"
+          />
+        </div>
       </div>
       <div id="restauration">
         <span>
@@ -110,5 +124,34 @@ form {
   width: 25vw;
   z-index: 999;
   margin-right: 1em;
+}
+
+#resaHour {
+  margin-top: 0.5rem;
+}
+
+#resaHour label {
+  font-size: 0.9em;
+}
+
+#resaHour input {
+  width: 4em;
+}
+
+.selectedFurniture {
+  background-color: #434f77;
+  color: white;
+  border-color: black !important;
+}
+
+#isHourFull:hover {
+  cursor: pointer;
+}
+
+#isHourFull {
+  padding: 0.3em;
+  transition: 0.2s;
+  border: 1px solid black;
+  border-radius: 5px;
 }
 </style>

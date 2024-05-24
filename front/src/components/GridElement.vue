@@ -2,7 +2,7 @@
 import type { Reservation } from '@/classes/Reservation'
 import { useGridFilter } from '@/stores/useGridFilter'
 import { useResaFilter } from '@/stores/useResaFilter'
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   props: {
@@ -48,9 +48,6 @@ export default defineComponent({
       }
       if (this.resa != null && this.day != null && this.room != null) {
         // Dynamic background color
-        // getDay ensemble = [1-5]
-        // room ensemble = [1-12]
-        // room + (startDay*5) ensemble = [12-37]
         let redVal = 100 + (this.resa.startDate.getDay() - 1) * 17.5 // [100-170]
         let greenVal = 130 + (this.room - 1) * 1.81 // [130 - 150]
         let blueVal = 130 + (this.room - 1 + (this.resa.startDate.getDay() - 1) * 5) * 2.9 // [130-220]
@@ -60,12 +57,20 @@ export default defineComponent({
         greenVal -= 35
         blueVal -= 35
         let shadowColor = 'rgb(' + redVal + ',' + greenVal + ',' + blueVal + ')'
+        redVal += 60
+        greenVal += 60
+        blueVal += 60
+        let borderColor = 'rgb(' + redVal + ',' + greenVal + ',' + blueVal + ')'
         // if resa started today and end later
         if (this.resa.startDate.getDay() == this.day && this.resa.endDate.getDay() != this.day) {
           style += 'border-radius:0.5rem 0 0 0.5rem;'
           // if resa is selected
-          if (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) {
+          if (
+            (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) ||
+            (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id)
+          ) {
             style += 'filter:brightness(115%);box-shadow:inset 3px -3px 3px ' + shadowColor + ';'
+            style += 'border: solid 1px ' + borderColor + ';border-right:0px; '
           }
         }
 
@@ -75,25 +80,37 @@ export default defineComponent({
           this.resa.endDate.getDay() == this.day
         ) {
           style += 'border-radius:0 0.5rem 0.5rem 0;'
-          if (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) {
+          if (
+            (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) ||
+            (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id)
+          ) {
             style +=
               'filter:brightness(115%);box-shadow:0px -7px 4px -4px inset ' + shadowColor + ';'
+            style += 'border: solid 1px ' + borderColor + ';border-left:0px;'
           }
         }
         // if reservation started before today and end after
         else if (this.resa.startDate.getDay() < this.day && this.resa.endDate.getDay() > this.day) {
           style += 'border-radius:0 0 0 0;'
-          if (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) {
+          if (
+            (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) ||
+            (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id)
+          ) {
             style +=
               'filter:brightness(115%);box-shadow:0px -7px 3px -4px inset ' + shadowColor + ';'
+            style += 'border: solid 1px ' + borderColor + ';border-left:0px;border-right:0px; '
           }
         }
         // if resa start and end today
         else {
           style += 'border-radius:0.5rem 0.5rem 0.5rem 0.5rem;'
-          if (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) {
+          if (
+            (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) ||
+            (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id)
+          ) {
             style +=
               'filter:brightness(115%);box-shadow: 3px -3px 3px 0px inset ' + shadowColor + ';'
+            style += 'border: solid 1px ' + borderColor + ';'
           }
         }
       }
@@ -214,6 +231,7 @@ export default defineComponent({
   font-weight: bold;
   font-size: 1.5em;
 }
+
 .gridElement div {
   height: 100%;
   padding: 0.2rem;
@@ -223,7 +241,6 @@ export default defineComponent({
   justify-content: flex-start;
   align-items: flex-start;
   font-size: 0.7em;
-  transition-duration: 0.15s;
 }
 
 .gridElement {

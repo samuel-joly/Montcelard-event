@@ -47,6 +47,12 @@ input:focus {
   flex-direction: column;
 }
 
+.just-around {
+  justify-content: space-around;
+}
+.just-start {
+  justify-content: start;
+}
 .just-center {
   justify-content: center;
 }
@@ -62,6 +68,10 @@ input:focus {
 
 .just-between {
   justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
 }
 
 @media (hover: hover) {
