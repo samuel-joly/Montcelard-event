@@ -1,8 +1,9 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { Reservation } from '@/classes/Reservation'
 import ValidationModal from '@/components/ValidationModal.vue'
 import { useResaFilter } from '@/stores/useResaFilter'
+import { useGridFilter } from '@/stores/useGridFilter'
 
 export default defineComponent({
   components: {
@@ -16,11 +17,12 @@ export default defineComponent({
   },
   data(props) {
     const filterStore = useResaFilter()
+    const gridStore = useGridFilter()
     filterStore.fetchResa()
-    if (filterStore.selected == null && filterStore.results.length > 0) {
-      filterStore.selected = filterStore.results[0]
+    if (gridStore.selected == null && filterStore.results.length > 0) {
+      gridStore.selected = filterStore.results[0]
     }
-    return { filterStore, props }
+    return { filterStore, gridStore, props }
   },
   methods: {
     getStartDate(resa: Reservation): string {
@@ -34,7 +36,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="filterStore.selected != null">
+  <div v-if="gridStore.selected != null">
     <table>
       <tr id="tableHead">
         <th class="short">ID</th>
@@ -53,8 +55,8 @@ export default defineComponent({
         v-for="resa in filterStore.results.slice(0, props.limit)"
         :key="resa.id"
         class="resa"
-        :class="resa.id == filterStore.selected.id ? 'selected' : ''"
-        @click="filterStore.selectResa(resa)"
+        :class="resa.id == gridStore.selected.id ? 'selected' : ''"
+        @click="gridStore.selectResa(resa)"
       >
         <td>{{ resa.id }}</td>
         <td>{{ resa.guests }}</td>

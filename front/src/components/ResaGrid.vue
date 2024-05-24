@@ -194,6 +194,8 @@ export default defineComponent({
 #gridContainer {
   display: grid;
   width: 73%;
+  height: 88vh;
+  max-height: 93vh;
   padding: 1em;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(13, 1fr);

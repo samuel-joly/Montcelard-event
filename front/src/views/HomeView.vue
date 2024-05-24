@@ -5,11 +5,31 @@ import ResaTable from '@/components/ResaTable.vue'
 import Login from '@/classes/Login'
 import { ref } from 'vue'
 import { useResaFilter } from '@/stores/useResaFilter'
+import { Reservation } from '@/classes/Reservation'
 
 const loginStore = useLogin()
 const login: Login = new Login('Montcelard_user', 'Montcelard_password')
 const isListView = ref(false)
 const filter = useResaFilter()
+//        const filterStore = useResaFilter();
+//        function fillGrid() {
+//            let i = 0;
+//            while (i <= 60) {
+//                let resa = new Reservation();
+//                const dayVal = i % 5
+//                resa.roomId = Math.ceil(i / 5)
+//                let day = dayVal != 0 ? dayVal : 5
+//                resa.startDate = new Date()
+//                do {
+//                    resa.startDate.setDate(resa.startDate.getDate() - 1)
+//                } while (resa.startDate.getDay() != day)
+//                resa.endDate = resa.startDate;
+//                resa.name = "filled reservation " + i;
+//                filterStore.results.push(resa);
+//                resa.id = 100+i;
+//                i++;
+//            }
+//        }
 </script>
 
 <template>
@@ -85,6 +105,7 @@ const filter = useResaFilter()
   align-items: center;
   padding: 0.4em;
   width: 100%;
+  height: 5vh;
   background-color: var(--op-6);
 }
 

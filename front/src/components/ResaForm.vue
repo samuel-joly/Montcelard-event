@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 import Icon from '@/components/Icon.vue'
 import { Client } from '@/helpers/client'
-import { Reservation as Resa } from '@/classes/Reservation'
+import { Reservation as Resa, Reservation } from '@/classes/Reservation'
 import { useResaFilter } from '@/stores/useResaFilter'
 import TopForm from '@/components/ResaForm/TopForm.vue'
 import RoomConfig from '@/components/ResaForm/RoomConfig.vue'
@@ -31,6 +31,7 @@ export default defineComponent({
         })
       }
     }
+
     return {
       filterStore,
       gridStore,
@@ -53,16 +54,7 @@ export default defineComponent({
     <TopForm />
     <RoomConfig />
     <div id="startDay">
-      <span>
-        <label for="host_name">Nom formateur</label>
-        <div id="hosts-name" v-if="getHostsName != null">
-          <input
-            :v-model="getHostsName[index]"
-            :value="hostName"
-            v-for="(hostName, index) in getHostsName"
-          />
-        </div>
-      </span>
+      <span> </span>
       <div>
         <span>
           <label for="start_hour">Heure de début</label>
@@ -118,9 +110,5 @@ form {
   width: 25vw;
   z-index: 999;
   margin-right: 1em;
-}
-
-#hosts-name input {
-  margin-top: 0.2em;
 }
 </style>

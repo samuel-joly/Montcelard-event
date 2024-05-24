@@ -15,6 +15,14 @@ export default defineComponent({
       filterStore,
       gridStore
     }
+  },
+  computed: {
+    getHostsName(): string[] | null {
+      if (this.gridStore.selected != null) {
+        return this.gridStore.selected.hostName.split(',')
+      }
+      return null
+    }
   }
 })
 </script>
@@ -24,7 +32,8 @@ export default defineComponent({
     <input id="formationName" name="name" v-model="gridStore.selected.name" />
     <div id="topBar">
       <div class="flex-row just-between">
-        <span>
+        <span class="dateRow">
+          <label for="start_date">Du</label>
           <input
             name="start_date"
             type="date"
@@ -39,12 +48,14 @@ export default defineComponent({
             "
           />
         </span>
-        <span class="inlineInput just-between">
+        <span class="dateRow">
+          <label for="paxNumber">pax</label>
           <input id="paxNumber" type="number" name="guests" v-model="gridStore.selected.guests" />
         </span>
       </div>
       <div class="flex-row just-between">
-        <span>
+        <span class="dateRow">
+          <label for="end_date">Au</label>
           <input
             name="end_date"
             type="date"
@@ -60,8 +71,9 @@ export default defineComponent({
           />
         </span>
         <div class="just-between">
-          <span id="room-select">
-            <select v-model="gridStore.selected.roomId">
+          <span id="room-select dateRow">
+            <label for="room">Salle</label>
+            <select id="room" v-model="gridStore.selected.roomId">
               <option value="1">Chine</option>
               <option value="2">Cambodge</option>
               <option value="3">Laos</option>
@@ -80,13 +92,18 @@ export default defineComponent({
       </div>
     </div>
     <div>
-      <div id="flex-row just-between" style="padding-top: 0.3rem">
-        <span class="flex-row just-between" style="width: 100%">
-          <input name="orgaName" id="orga_name" v-model="gridStore.selected.orgaName" />
-          <input name="orgaMail" id="orga_mail" v-model="gridStore.selected.orgaMail" />
+      <div id="orgaFields">
+        <span class="flex-col" style="width: 100%">
+          <label for="resp_dossier">Resp. dossier</label>
+          <input name="respDossier" id="resp_dossier" v-model="gridStore.selected.orgaName" />
         </span>
-        <span>
-          <input name="orgaTel" id="orga_tel" v-model="gridStore.selected.orgaTel" />
+        <span class="flex-col" style="width: 100%">
+          <label for="resp_groupe">Resp. groupe</label>
+          <input name="resp_groupe" id="resp_groupe" v-model="gridStore.selected.orgaName" />
+        </span>
+        <span class="flex-col" style="width: 100%">
+          <label for="host_name">Anim.</label>
+          <input id="host_name" :v-model="gridStore.selected.hostName" :value="getHostsName" />
         </span>
       </div>
     </div>
@@ -94,14 +111,28 @@ export default defineComponent({
 </template>
 
 <style scoped>
+#orgaFields {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  max-height: 90%;
+}
+
+#orgaFields span label {
+  font-size: 0.7em;
+}
+
 #topInfo {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   padding: 1rem;
-  color: white;
   font-size: 1.2rem;
   border-bottom: 1px solid #ffffff;
+}
+
+#topInfo label {
+  font-size: 0.7em;
 }
 
 #formationName:hover {
@@ -151,5 +182,64 @@ export default defineComponent({
 #orgaInfo span label {
   margin-right: 0.8rem;
   font-size: 0.8em;
+}
+
+#hosts_name {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#hosts_name input {
+  margin-top: 0.2em;
+}
+
+.addHostName,
+.hostNameBtn {
+  margin-left: 0.2em;
+  width: 22px;
+  height: 22px;
+  text-align: center;
+  font-size: 0.7em;
+  border-style: none;
+  border-radius: 4px;
+  border: 1px solid #eeeeee;
+}
+
+.hostName {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hostNameBox {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.hostNameLabel {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.dateRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+}
+
+.dateRow label {
+  width: 2em;
+}
+#topBar {
+  margin-top: 0.25em;
 }
 </style>
