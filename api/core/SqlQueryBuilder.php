@@ -13,6 +13,7 @@ class SqlQueryBuilder
         } else if($query_params != null && count($query_params) > 0 ) {
             $where_clause = " WHERE";
             $ending_clause = " ";
+            $i = 0;
             foreach($query_params as $logic_nest => $query_param) {
                 foreach($query_param as $attr => $op_val) {
                     if ($attr == "limit") {
@@ -25,11 +26,16 @@ class SqlQueryBuilder
                         if(array_key_first($query_params) == $logic_nest && array_key_first($query_param) == $attr) {
                             $where_clause .= " $attr ".$op_val[0]." :$attr".$logic_nest;
                         } else {
-                            $where_clause .= " ".$op_val[2]." $attr ".$op_val[0]." :$attr".$logic_nest;
+                            if(array_key_first($query_param) == $attr && $i >= 1) {
+                                $where_clause .= " OR $attr ".$op_val[0]." :$attr".$logic_nest;
+                            } else {
+                                $where_clause .= " ".$op_val[2]." $attr ".$op_val[0]." :$attr".$logic_nest;
+                            }
                         }
                     }
                     $qp[$attr.$logic_nest] = $op_val[1];
                 }
+                $i++;
             }
             $query_params = $qp;
             return "SELECT * FROM ".$entity->get_name().$where_clause.$ending_clause;

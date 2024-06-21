@@ -74,15 +74,15 @@ class Reservation extends CrudEntity implements CrudEntityInterface
                 "roomId" => ["=", $this->roomId]
             ],
             [
-                "startDate" => ["=", $this->startDate, "OR"],
+                "startDate" => ["=", $this->startDate],
                 "roomId" => ["=", $this->roomId] ,
             ],
             [
-                "endDate" => ["=", $this->endDate, "OR"],
+                "endDate" => ["=", $this->endDate],
                 "roomId" => ["=", $this->roomId ],
             ],
             [
-                "startDate" => ["=", $this->startDate, "OR"],
+                "startDate" => ["=", $this->startDate],
                 "endDate" => ["=", $this->endDate],
                 "roomId" => ["=", $this->roomId] ,
             ],

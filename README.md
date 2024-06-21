@@ -35,17 +35,20 @@ If you want to use `or` logical operator, you can use the pipe `|` just before t
 ```php
 $query_filter = [
     [
-        "attr_name" => 
-            ["=", "comparison_value"],
-        "attr_2" => 
-            ["<=", "comparison_value"],
+        "id" => 
+            ["=", 2],
+        "size" => 
+            ["<=",5],
     ],
-    [
-        "attr_name" =>
-            [">=", "comparison_value_2", OR],
-        "attr_2" =>
-            ["!=", "comparison_value_2"],
+    // When adding more than one array in query_filter, sqlBuilder use the OR logical operator to bind filters.
+    [ 
+        "id" =>
+            [">=", 2],
+        "name" =>
+            ["!=", "simpleName"],
     ],
 ];
 $db_entity = ($entity->get($query_filter))->data;
+// Query will be :
+// SELECT * from entityTable where id = 2 AND size <= 5 OR id >= 2 AND name != "simpleName";
 ```
