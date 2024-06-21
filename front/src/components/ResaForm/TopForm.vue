@@ -1,24 +1,19 @@
 <script lang="ts">
 import Icon from '@/components/Icon.vue'
+import DayHours from '@/components/ResaForm/DayHours.vue'
 import { defineComponent, ref } from 'vue'
-import { useResaFilter } from '@/stores/useResaFilter'
 import { useGridFilter } from '@/stores/useGridFilter'
 
 export default defineComponent({
     components: {
-        Icon
+        Icon,
+        DayHours,
     },
     setup() {
-        const filterStore = useResaFilter()
         const gridStore = useGridFilter()
-        const isSameHourAllWeek = ref<Boolean>(true)
 
-        const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"];
         return {
-            filterStore,
-            isFullWeek: isSameHourAllWeek,
             gridStore,
-            days,
         }
     },
     computed: {
@@ -28,22 +23,9 @@ export default defineComponent({
             }
             return null
         },
-
-        notSameHourDisplay() {
-            if (this.gridStore.selected != null) {
-                let startDay = this.gridStore.selected.startDate.getDay();
-                const endDay = this.gridStore.selected.endDate.getDay();
-                let days = [];
-                while (startDay <= endDay) {
-                    days.push(startDay);
-                    startDay++;
-                }
-                return days
-            } else {
-                throw Error("No selected reservation");
-            }
-        }
-    }
+    },
+    methods: {
+    },
 })
 </script>
 
@@ -115,28 +97,7 @@ export default defineComponent({
                             <input name="resp_groupe" id="resp_groupe" v-model="gridStore.selected.orgaName" />
                         </span>
                     </div>
-                    <div id="resaHour" class="flex-row just-around" style="width:100%;">
-                        <div class="flex-col align-center just-start">
-                            <div class="flex-row">
-                                <label for="start_hour" style="width:4em;">Arrivée</label>
-                                <input name="startHour" v-model="gridStore.selected.startHour" />
-                            </div>
-                            <div class="flex-row">
-                                <label for="end_hour" style="width:4em;">Départ</label>
-                                <input name="endHour" v-model="gridStore.selected.endHour" />
-                            </div>
-                        </div>
-                        <div class="flex-col just-end align-start" style="height:100%;">
-                            <label id="isHourFull" :class="[isFullWeek ? 'selectedFurniture' : '']" for="hourFullWeek">
-                                Tous les jours
-                            </label>
-                            <input class="hidden" type="checkbox" id="hourFullWeek" name="hourFullWeek"
-                                v-model="isFullWeek" />
-                            <select v-if="isFullWeek == false">
-                                <option v-for="day in notSameHourDisplay" :value="day">{{ days[day-1] }}</option>
-                            </select>
-                        </div>
-                    </div>
+                    <DayHours/>
                 </div>
                 <div class="flex-col">
                     <label for="host_name">Anim.</label>
@@ -279,31 +240,4 @@ export default defineComponent({
 }
 
 
-#resaHour label {
-    font-size: 0.7em;
-    margin-top: 0.2em;
-}
-
-#resaHour input {
-    width: 4em;
-    margin-top: 0.2em;
-}
-
-.selectedFurniture {
-    background-color: #434f77;
-    color: white;
-    border: 1px solid black !important;
-}
-
-#isHourFull:hover {
-    cursor: pointer;
-}
-
-#isHourFull {
-    padding: 0.2em;
-    transition: 0.2s;
-    border: 1px solid white;
-    border-radius: 5px;
-    margin-bottom: 0.1em;
-}
 </style>
