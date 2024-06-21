@@ -21,7 +21,7 @@ export default defineComponent({
       day = dayVal != 0 ? dayVal : 5
     }
 
-    return { gridStore, filterStore, props, resa: resa, day: day, room: room, id: props.id, color }
+    return { gridStore, filterStore, props, resa, day, room, color, id: props.id }
   },
   computed: {
     getReservation() {
@@ -44,7 +44,7 @@ export default defineComponent({
       const hoveredGridId = this.gridStore.getHovered
       let hoveredGridResa = null
       if (hoveredGridId != null) {
-        hoveredGridResa = this.gridStore.getReservationByGridId(hoveredGridId)
+        hoveredGridResa = this.gridStore.getReservationFromGridId(hoveredGridId)
       }
       if (this.resa != null && this.day != null && this.room != null) {
         // Dynamic background color
@@ -64,7 +64,7 @@ export default defineComponent({
         // if resa started today and end later
         if (this.resa.startDate.getDay() == this.day && this.resa.endDate.getDay() != this.day) {
           style += 'border-radius:0.5rem 0 0 0.5rem;'
-          // if resa is selected
+          // if resa is hovered or selected
           if (
             (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) ||
             (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id)
@@ -176,7 +176,7 @@ export default defineComponent({
         this.gridStore.selectResa(null)
       }
     },
-    setHoverBehavior() {
+    selectHoveredGridId() {
       if (this.id != null) {
         this.gridStore.hovered = this.id
       }
@@ -190,7 +190,7 @@ export default defineComponent({
     :style="setGridBoxStyle"
     class="gridElement"
     @click="selectReservation"
-    @mouseover="setHoverBehavior"
+    @mouseover="selectHoveredGridId"
   >
     <div
       :style="setGridContentStyle"

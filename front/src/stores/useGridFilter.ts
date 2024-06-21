@@ -12,12 +12,12 @@ export const useGridFilter = defineStore('gridFilter', {
     getSelected: (state): Reservation | null => state.selected
   },
   actions: {
-    getReservationByGridId(id: number) {
-      const filterStore = useResaFilter()
+    getReservationFromGridId(id: number) {
       const room = Math.ceil(id / 5)
       const dayVal = id % 5
       const day = dayVal != 0 ? dayVal : 5
 
+      const filterStore = useResaFilter()
       return filterStore.results.filter((resa) => {
         return resa.roomId == room && resa.startDate.getDay() <= day && resa.endDate.getDay() >= day
       })[0]
