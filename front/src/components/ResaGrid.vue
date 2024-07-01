@@ -199,6 +199,7 @@ export default defineComponent({
   padding: 1em;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(13, 1fr);
+  gap: 0.2em;
   font-size: 1.2em;
 }
 

@@ -6,8 +6,7 @@ export interface ReservationInterface extends EntityInterface {
   name: string
   guests: number
   hostName: string
-  startDate: Date
-  endDate: Date
+  date: Date
   startHour: string
   orgaMail: string
   orgaTel: string
@@ -17,9 +16,6 @@ export interface ReservationInterface extends EntityInterface {
   configurationSize: number
   endHour: string
   roomConfigurationPrecision: string
-  pauseDate: number
-  startHourOffset: string
-  endHourOffset: string
   hostTable: boolean
   paperboard: number
   chairSup: number

@@ -8,10 +8,9 @@ class Reservation extends CrudEntity implements CrudEntityInterface
     public int $guests;
     public string $hostName;
 
-    public DateTimeImmutable $startDate;
-    public DateTimeImmutable $endDate;
-
+    public DateTimeImmutable $date;
     public string $startHour;
+    public string $endHour;
 
     public string $orgaMail;
     public string $orgaTel;
@@ -20,12 +19,8 @@ class Reservation extends CrudEntity implements CrudEntityInterface
     public string $roomConfiguration;
     public int $configurationSize;
     public ?int $configurationQuantity = null;
-    public string $endHour;
 
     public string $roomConfigurationPrecision = "";
-    public int $pauseDate = 0;
-    public string $startHourOffset = "";
-    public string $endHourOffset = "";
 
     public bool $hostTable=true;
     public int $paperboard = 0;
@@ -69,22 +64,8 @@ class Reservation extends CrudEntity implements CrudEntityInterface
     public function check_overlapping(): bool {
         $query_params = [
             [
-                "startDate" => ["<=", $this->startDate],
-                "endDate" => [">=", $this->endDate],
+                "date" => ["=", $this->date],
                 "roomId" => ["=", $this->roomId]
-            ],
-            [
-                "startDate" => ["=", $this->startDate],
-                "roomId" => ["=", $this->roomId] ,
-            ],
-            [
-                "endDate" => ["=", $this->endDate],
-                "roomId" => ["=", $this->roomId ],
-            ],
-            [
-                "startDate" => ["=", $this->startDate],
-                "endDate" => ["=", $this->endDate],
-                "roomId" => ["=", $this->roomId] ,
             ],
         ];
         $overlapping_resa = ($this->get($query_params))->data;
@@ -96,7 +77,7 @@ class Reservation extends CrudEntity implements CrudEntityInterface
         if (count($overlapping_resa) != 0)
         {
             throw new Exception(
-                "Reservation '".$this->name."' cannot start the ".$this->startDate->format("Y-m-d").
+                "Reservation '".$this->name."' cannot start the ".$this->date->format("Y-m-d").
                 " because reservation '".$overlapping_resa[0]["name"]."' is already present that day", 200);
         } else {
             return true;

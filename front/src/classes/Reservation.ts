@@ -6,8 +6,7 @@ export class Reservation implements ReservationInterface {
   name: string
   guests: number
   hostName: string
-  startDate: Date
-  endDate: Date
+  date: Date
   startHour: string
   orgaMail: string
   orgaTel: string
@@ -17,9 +16,6 @@ export class Reservation implements ReservationInterface {
   roomConfigurationPrecision: string
   configurationSize: number
   configurationQuantity: number | null
-  pauseDate: number
-  startHourOffset: string
-  endHourOffset: string
   hostTable: boolean
   paperboard: number
   chairSup: number
@@ -48,8 +44,7 @@ export class Reservation implements ReservationInterface {
     this.name = ''
     this.guests = 0
     this.hostName = ''
-    this.startDate = new Date()
-    this.endDate = new Date()
+    this.date = new Date()
     this.startHour = ''
     this.orgaMail = ''
     this.orgaTel = ''
@@ -59,9 +54,6 @@ export class Reservation implements ReservationInterface {
     this.roomConfigurationPrecision = ''
     this.configurationSize = 0
     this.configurationQuantity = null
-    this.pauseDate = 0
-    this.startHourOffset = ''
-    this.endHourOffset = ''
     this.hostTable = false
     this.paperboard = 0
     this.chairSup = 0

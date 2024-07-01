@@ -21,7 +21,7 @@ export const useResaFilter = defineStore('resaFilter', {
       return firstWeekDay
     },
     getFromDate(date: Date): Reservation {
-      return this.results.filter((e) => e.startDate == date)[0]
+      return this.results.filter((e) => e.date == date)[0]
     },
     getFromId(id: number): Reservation {
       return this.results.filter((e) => e.id == id)[0]
@@ -30,23 +30,23 @@ export const useResaFilter = defineStore('resaFilter', {
       const cli = new Client()
       const firstWeekDay = this.getFirstWeekDay()
       const lastWeekDay = new Date(firstWeekDay)
-      lastWeekDay.setDate(lastWeekDay.getDate() + 6)
-      const weekDateString =
-        firstWeekDay.getFullYear() +
-        '-' +
-        (1 + firstWeekDay.getMonth()) +
-        '-' +
-        firstWeekDay.getDate()
-      const weekEndDateString =
-        lastWeekDay.getFullYear() + '-' + (1 + lastWeekDay.getMonth()) + '-' + lastWeekDay.getDate()
+      lastWeekDay.setDate(lastWeekDay.getDate() + 5)
+      let weekDates = ''
+      let i = 0
+      while (firstWeekDay < lastWeekDay) {
+        if (i != 0) weekDates += '&|'
+        weekDates +=
+          'date=' +
+          firstWeekDay.getFullYear() +
+          '-' +
+          (1 + firstWeekDay.getMonth()) +
+          '-' +
+          firstWeekDay.getDate()
+        i++
+        firstWeekDay.setDate(firstWeekDay.getDate() + 1)
+      }
       try {
-        this.results = (
-          await cli.get<Reservation>(
-            new Reservation(),
-            0,
-            'startDate>==' + weekDateString + '&endDate<=' + weekEndDateString
-          )
-        ).data
+        this.results = (await cli.get<Reservation>(new Reservation(), 0, weekDates)).data
       } catch (e) {
         console.log(e)
       }

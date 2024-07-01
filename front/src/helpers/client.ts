@@ -19,6 +19,8 @@ export class Client {
     if (qp == null) {
       if (id != null) {
         req_uri += '/' + id
+      } else {
+        throw new Error('Need at least an id or query params to make request')
       }
     }
     req_uri += '?schema=true'
@@ -35,8 +37,8 @@ export class Client {
     })
     if (res.status != 200) {
       this.handleStatus(res.status)
-      throw new Error('request failed with status ' + res.status)
       console.error(res.json())
+      throw new Error('request failed with status ' + res.status)
     }
 
     const resp: { data: any; message: string } = await res.json()

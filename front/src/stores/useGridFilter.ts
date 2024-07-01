@@ -19,7 +19,7 @@ export const useGridFilter = defineStore('gridFilter', {
 
       const filterStore = useResaFilter()
       return filterStore.results.filter((resa) => {
-        return resa.roomId == room && resa.startDate.getDay() <= day && resa.endDate.getDay() >= day
+        return resa.roomId == room && resa.date.getDay() <= day
       })[0]
     },
     selectResa(resa: Reservation | null) {

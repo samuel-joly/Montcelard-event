@@ -1,13 +1,11 @@
 <script lang="ts">
 import Icon from '@/components/Icon.vue'
-import DayHours from '@/components/ResaForm/DayHours.vue'
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { useGridFilter } from '@/stores/useGridFilter'
 
 export default defineComponent({
   components: {
-    Icon,
-    DayHours
+    Icon
   },
   setup() {
     const gridStore = useGridFilter()
@@ -38,12 +36,12 @@ export default defineComponent({
           <input
             name="start_date"
             type="date"
-            :value="gridStore.selected.startDate.toISOString().split('T')[0]"
+            :value="gridStore.selected.date.toISOString().split('T')[0]"
             @input="
               (event) => {
                 const newDate = (event.target as HTMLInputElement).valueAsDate
                 if (gridStore.selected != null && newDate != null) {
-                  gridStore.selected.startDate = newDate
+                  gridStore.selected.date = newDate
                 }
               }
             "
@@ -55,22 +53,6 @@ export default defineComponent({
         </span>
       </div>
       <div class="flex-row just-between">
-        <span class="dateRow">
-          <label for="end_date">Au</label>
-          <input
-            name="end_date"
-            type="date"
-            :value="gridStore.selected.endDate.toISOString().split('T')[0]"
-            @input="
-              (event) => {
-                const newDate = (event.target as HTMLInputElement).valueAsDate
-                if (gridStore.selected != null && newDate != null) {
-                  gridStore.selected.endDate = newDate
-                }
-              }
-            "
-          />
-        </span>
         <div class="just-between">
           <span id="room-select dateRow">
             <label for="room">Salle</label>
@@ -105,7 +87,6 @@ export default defineComponent({
               <input name="resp_groupe" id="resp_groupe" v-model="gridStore.selected.orgaName" />
             </span>
           </div>
-          <DayHours />
         </div>
         <div class="flex-col">
           <label for="host_name">Anim.</label>

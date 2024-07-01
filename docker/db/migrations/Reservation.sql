@@ -7,23 +7,9 @@ CREATE TABLE reservation (
     orgaTel VARCHAR(10) NOT NULL,
     hostName VARCHAR(500) NOT NULL,
     guests INT NOT NULL ,
-    startDate DATE NOT NULL,
-    endDate DATE NOT NULL,
-    pauseDate INT default 0 ,
-    # Contains how many day are between start_date and each pause_date.
-    # Format "13" means: there is 2 pauses:
-    # - first pause is 1 day after the start_date
-    # - second pause is 3 days after the start_date
+    date DATE NOT NULL,
     startHour VARCHAR(5) NOT NULL,
     endHour VARCHAR(5) NOT NULL,
-    startHourOffset VARCHAR(34) NOT NULL,
-    endHourOffset VARCHAR(34) NOT NULL,
-    # Format "1+3.25;2-2.5;3-1;5+0.5" means there is 3 date with
-    # modified start/end hour:
-    # - "1+3.25" means the first date end with 3.25 hours more
-    #   than end_hour 
-    # - "2-2" means the second date end with 2 hours less 
-    # - "3-1" means the third date end with 1 hour less 
     roomConfiguration VARCHAR(30) NOT NULL,
     configurationSize INT,
     configurationQuantity INT NULL,
@@ -51,9 +37,7 @@ CREATE TABLE reservation (
     glutenFree INT NOT NULL DEFAULT 0,
 
     FOREIGN KEY (roomId) REFERENCES room(id),
-    CONSTRAINT dateInOrder CHECK (startDate <= endDate),
     CONSTRAINT guestNotZero CHECK (guests>0),
-    CONSTRAINT pauseDateLimit CHECK (pauseDate<124),
     CONSTRAINT chairSupLimit CHECK (chairSup<=6),
     CONSTRAINT tableSupLimit CHECK (tableSup<=4)
 );

@@ -1,0 +1,178 @@
+<script lang="ts">
+import { defineComponent } from 'vue'
+import Icon from '@/components/Icon.vue'
+import { Client } from '@/helpers/client'
+import { Reservation as Resa } from '@/classes/Reservation'
+import { useResaFilter } from '@/stores/useResaFilter'
+import TopForm from '@/components/ResaForm/TopForm.vue'
+import RoomConfig from '@/components/ResaForm/RoomConfig.vue'
+import { useGridFilter } from '@/stores/useGridFilter'
+
+export default defineComponent({
+    components: {
+        Icon,
+        TopForm,
+        RoomConfig
+    },
+    setup() {
+        const filterStore = useResaFilter()
+        const gridStore = useGridFilter()
+        const client = new Client()
+        async function putResa(e: Event) {
+            e.preventDefault()
+            if (gridStore.selected != null) {
+                client.put<Resa>('reservation', gridStore.selected)
+                filterStore.results.map((e) => {
+                    if (gridStore.selected != null) {
+                        if (e.id == gridStore.selected.id) {
+                            e = gridStore.selected
+                        }
+                    }
+                })
+            }
+        }
+
+        return {
+            filterStore,
+            gridStore,
+            putResa
+        }
+    },
+    computed: {
+        getHostsName(): string[] | null {
+            if (this.gridStore.selected != null) {
+                return this.gridStore.selected.hostName.split(',')
+            }
+            return null
+        }
+    }
+})
+</script>
+
+<template>
+    <form id="eventForm" v-if="gridStore.selected != null">
+        <TopForm />
+        <RoomConfig />
+        <div id="restauration">
+            <h3>Restauration</h3>
+            <span>
+                <label for="coktail">Coktail</label>
+                <input type="number" class="w-4" name="coktail" v-model="gridStore.selected.coktail" />
+            </span>
+            <div class="coffee">
+                <div>
+                    <span>
+                        <label for="coffeeAM">Pause AM</label>
+                        <input type="number" class="w-4" name="coffeeAM" v-model="gridStore.selected.coffeeAM" />
+                    </span>
+                    <span>
+                        <label for="coffeeAMContent"></label>
+                        <input type="text" name="coffeeAMContent" v-model="gridStore.selected.coffeeAMContent" />
+                    </span>
+                </div>
+                <div>
+                    <span>
+                        <label for="afternoon_coffee">Pause PM</label>
+                        <input type="number" class="w-4" name="afternoonCoffee" v-model="gridStore.selected.coffeePM" />
+                    </span>
+                    <span>
+                        <label for="coffeePMContent"></label>
+                        <input type="text" name="coffeePMContent" v-model="gridStore.selected.coffeePMContent" />
+                    </span>
+                </div>
+            </div>
+            <span>
+                <label for="coffee_groom">Café accueil</label>
+                <input type="number" class="w-4" name="coffeeGroom" v-model="gridStore.selected.coffeeGroom" />
+            </span>
+            <div id="meal">
+                <span>
+                    <label for="meal">Repas</label>
+                    <input type="number" class="w-4" name="meal" v-model="gridStore.selected.meal" />
+                </span>
+                <span>
+                    <label for="vegetarian">Végétarien </label>
+                    <input type="number" class="w-4" name="vegetarian" v-model="gridStore.selected.vegetarian" />
+                </span>
+                <span>
+                    <label for="gluten_free">Sans gluten </label>
+                    <input type="number" class="w-4" name="glutenFree" v-model="gridStore.selected.glutenFree" />
+                </span>
+            </div>
+            <span id="mealPre">
+                <label for="meal_precision">Precision</label>
+                <textarea name="meal_precision" v-model="gridStore.selected.mealPrecision" />
+            </span>
+        </div>
+    </form>
+</template>
+
+<style scoped>
+#eventForm {
+    background-color: var(--op-1);
+}
+
+#restauration {
+    padding: 1em;
+    padding-top: 0em;
+    padding-bottom: 0em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+}
+
+#restauration>span {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+
+#meal input {
+    margin-left: 0.4em;
+}
+
+.coffee {
+    grid-template: 2fr 2fr;
+    width:100%;
+}
+
+.coffee div {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items:center;
+
+}
+
+.coffee div span{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items:center;
+}
+
+#meal {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 25vw;
+    margin-right: 1em;
+}
+
+input[type="text"] {
+    width: 19rem;
+}
+
+#mealPre {
+    display: flex;
+    flex-direction: column !important;
+}
+</style>

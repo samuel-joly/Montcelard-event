@@ -9,7 +9,7 @@ export default class EntityBuilder {
     const a = Object.keys(entity)
     const b = Object.keys(data)
     if (a.length != b.length) {
-      throw new Error('Erreure pendant la récupération des réservations')
+      console.error('Erreure pendant la récupération des réservations')
     }
     const a_diff_b = a.filter((ae: string) => !b.includes(ae))
     const b_diff_a = b.filter((be: string) => !a.includes(be))

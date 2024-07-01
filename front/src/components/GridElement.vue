@@ -1,5 +1,6 @@
 <script lang="ts">
-import type { Reservation } from '@/classes/Reservation'
+import { Reservation } from '@/classes/Reservation'
+import { Client } from '@/helpers/client'
 import { useGridFilter } from '@/stores/useGridFilter'
 import { useResaFilter } from '@/stores/useResaFilter'
 import { defineComponent, ref } from 'vue'
@@ -27,11 +28,7 @@ export default defineComponent({
     getReservation() {
       this.resa = this.filterStore.results.filter((e) => {
         if (this.day != null && this.room != null) {
-          return (
-            e.roomId == this.room &&
-            e.startDate.getDay() <= this.day &&
-            e.endDate.getDay() >= this.day
-          )
+          return e.roomId == this.room && e.date.getDay() == this.day
         } else {
           return false
         }
@@ -40,7 +37,7 @@ export default defineComponent({
     },
 
     setGridContentStyle() {
-      let style = ''
+      let style = 'border-radius: 0.3em;'
       const hoveredGridId = this.gridStore.getHovered
       let hoveredGridResa = null
       if (hoveredGridId != null) {
@@ -48,9 +45,9 @@ export default defineComponent({
       }
       if (this.resa != null && this.day != null && this.room != null) {
         // Dynamic background color
-        let redVal = 100 + (this.resa.startDate.getDay() - 1) * 17.5 // [100-170]
+        let redVal = 100 + (this.resa.date.getDay() - 1) * 17.5 // [100-170]
         let greenVal = 130 + (this.room - 1) * 1.81 // [130 - 150]
-        let blueVal = 130 + (this.room - 1 + (this.resa.startDate.getDay() - 1) * 5) * 2.9 // [130-220]
+        let blueVal = 130 + (this.room - 1 + (this.resa.date.getDay() - 1) * 5) * 2.9 // [130-220]
         let color = 'background-color:rgba(' + redVal + ',' + greenVal + ',' + blueVal + ', 100%);'
         style += color
         redVal -= 35
@@ -61,58 +58,7 @@ export default defineComponent({
         greenVal += 60
         blueVal += 60
         let borderColor = 'rgb(' + redVal + ',' + greenVal + ',' + blueVal + ')'
-        // if resa started today and end later
-        if (this.resa.startDate.getDay() == this.day && this.resa.endDate.getDay() != this.day) {
-          style += 'border-radius:0.5rem 0 0 0.5rem;'
-          // if resa is hovered or selected
-          if (
-            (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) ||
-            (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id)
-          ) {
-            style += 'filter:brightness(115%);box-shadow:inset 3px -3px 3px ' + shadowColor + ';'
-            style += 'border: solid 1px ' + borderColor + ';border-right:0px; '
-          }
-        }
-
-        // if resa started before today and end today
-        else if (
-          this.resa.startDate.getDay() < this.day &&
-          this.resa.endDate.getDay() == this.day
-        ) {
-          style += 'border-radius:0 0.5rem 0.5rem 0;'
-          if (
-            (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) ||
-            (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id)
-          ) {
-            style +=
-              'filter:brightness(115%);box-shadow:0px -7px 4px -4px inset ' + shadowColor + ';'
-            style += 'border: solid 1px ' + borderColor + ';border-left:0px;'
-          }
-        }
-        // if reservation started before today and end after
-        else if (this.resa.startDate.getDay() < this.day && this.resa.endDate.getDay() > this.day) {
-          style += 'border-radius:0 0 0 0;'
-          if (
-            (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) ||
-            (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id)
-          ) {
-            style +=
-              'filter:brightness(115%);box-shadow:0px -7px 3px -4px inset ' + shadowColor + ';'
-            style += 'border: solid 1px ' + borderColor + ';border-left:0px;border-right:0px; '
-          }
-        }
-        // if resa start and end today
-        else {
-          style += 'border-radius:0.5rem 0.5rem 0.5rem 0.5rem;'
-          if (
-            (hoveredGridResa != null && this.resa.id == hoveredGridResa.id) ||
-            (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id)
-          ) {
-            style +=
-              'filter:brightness(115%);box-shadow: 3px -3px 3px 0px inset ' + shadowColor + ';'
-            style += 'border: solid 1px ' + borderColor + ';'
-          }
-        }
+        style += 'background-color:' + color
       }
       return style
     },
@@ -127,30 +73,6 @@ export default defineComponent({
       ) {
         style += 'background-color: rgba(74,90,128,30%);'
       }
-      return style
-    },
-    setGridBoxStyle() {
-      let style = ''
-      if (this.resa != null && this.day != null && this.room != null) {
-        // if event started today and end tomorow or after;
-        if (this.resa.startDate.getDay() == this.day && this.resa.endDate.getDay() != this.day) {
-          style += 'padding:0.1rem 0 0.1rem 0.1rem;'
-        }
-        // if event started before this day and end this day
-        else if (
-          this.resa.startDate.getDay() < this.day &&
-          this.resa.endDate.getDay() == this.day
-        ) {
-          style += 'padding:0.1rem 0.1rem 0.1rem 0;'
-        }
-        // if event started before this day and end after
-        else if (this.resa.startDate.getDay() < this.day && this.resa.endDate.getDay() > this.day) {
-          style += 'padding:0.1rem 0 0.1rem 0;'
-        } else {
-          style += 'padding:0.1rem 0.1rem 0.1rem 0.1rem;'
-        }
-      }
-
       return style
     },
     splitReservationName() {
@@ -186,18 +108,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    :style="setGridBoxStyle"
-    class="gridElement"
-    @click="selectReservation"
-    @mouseover="selectHoveredGridId"
-  >
+  <div class="gridElement" @click="selectReservation" @mouseover="selectHoveredGridId">
     <div
       :style="setGridContentStyle"
       :class="getReservation != null ? 'hoverable' : ''"
       v-if="getReservation != null && day != null && room != null"
     >
-      <div class="infoReservation" v-if="getReservation.startDate.getDay() == day">
+      <div class="infoReservation" v-if="getReservation.date.getDay() == day">
         <h1 style="align-self: flex-start" :title="getReservation.name">
           {{ splitReservationName }}
         </h1>
@@ -215,8 +132,6 @@ export default defineComponent({
           <p style="align-self: flex-end">{{ getReservation.guests }} pax</p>
         </span>
       </div>
-      <p v-if="getReservation.startDate.getDay() + 1 == day">{{ getReservation.hostName }}</p>
-      <p v-if="getReservation.startDate.getDay() + 2 == day">{{ getReservation.meal }}</p>
     </div>
     <div v-else class="add-event" :style="setEmptyGridElementHover">
       <Transition>
@@ -280,7 +195,7 @@ export default defineComponent({
 
 .add-event {
   margin: 0.2em;
-  border-radius: 0.8em;
+  border-radius: 0.5em;
   overflow: hidden;
   width: 90%;
   height: 90%;
@@ -291,7 +206,6 @@ export default defineComponent({
 }
 
 .infoReservation {
-  padding: 0px;
   width: 100%;
   display: flex;
   flex-direction: column;

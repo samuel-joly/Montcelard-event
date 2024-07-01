@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useResaFilter } from '@/stores/useResaFilter'
 import { useGridFilter } from '@/stores/useGridFilter'
 
 export default defineComponent({

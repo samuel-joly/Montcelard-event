@@ -26,10 +26,7 @@ export default defineComponent({
   },
   methods: {
     getStartDate(resa: Reservation): string {
-      return resa.startDate.toISOString().split('T')[0].replace(/-/g, '/')
-    },
-    getEndDate(resa: Reservation): string {
-      return resa.endDate.toISOString().split('T')[0].replace(/-/g, '/')
+      return resa.date.toISOString().split('T')[0].replace(/-/g, '/')
     }
   }
 })
@@ -64,9 +61,6 @@ export default defineComponent({
         <td>{{ resa.orgaMail }}</td>
         <td>
           {{ getStartDate(resa) }}
-        </td>
-        <td>
-          {{ getEndDate(resa) }}
         </td>
         <td>{{ resa.startHour }}</td>
         <td>{{ resa.endHour }}</td>
