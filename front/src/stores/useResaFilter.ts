@@ -26,7 +26,7 @@ export const useResaFilter = defineStore('resaFilter', {
     getFromId(id: number): Reservation {
       return this.results.filter((e) => e.id == id)[0]
     },
-    async fetchResa() {
+    async getCurrentWeekResa() {
       const cli = new Client()
       const firstWeekDay = this.getFirstWeekDay()
       const lastWeekDay = new Date(firstWeekDay)

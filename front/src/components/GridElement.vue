@@ -46,19 +46,10 @@ export default defineComponent({
       if (this.resa != null && this.day != null && this.room != null) {
         // Dynamic background color
         let redVal = 100 + (this.resa.date.getDay() - 1) * 17.5 // [100-170]
-        let greenVal = 130 + (this.room - 1) * 1.81 // [130 - 150]
+        let greenVal = 130 + (this.room - 1) * 4.81 // [130 - 150]
         let blueVal = 130 + (this.room - 1 + (this.resa.date.getDay() - 1) * 5) * 2.9 // [130-220]
         let color = 'background-color:rgba(' + redVal + ',' + greenVal + ',' + blueVal + ', 100%);'
         style += color
-        redVal -= 35
-        greenVal -= 35
-        blueVal -= 35
-        let shadowColor = 'rgb(' + redVal + ',' + greenVal + ',' + blueVal + ')'
-        redVal += 60
-        greenVal += 60
-        blueVal += 60
-        let borderColor = 'rgb(' + redVal + ',' + greenVal + ',' + blueVal + ')'
-        style += 'background-color:' + color
       }
       return style
     },

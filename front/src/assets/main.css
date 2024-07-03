@@ -50,11 +50,20 @@ input:focus {
 .just-around {
   justify-content: space-around;
 }
+.just-end {
+  justify-content: flex-end;
+}
 .just-start {
-  justify-content: start;
+  justify-content: flex-start;
 }
 .just-center {
   justify-content: center;
+}
+.just-between {
+  justify-content: space-between;
+}
+.just-evenly {
+  justify-content: space-evenly;
 }
 
 .pt-1 {
@@ -66,10 +75,6 @@ input:focus {
   flex-direction: row;
 }
 
-.just-between {
-  justify-content: space-between;
-}
-
 .align-start {
   align-items: start;
 }
@@ -78,6 +83,10 @@ input:focus {
 }
 .align-end {
   align-items: end;
+}
+
+.sm-input {
+  width: 4em;
 }
 
 @media (hover: hover) {

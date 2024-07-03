@@ -45,10 +45,15 @@ const filter = useResaFilter()
               min="0"
               max="52"
               v-model="filter.week"
-              @change="filter.fetchResa"
+              @change="filter.getCurrentWeekResa"
             />
             <label for="year">année</label>
-            <input id="year" type="number" v-model="filter.year" @change="filter.fetchResa" />
+            <input
+              id="year"
+              type="number"
+              v-model="filter.year"
+              @change="filter.getCurrentWeekResa"
+            />
           </form>
         </div>
         <label id="calendar" for="pill1" :class="isListView ? '' : 'text-mark'">Calendrier</label>

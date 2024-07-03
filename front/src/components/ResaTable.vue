@@ -18,7 +18,7 @@ export default defineComponent({
   data(props) {
     const filterStore = useResaFilter()
     const gridStore = useGridFilter()
-    filterStore.fetchResa()
+    filterStore.getCurrentWeekResa()
     if (gridStore.selected == null && filterStore.results.length > 0) {
       gridStore.selected = filterStore.results[0]
     }
