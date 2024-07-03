@@ -80,6 +80,7 @@ export default defineComponent({
   methods: {
     selectReservation() {
       if (this.resa != null) {
+        // if select the currently selected reservation
         if (this.gridStore.selected != null && this.resa.id == this.gridStore.selected.id) {
           this.gridStore.selectResa(null)
         } else {

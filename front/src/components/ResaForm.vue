@@ -55,12 +55,11 @@ export default defineComponent({
   <form id="eventForm" v-if="gridStore.selected != null">
     <TopForm />
     <RoomConfig />
-    <Restauration/>
+    <Restauration />
   </form>
 </template>
 
 <style scoped>
-
 #eventForm {
   background-color: var(--op-1);
 }

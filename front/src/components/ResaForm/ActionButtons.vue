@@ -18,6 +18,7 @@ export default defineComponent({
   methods: {
     save() {
       if (this.gridStore.selected != null) {
+        this.gridStore.selectedCopy = this.gridStore.selected
         let cli = new Client()
         cli.put('reservation', this.gridStore.selected)
       }

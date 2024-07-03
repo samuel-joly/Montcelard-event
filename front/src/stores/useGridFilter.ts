@@ -5,6 +5,9 @@ import { useResaFilter } from './useResaFilter'
 export const useGridFilter = defineStore('gridFilter', {
   state: () => ({
     selected: null as Reservation | null,
+    selectedCopy: null as Reservation | null,
+    changesNotSaved: false as boolean,
+    lastSelectedId: 0 as Number,
     hovered: 1 as number
   }),
   getters: {
@@ -23,7 +26,18 @@ export const useGridFilter = defineStore('gridFilter', {
       })[0]
     },
     selectResa(resa: Reservation | null) {
+      if (this.selectedCopy != null && this.selected != null) {
+        if (JSON.stringify(this.selected) != JSON.stringify(this.selectedCopy)) {
+          this.changesNotSaved = true
+        } else {
+          this.changesNotSaved = false
+        }
+      }
+      if (this.selected != null) {
+        this.lastSelectedId = this.selected.id
+      }
       this.selected = resa
+      this.selectedCopy = Object.assign({}, resa)
     }
   }
 })

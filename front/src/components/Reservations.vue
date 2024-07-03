@@ -1,18 +1,42 @@
 <script lang="ts">
 import ResaForm from '@/components/ResaForm.vue'
 import ResaGrid from '@/components/ResaGrid.vue'
+import SaveChangeModal from './SaveChangeModal.vue'
+import { useGridFilter } from '@/stores/useGridFilter'
+import { useResaFilter } from '@/stores/useResaFilter'
+import { Client } from '@/helpers/client'
 
 export default {
   components: {
     ResaForm,
-    ResaGrid
+    ResaGrid,
+    SaveChangeModal
   },
-  setup() {}
+  setup() {
+    const gridStore = useGridFilter()
+    return { gridStore }
+  },
+  methods: {
+    changeNotSaved() {
+      const filterStore = useResaFilter()
+      filterStore.results.map((e) => {
+        if (e.id == this.gridStore.lastSelectedId) {
+          const cli = new Client()
+          cli.put('reservation', e)
+        }
+      })
+    }
+  }
 }
 </script>
 
 <template>
   <div id="gridResas">
+    <SaveChangeModal
+      text="Sauvegarder les modifications ?"
+      :showValue="gridStore.changesNotSaved == true"
+      :func="changeNotSaved"
+    />
     <ResaGrid />
     <Transition>
       <ResaForm />
