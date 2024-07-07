@@ -44,7 +44,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex-row just-end">
+  <div class="flex-row just-between">
     <button
       id="save"
       @click="
@@ -92,8 +92,8 @@ button {
   box-shadow: none;
   border: none;
   transition-duration: 0.3s;
-  margin-left: 0.25em;
   color: white;
+  padding: 0.2em;
 }
 
 button:hover {

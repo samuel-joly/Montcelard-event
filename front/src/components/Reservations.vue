@@ -5,6 +5,7 @@ import SaveChangeModal from './SaveChangeModal.vue'
 import { useGridFilter } from '@/stores/useGridFilter'
 import { useResaFilter } from '@/stores/useResaFilter'
 import { Client } from '@/helpers/client'
+import type { Reservation } from '@/classes/Reservation'
 
 export default {
   components: {
@@ -17,7 +18,7 @@ export default {
     return { gridStore }
   },
   methods: {
-    changeNotSaved() {
+    saveChanges() {
       const filterStore = useResaFilter()
       filterStore.results.map((e) => {
         if (e.id == this.gridStore.lastSelectedId) {
@@ -25,6 +26,10 @@ export default {
           cli.put('reservation', e)
         }
       })
+    },
+    revertChanges() {
+      const filterStore = useResaFilter()
+      filterStore.getCurrentWeekResa()
     }
   }
 }
@@ -35,7 +40,8 @@ export default {
     <SaveChangeModal
       text="Sauvegarder les modifications ?"
       :showValue="gridStore.changesNotSaved == true"
-      :func="changeNotSaved"
+      :yesFunc="saveChanges"
+      :noFunc="revertChanges"
     />
     <ResaGrid />
     <Transition>
